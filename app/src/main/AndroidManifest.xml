@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.exomatik.baseapplication">
+    xmlns:tools="http://schemas.android.com/tools"
+    package="id.exomatik.absenki">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -14,9 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/CustomTheme"
         android:fullBackupContent="true"
-        >
-        <activity android:name=".ui.auth.AuthActivity"
-            android:label="@string/authentication"
+        android:usesCleartextTraffic="true"
+        tools:targetApi="m">
+        <activity android:name="id.exomatik.absenki.ui.auth.AuthActivity"
+            android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"
             >
@@ -28,7 +30,7 @@
         </activity>
 
         <activity
-            android:name=".ui.main.MainActivity"
+            android:name="id.exomatik.absenki.ui.main.MainActivity"
             android:label="@string/main_activity"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"/>

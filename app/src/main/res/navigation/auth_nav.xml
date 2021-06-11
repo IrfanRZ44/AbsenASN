@@ -8,24 +8,29 @@
     app:startDestination="@id/splashFragment">
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.exomatik.baseapplication.ui.auth.splash.SplashFragment"
+        android:name="id.exomatik.absenki.ui.auth.splash.SplashFragment"
         android:label="@string/splash_screen"
         tools:layout="@layout/fragment_splash" />
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.exomatik.baseapplication.ui.auth.login.LoginFragment"
+        android:name="id.exomatik.absenki.ui.auth.login.LoginFragment"
         android:label="@string/login"
         tools:layout="@layout/fragment_login" />
     <fragment
         android:id="@+id/registerFragment"
-        android:name="com.exomatik.baseapplication.ui.auth.register.RegisterFragment"
+        android:name="id.exomatik.absenki.ui.auth.register.RegisterFragment"
         android:label="@string/register"
         tools:layout="@layout/fragment_register"
         />
     <fragment
         android:id="@+id/lihatFotoFragment"
-        android:name="com.exomatik.baseapplication.utils.LihatFotoFragment"
+        android:name="id.exomatik.absenki.utils.LihatFotoFragment"
         android:label="@string/foto"
         tools:layout="@layout/fragment_lihat_foto"
         />
+    <fragment
+        android:id="@+id/verifyRegisterFragment"
+        android:name="id.exomatik.absenki.ui.auth.verifyRegister.VerifyRegisterFragment"
+        android:label="fragment_verify_register"
+        tools:layout="@layout/fragment_verify_register" />
 </navigation>

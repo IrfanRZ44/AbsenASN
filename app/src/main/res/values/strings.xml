@@ -1,6 +1,5 @@
 <resources>
-    <string name="app_name">BaseApplication</string>
-    <string name="base_application">Base Application</string>
+    <string name="app_name">Absenki</string>
 
     <string name="text_all_right_reserved">Ahlan Wa Sahlan</string>
     <string name="selamat_datang">Selamat Datang</string>
@@ -43,7 +42,7 @@
     <string name="nama">Nama Lengkap</string>
     <string name="noHandphone">No. Handphone</string>
     <string name="jenis_kelamin">Jenis Kelamin</string>
-    <string name="laki_laki">Laki - Laki</string>
+    <string name="laki_laki">Laki-Laki</string>
     <string name="perempuan">Perempuan</string>
     <string name="tempat_lahir">Tempat Lahir</string>
     <string name="tanggal_lahir">Tanggal Lahir</string>
@@ -90,6 +89,10 @@
     <string name="pick_alamat">Pick Alamat</string>
     <string name="silahkan_pick_alamat_anda">Silahkan pick alamat anda</string>
 
+    <string name="digitsUsername">asdfghjklqwertyuiopzxcvbnmASDFGHJKLQWERTYUIOPZXCVBNM_1234567890.</string>
+    <string name="digitsEmail">asdfghjklqwertyuiopzxcvbnmASDFGHJKLQWERTYUIOPZXCVBNM_1234567890@.-</string>
+    <string name="digitsPhone">1234567890</string>
+
     <string name="tolak">TOLAK</string>
     <string name="terima">TERIMA</string>
     <string name="username_atau_no_handphone">Username atau No. Handphone</string>
@@ -123,4 +126,12 @@
     <string name="authentication">Authentication</string>
     <string name="create">Create</string>
     <string name="get">Get</string>
+    <string name="silahkan_mendaftar_untuk_melanjutkan">Silahkan mendaftar untuk melanjutkan</string>
+    <string name="foto_profil">Foto Profil</string>
+    <string name="kata_sandi">Kata Sandi</string>
+    <string name="konfirmasi_kata_sandi">Konfirmasi Kata Sandi</string>
+    <string name="nama_lengkap">Nama Lengkap</string>
+    <string name="pilih_tanggal_lahir">Pilih Tanggal Lahir</string>
+    <string name="nomor_hp_contoh_0813xxxx">Nomor HP contoh: 0813xxxx</string>
+    <string name="sudah_punya_akun">Sudah Punya Akun?</string>
 </resources>

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:context="com.exomatik.baseapplication.ui.main.beranda.BerandaFragment"
+    tools:context="id.exomatik.absenki.ui.main.beranda.BerandaFragment"
     >
     <data>
         <variable
             name="viewModel"
-            type="com.exomatik.baseapplication.ui.main.beranda.BerandaViewModel" />
+            type="id.exomatik.absenki.ui.main.beranda.BerandaViewModel" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat

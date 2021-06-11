@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "307432174352",
+    "project_id": "absenki-28acc",
+    "storage_bucket": "absenki-28acc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:307432174352:android:842db8cb700ac2d59bab95",
+        "android_client_info": {
+          "package_name": "id.exomatik.absenki"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "307432174352-uomt3nqn334ccf68g9oo7jl1mm3ltmas.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "id.exomatik.absenki",
+            "certificate_hash": "6a110ee5c2f199a42a7ddc63ba52e0b3e68aae34"
+          }
+        },
+        {
+          "client_id": "307432174352-0im24c0tf3rlu9r313qschfauevmnrpm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCW-RYInMjO7v9fMiztnbDWxkPAo5RWs2U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "307432174352-0im24c0tf3rlu9r313qschfauevmnrpm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
