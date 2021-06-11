@@ -8,4 +8,4 @@ import kotlinx.android.parcel.Parcelize
 data class ModelResponseBarang(
     var data: List<ModelBarang> = emptyList(),
     var message: String = ""
-    ) : Parcelable
+) : Parcelable

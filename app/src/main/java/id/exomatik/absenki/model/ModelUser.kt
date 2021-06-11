@@ -14,6 +14,7 @@ data class ModelUser(
     var tempatLahir: String = "",
     var tanggalLahir: String = "",
     var alamat: String = "",
+    var status: String = "",
     var fotoProfil: String = "",
     var lastLogin: String = "",
     var updatedAt: String = "",

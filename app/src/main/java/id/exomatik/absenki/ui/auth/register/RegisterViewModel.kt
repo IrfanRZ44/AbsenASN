@@ -113,7 +113,7 @@ class RegisterViewModel(
 
             val dataUser = ModelUser(
                 username, password, hp, "", namaLengkap,
-                jenisKelamin, tempatLahir, tglLahir, alamat, "", tglSekarang,
+                jenisKelamin, tempatLahir, tglLahir, alamat, Constant.statusActive, "", tglSekarang,
                 tglSekarang, tglSekarang
             )
 
@@ -226,10 +226,7 @@ class RegisterViewModel(
     private fun cekUserName(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                isShowLoading.value = false
-
-                showLog("Cek Username onCancelled")
-//                cekHandphone(dataUser)
+                cekHandphone(dataUser)
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -237,9 +234,7 @@ class RegisterViewModel(
                     isShowLoading.value = false
                     setTextError("Gagal, Username sudah digunakan", editUsername)
                 } else {
-                    isShowLoading.value = false
-                    showLog("Cek Username Success")
-//                    cekHandphone(dataUser)
+                    cekHandphone(dataUser)
                 }
             }
         }
@@ -251,7 +246,6 @@ class RegisterViewModel(
     private fun cekHandphone(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                isShowLoading.value = false
                 signUp(dataUser)
             }
 
@@ -260,7 +254,6 @@ class RegisterViewModel(
                     isShowLoading.value = false
                     setTextError("Gagal, No Handphone sudah terdaftar", editUsername)
                 } else {
-                    showLog("cekHandphone Success")
                     signUp(dataUser)
                 }
             }
@@ -275,7 +268,6 @@ class RegisterViewModel(
         val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 if (unverify) {
-                    showLog("onVerificationCompleted Success")
                     signIn(credential, dataUser)
                 }
                 unverify = false
@@ -353,9 +345,8 @@ class RegisterViewModel(
         FirebaseUtils.signIn(credential, onCoCompleteListener)
     }
 
-    fun saveFoto(image: Uri, dataUser: ModelUser){
+    private fun saveFoto(image: Uri, dataUser: ModelUser){
         val onSuccessListener = OnSuccessListener<UploadTask.TaskSnapshot> {
-            message.value = "Berhasil menyimpan foto"
             getUrlFoto(it, dataUser)
         }
 
@@ -388,8 +379,7 @@ class RegisterViewModel(
         val onCompleteListener =
             OnCompleteListener<InstanceIdResult> { result ->
                 if (result.isSuccessful) {
-                    message.value = "Berhasil mendapatkan token"
-
+                    message.value = "Berhasil login"
                     dataUser.token = result.result?.token ?: ""
                     addUserToFirebase(dataUser)
                 } else {
@@ -404,6 +394,9 @@ class RegisterViewModel(
     }
 
     private fun addUserToFirebase(dataUser: ModelUser) {
+        val md5Password = stringToMD5(dataUser.password)
+        dataUser.password = md5Password
+
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {

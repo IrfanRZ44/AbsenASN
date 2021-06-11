@@ -1,3 +1,4 @@
+
 package id.exomatik.absenki.model
 
 import android.os.Parcelable
@@ -11,4 +12,4 @@ data class ModelBarang(
     var harga: Long = 0,
     var created_at: String = "",
     var updated_at: String = ""
-    ) : Parcelable
+) : Parcelable

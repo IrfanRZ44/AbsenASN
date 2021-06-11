@@ -1,7 +1,5 @@
 package id.exomatik.absenki.ui.main.beranda
 
-import android.app.SearchManager
-import android.content.Context
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem

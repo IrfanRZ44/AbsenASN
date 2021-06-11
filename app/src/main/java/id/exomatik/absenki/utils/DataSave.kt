@@ -7,6 +7,7 @@ import android.widget.Toast
 import id.exomatik.absenki.model.ModelUser
 import id.exomatik.absenki.utils.Constant.reffUser
 import com.google.gson.Gson
+import id.exomatik.absenki.model.ModelInfoApps
 
 class DataSave(private val context: Context?) {
     private val preffs: SharedPreferences? = context?.getSharedPreferences("UserPref", 0)
@@ -30,6 +31,18 @@ class DataSave(private val context: Context?) {
             val json: String = preffs?.getString(reffUser, "")
                 ?: throw Exception("Preffs Belum Di Inisialisasikan")
             gson.fromJson(json, ModelUser::class.java)
+        }catch (e: Exception){
+            Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+            null
+        }
+    }
+
+    fun getDataApps(): ModelInfoApps? {
+        return try {
+            val gson = Gson()
+            val json: String = preffs?.getString(Constant.reffInfoApps, "")
+                ?: throw Exception("Preffs Belum Di Inisialisasikan")
+            gson.fromJson(json, ModelInfoApps::class.java)
         }catch (e: Exception){
             Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
             null

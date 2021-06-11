@@ -4,8 +4,8 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
 import id.exomatik.absenki.R
-import id.exomatik.absenki.base.BaseFragmentBind
 import id.exomatik.absenki.databinding.FragmentLoginBinding
+import id.exomatik.absenki.base.BaseFragmentBind
 
 class LoginFragment : BaseFragmentBind<FragmentLoginBinding>(){
     override fun getLayoutResource(): Int = R.layout.fragment_login
@@ -14,7 +14,7 @@ class LoginFragment : BaseFragmentBind<FragmentLoginBinding>(){
     override fun myCodeHere() {
         supportActionBar?.hide()
         bind.lifecycleOwner = this
-        viewModel = LoginViewModel(findNavController(), savedData, activity)
+        viewModel = LoginViewModel(findNavController(), savedData, activity, bind.etUsername, bind.etPassword)
         bind.viewModel = viewModel
 
         onClick()

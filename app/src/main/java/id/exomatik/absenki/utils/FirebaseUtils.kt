@@ -136,33 +136,33 @@ object FirebaseUtils {
 //            .equalTo(value)
 //            .addListenerForSingleValueEvent(eventListener)
 //    }
-//
-//    fun getDataObject(reff: String, eventListener: ValueEventListener) {
-//        FirebaseDatabase.getInstance()
-//            .getreff(reff)
-//            .addListenerForSingleValueEvent(eventListener)
-//    }
-//
-//    fun getData1Child(reff: String, value: String, eventListener: ValueEventListener) {
-//        FirebaseDatabase.getInstance()
-//            .getreff(reff)
-//            .child(value)
-//            .addListenerForSingleValueEvent(eventListener)
-//    }
-//
-//    fun getData2Child(
-//        reff: String,
-//        value: String,
-//        value2: String,
-//        eventListener: ValueEventListener
-//    ) {
-//        FirebaseDatabase.getInstance()
-//            .getreff(reff)
-//            .child(value)
-//            .child(value2)
-//            .addListenerForSingleValueEvent(eventListener)
-//    }
-//
+
+    fun getDataObject(reff: String, eventListener: ValueEventListener) {
+        FirebaseDatabase.getInstance()
+            .getReference(reff)
+            .addListenerForSingleValueEvent(eventListener)
+    }
+
+    fun getData1Child(reff: String, value: String, eventListener: ValueEventListener) {
+        FirebaseDatabase.getInstance()
+            .getReference(reff)
+            .child(value)
+            .addListenerForSingleValueEvent(eventListener)
+    }
+
+    fun getData2Child(
+        reff: String,
+        value: String,
+        value2: String,
+        eventListener: ValueEventListener
+    ) {
+        FirebaseDatabase.getInstance()
+            .getReference(reff)
+            .child(value)
+            .child(value2)
+            .addListenerForSingleValueEvent(eventListener)
+    }
+
 ////    fun searchWordWith2ChildObject(
 ////        reff: String,
 ////        child: String,
@@ -515,21 +515,21 @@ object FirebaseUtils {
 //            .addOnCompleteListener(onCompleteListener)
 //            .addOnFailureListener(onFailureListener)
 //    }
-//
-//    fun setValueWith2ChildString(
-//        reff: String, child: String, child2: String, value: String
-//        , onCompleteListener: OnCompleteListener<Void>
-//        , onFailureListener: OnFailureListener
-//    ) {
-//        database = FirebaseDatabase.getInstance()
-//        database.getreff(reff)
-//            .child(child)
-//            .child(child2)
-//            .setValue(value)
-//            .addOnCompleteListener(onCompleteListener)
-//            .addOnFailureListener(onFailureListener)
-//    }
-//
+
+    fun setValueWith2ChildString(
+        reff: String, child: String, child2: String, value: String
+        , onCompleteListener: OnCompleteListener<Void>
+        , onFailureListener: OnFailureListener
+    ) {
+        database = FirebaseDatabase.getInstance()
+        database.getReference(reff)
+            .child(child)
+            .child(child2)
+            .setValue(value)
+            .addOnCompleteListener(onCompleteListener)
+            .addOnFailureListener(onFailureListener)
+    }
+
 //    fun setValueWith3ChildBoolean(
 //        reff: String, child: String, child2: String, child3: String, value: Boolean
 //        , onCompleteListener: OnCompleteListener<Void>

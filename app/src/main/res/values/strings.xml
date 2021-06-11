@@ -134,4 +134,10 @@
     <string name="pilih_tanggal_lahir">Pilih Tanggal Lahir</string>
     <string name="nomor_hp_contoh_0813xxxx">Nomor HP contoh: 0813xxxx</string>
     <string name="sudah_punya_akun">Sudah Punya Akun?</string>
+    <string name="perbarui_aplikasi">Perbarui Aplikasi</string>
+    <string name="all_right_reserved_absenki_2021">All Right Reserved || Absenki 2021</string>
+    <string name="selamat_datang_di">Selamat Datang di</string>
+    <string name="aplikasi_absensi_untuk_perusahaanmu_gratis">Aplikasi absensi untuk perusahaanmu. Gratis</string>
+    <string name="silahkan_login_untuk_melanjutkan">Silahkan login untuk melanjutkan</string>
+    <string name="username_atau_nomor_hp">Username atau Nomor HP</string>
 </resources>

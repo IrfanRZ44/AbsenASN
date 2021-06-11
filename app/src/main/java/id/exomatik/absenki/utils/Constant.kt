@@ -14,7 +14,6 @@ object Constant {
     const val reffKota = "Kota"
     const val reffKecamatan = "Kecamatan"
     const val onBoarding = "onBoarding"
-    const val reffUser = "Users"
     const val reffChat = "Chat"
     const val reffRuangChat = "RuangChat"
     const val reffStatus = "status"
@@ -27,9 +26,12 @@ object Constant {
     const val reffGetBarang = "getBarang"
     const val reffDeleteBarang = "deleteBarang"
 
-    const val reffFotoUser = "fotoUser"
     const val reffURL = "https://admin-tokobonus.com"
     const val reffBaseURL = "$reffURL/api/"
+
+    const val reffUser = "Users"
+    const val reffInfoApps = "InfoApps"
+    const val reffFotoUser = "fotoUser"
 
     const val reffSuccess = "Success"
 
@@ -87,10 +89,14 @@ object Constant {
     const val belum_terkonfirmasi = "Belum terkonfirmasi"
     const val hapus_pesan = "Hapus pesan?"
 
+    const val statusActive = "active"
+    const val statusBanned = "banned"
+    const val statusPending = "pending"
+    const val statusRequest = "request"
+
     const val manual = "manual"
     const val invalid = "invalid"
     const val status = "status"
-    const val active = "active"
     const val pending = "pending"
     const val switch = "switch"
     const val request = "request"
