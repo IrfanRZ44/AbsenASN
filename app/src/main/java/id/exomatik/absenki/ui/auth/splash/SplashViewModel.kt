@@ -8,7 +8,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
 import id.exomatik.absenki.BuildConfig
 import id.exomatik.absenki.R
-import id.exomatik.absenki.ui.main.MainActivity
 import id.exomatik.absenki.utils.Constant
 import id.exomatik.absenki.utils.DataSave
 import id.exomatik.absenki.utils.FirebaseUtils
@@ -17,6 +16,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenki.base.BaseViewModel
 import id.exomatik.absenki.model.ModelInfoApps
+import id.exomatik.absenki.ui.main.MainActivity
 
 @SuppressLint("StaticFieldLeak")
 class SplashViewModel(

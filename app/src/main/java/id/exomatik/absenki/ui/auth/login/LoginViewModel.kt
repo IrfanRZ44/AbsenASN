@@ -36,8 +36,7 @@ class LoginViewModel(
 
     fun onClickForgetPassword(){
         activity?.let { dismissKeyboard(it) }
-        message.value = "Lupa Password"
-//        navController.navigate(R.id.forgetPasswordFragment)
+        navController.navigate(R.id.forgetPasswordFragment)
     }
 
     fun onClickLogin(){
@@ -206,6 +205,7 @@ class LoginViewModel(
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {
+                    dataUser.token = token
                     savedData?.setDataObject(dataUser, Constant.reffUser)
                     message.value = "Berhasil login"
                     navController.navigate(R.id.splashFragment)

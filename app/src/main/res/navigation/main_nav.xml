@@ -5,18 +5,13 @@
     android:id="@+id/auth_nav"
     android:label="Authentication"
     tools:showIn="navigation_view"
-    app:startDestination="@id/nav_beranda">
+    app:startDestination="@id/mainFragment">
     <fragment
         android:id="@+id/lihatFotoFragment"
         android:name="id.exomatik.absenki.utils.LihatFotoFragment"
         android:label="@string/foto"
         tools:layout="@layout/fragment_lihat_foto"
         />
-    <fragment
-        android:id="@+id/nav_beranda"
-        android:name="id.exomatik.absenki.ui.main.beranda.BerandaFragment"
-        android:label="@string/beranda"
-        tools:layout="@layout/fragment_beranda" />
     <fragment
         android:id="@+id/nav_profile"
         android:name="id.exomatik.absenki.ui.main.blank1.Blank1Fragment"
@@ -27,4 +22,29 @@
         android:name="id.exomatik.absenki.ui.main.blank2.Blank2Fragment"
         android:label="fragment_blank2"
         tools:layout="@layout/fragment_blank2" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="id.exomatik.absenki.ui.main.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" />
+    <fragment
+        android:id="@+id/editPasswordFragment"
+        android:name="id.exomatik.absenki.ui.main.account.editPassword.EditPasswordFragment"
+        android:label="fragment_edit_password"
+        tools:layout="@layout/fragment_edit_password" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="id.exomatik.absenki.ui.main.account.about.AboutFragment"
+        android:label="fragment_about"
+        tools:layout="@layout/fragment_about" />
+    <fragment
+        android:id="@+id/accountFragment"
+        android:name="id.exomatik.absenki.ui.main.account.AccountFragment"
+        android:label="fragment_account"
+        tools:layout="@layout/fragment_account" />
+    <fragment
+        android:id="@+id/editProfilFragment"
+        android:name="id.exomatik.absenki.ui.main.account.editProfil.EditProfilFragment"
+        android:label="fragment_edit_profil"
+        tools:layout="@layout/fragment_edit_profil" />
 </navigation>

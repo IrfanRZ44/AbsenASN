@@ -12,6 +12,7 @@ import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.PhoneAuthProvider
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.Query
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.InstanceIdResult
@@ -21,8 +22,8 @@ import java.util.concurrent.TimeUnit
 
 object FirebaseUtils {
     private lateinit var database: FirebaseDatabase
-//    private lateinit var query: Query
-//    private lateinit var refreshData: ValueEventListener
+    private lateinit var query: Query
+    private lateinit var refreshData: ValueEventListener
 //    private lateinit var query2: Query
 //    private lateinit var refreshData2: ValueEventListener
 //    private lateinit var query3: Query
@@ -192,19 +193,19 @@ object FirebaseUtils {
 ////            .endAt(value + "\uf8ff")
 ////            .addListenerForSingleValueEvent(eventListener)
 ////    }
-//
-//    fun refreshDataWith1ChildObject1(
-//        reff: String,
-//        id: String,
-//        eventListener: ValueEventListener
-//    ) {
-//        this.refreshData = eventListener
-//        query = FirebaseDatabase.getInstance()
-//            .getreff(reff)
-//            .child(id)
-//        query.addValueEventListener(refreshData)
-//    }
-//
+
+    fun refreshDataWith1ChildObject1(
+        reff: String,
+        id: String,
+        eventListener: ValueEventListener
+    ) {
+        this.refreshData = eventListener
+        query = FirebaseDatabase.getInstance()
+            .getReference(reff)
+            .child(id)
+        query.addValueEventListener(refreshData)
+    }
+
 //    fun refreshDataWith2ChildObject1(
 //        reff: String,
 //        child: String,
@@ -473,20 +474,20 @@ object FirebaseUtils {
 //            .addOnCompleteListener(onCompleteListener)
 //            .addOnFailureListener(onFailureListener)
 //    }
-//
-//    fun setValueWith1ChildObject(
-//        reff: String, child: String, data: Any
-//        , onCompleteListener: OnCompleteListener<Void>
-//        , onFailureListener: OnFailureListener
-//    ) {
-//        database = FirebaseDatabase.getInstance()
-//        database.getreff(reff)
-//            .child(child)
-//            .setValue(data)
-//            .addOnCompleteListener(onCompleteListener)
-//            .addOnFailureListener(onFailureListener)
-//    }
-//
+
+    fun setValueWith1ChildObject(
+        reff: String, child: String, data: Any
+        , onCompleteListener: OnCompleteListener<Void>
+        , onFailureListener: OnFailureListener
+    ) {
+        database = FirebaseDatabase.getInstance()
+        database.getReference(reff)
+            .child(child)
+            .setValue(data)
+            .addOnCompleteListener(onCompleteListener)
+            .addOnFailureListener(onFailureListener)
+    }
+
 //    fun setValueWith2ChildObject(
 //        reff: String, child: String, child2: String, data: Any
 //        , onCompleteListener: OnCompleteListener<Void>
@@ -669,14 +670,14 @@ object FirebaseUtils {
             .addOnFailureListener(onFailureListener)
     }
 
-//    fun stopRefresh() {
-//        try {
-//            query.removeEventListener(refreshData)
-//        } catch (e: Exception) {
-//            showLog("error, method not running ${e.message} query 1")
-//        }
-//    }
-//
+    fun stopRefresh() {
+        try {
+            query.removeEventListener(refreshData)
+        } catch (e: Exception) {
+            showLog("error, method not running ${e.message} query 1")
+        }
+    }
+
 //    fun stopRefresh2() {
 //        try {
 //            query2.removeEventListener(refreshData2)

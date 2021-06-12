@@ -1,6 +1,5 @@
-package id.exomatik.absenki.ui.auth.verifyRegister
+package id.exomatik.absenki.ui.auth.verifyForgetPassword
 
-import android.net.Uri
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
@@ -8,7 +7,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.navigation.fragment.findNavController
 import id.exomatik.absenki.R
 import id.exomatik.absenki.base.BaseFragmentBind
-import id.exomatik.absenki.databinding.FragmentVerifyRegisterBinding
+import id.exomatik.absenki.databinding.FragmentVerifyForgetPasswordBinding
 import id.exomatik.absenki.model.ModelUser
 import id.exomatik.absenki.services.timer.TListener
 import id.exomatik.absenki.services.timer.TimeFormatEnum
@@ -16,20 +15,19 @@ import id.exomatik.absenki.utils.Constant
 import id.exomatik.absenki.utils.dismissKeyboard
 import java.util.concurrent.TimeUnit
 
-class VerifyRegisterFragment : BaseFragmentBind<FragmentVerifyRegisterBinding>(){
-    override fun getLayoutResource(): Int = R.layout.fragment_verify_register
-    lateinit var viewModel: VerifyRegisterViewModel
+class VerifyForgetPasswordFragment : BaseFragmentBind<FragmentVerifyForgetPasswordBinding>(){
+    override fun getLayoutResource(): Int = R.layout.fragment_verify_forget_password
+    lateinit var viewModel: VerifyForgetPasswordViewModel
 
     override fun myCodeHere() {
         supportActionBar?.hide()
         bind.lifecycleOwner = this
         try {
             viewModel =
-                VerifyRegisterViewModel(
-                    savedData,
-                    activity
+                VerifyForgetPasswordViewModel(
+                    activity,
+                    bind.progressTimer
                     ,
-                    bind.progressTimer,
                     bind.etText1,
                     bind.etText2,
                     bind.etText3,
@@ -41,16 +39,13 @@ class VerifyRegisterFragment : BaseFragmentBind<FragmentVerifyRegisterBinding>()
 
             bind.viewModel = viewModel
 
-            val verifyId= this.arguments?.getString("verifyId")
-            val dataUser= this.arguments?.getParcelable<ModelUser>("dataUser")
-            val fotoProfil = this.arguments?.getParcelable<Uri>(Constant.reffFotoUser)
-
-            viewModel.etFotoProfil = fotoProfil?:throw Exception("Error, terjadi kesalahan saat pendaftaran. Mohon mendaftar dari awal dan pastikan koneksi Anda stabil")
-            viewModel.dataUser = dataUser?:throw Exception("Error, terjadi kesalahan saat pendaftaran. Mohon mendaftar dari awal dan pastikan koneksi Anda stabil")
-            viewModel.verifyId = verifyId?:throw Exception("Error, terjadi kesalahan saat pendaftaran. Mohon mendaftar dari awal dan pastikan koneksi Anda stabil")
+            val dataUser = this.arguments?.getParcelable<ModelUser>(Constant.reffUser)
+            viewModel.dataUser = dataUser?:throw Exception("Error, terjadi kesalahan saat mengirimkan kode")
             viewModel.message.value = "SMS dengan kode verifikasi telah dikirim ke " + dataUser.phone
+
             viewModel.isShowLoading.value = false
             viewModel.loading.value = true
+            viewModel.sendCode()
         }catch (e: Exception){
             Toast.makeText(context, e.message + "Error, mohon ulangi proses masuk Anda", Toast.LENGTH_LONG).show()
         }

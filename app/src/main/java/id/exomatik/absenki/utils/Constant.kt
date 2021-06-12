@@ -3,6 +3,8 @@ package id.exomatik.absenki.utils
 object Constant {
     const val instalApp = "Dapatkan update tabligh dari ustadz favoritmu hanya di Balligh. " +
             "Install Aplikasinya sekarang juga </downloadlink>"
+    const val appName = "Absenki"
+
     const val reffBiodata = "Biodata"
     const val reffNotif = "Notif"
     const val reffSampul = "sampul"
@@ -18,6 +20,7 @@ object Constant {
     const val reffRuangChat = "RuangChat"
     const val reffStatus = "status"
     const val reffToken = "token"
+    const val reffPassword = "password"
     const val reffJenisAkun = "jenisAkun"
     const val reffActiveAccount = "activeAkun"
     const val reffBookmark= "Bookmark"
@@ -53,6 +56,7 @@ object Constant {
     const val phone = "phone"
     const val nama = "nama"
     const val token = "token"
+    const val fotoProfil = "fotoProfil"
     const val username = "username"
     const val provinsi = "provinsi"
     const val noHp = "noHp"

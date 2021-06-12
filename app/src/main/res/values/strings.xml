@@ -140,4 +140,15 @@
     <string name="aplikasi_absensi_untuk_perusahaanmu_gratis">Aplikasi absensi untuk perusahaanmu. Gratis</string>
     <string name="silahkan_login_untuk_melanjutkan">Silahkan login untuk melanjutkan</string>
     <string name="username_atau_nomor_hp">Username atau Nomor HP</string>
+    <string name="edit_password">Edit Password</string>
+    <string name="informasi_lainnya">Informasi Lainnya</string>
+    <string name="tentang_aplikasi">Tentang</string>
+    <string name="nilai_aplikasi">Saran Anda</string>
+    <string name="kata_sandi_lama">Kata Sandi Lama</string>
+    <string name="kata_sandi_baru">Kata Sandi Baru</string>
+    <string name="konfirmasi_kata_sandi_baru">Konfirmasi Kata Sandi Baru</string>
+    <string name="simpan">Simpan</string>
+    <string name="silahkan_verifikasi_akun_anda_untuk_melanjutkan">Silahkan verifikasi Akun Anda untuk melanjutkan</string>
+    <string name="verifikasi">Verifikasi</string>
+    <string name="silahkan_masukkan_password_baru_anda">Silahkan masukkan password baru Anda</string>
 </resources>

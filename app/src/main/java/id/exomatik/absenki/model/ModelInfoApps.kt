@@ -5,6 +5,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 data class ModelInfoApps(
+    var aboutApps: String? = "",
     var informasi: String? = "",
     var statusApps: String? = "",
     var versionApps: String? = "",

@@ -1,126 +1,116 @@
 package id.exomatik.absenki.ui.main
 
-import android.content.Context
-import android.net.ConnectivityManager
-import android.os.CountDownTimer
+import android.content.Intent
 import android.view.View
-import android.view.WindowManager
-import androidx.core.view.GravityCompat
-import androidx.navigation.NavController
-import androidx.navigation.ui.AppBarConfiguration
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.NavHostFragment
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenki.R
 import id.exomatik.absenki.base.BaseActivity
+import id.exomatik.absenki.model.ModelUser
+import id.exomatik.absenki.ui.auth.AuthActivity
+import id.exomatik.absenki.utils.Constant
+import id.exomatik.absenki.utils.FirebaseUtils
 import kotlinx.android.synthetic.main.activity_main.*
-import androidx.navigation.findNavController
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import coil.load
-import coil.request.CachePolicy
-import coil.transform.CircleCropTransformation
-import id.exomatik.absenki.utils.Constant.defaultTempFoto
-import id.exomatik.absenki.utils.dismissKeyboard
-import id.exomatik.absenki.utils.onClickFoto
-import id.exomatik.absenki.utils.showSnackbar
-import id.exomatik.absenki.utils.showSnackbarIndefinite
-import kotlinx.android.synthetic.main.nav_header_main.view.*
 
-class MainActivity : id.exomatik.absenki.base.BaseActivity() {
+class MainActivity : BaseActivity() {
     override fun getLayoutResource(): Int = R.layout.activity_main
-    private lateinit var appBarConfiguration: AppBarConfiguration
-    private lateinit var navController: NavController
-    private lateinit var view: View
-    private var timerCekKoneksi: CountDownTimer? = null
-
-    override fun myCodeHere() {
-        setTheme(R.style.CustomTheme)
-        drawerLayout.systemUiVisibility = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
-
-        setSupportActionBar(toolbar)
-        view = findViewById(android.R.id.content)
-        appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.nav_beranda,
-                R.id.nav_profile, R.id.nav_setting
-            ), drawerLayout
-        )
-        navController = findNavController(R.id.navMuballighFragment)
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
-
-        runnabelCekKoneksi()
-        setData()
-    }
 
     @Suppress("DEPRECATION")
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    override fun myCodeHere() {
+        NavHostFragment.create(R.navigation.main_nav)
+        viewParent.systemUiVisibility = (View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY)
 
-        return connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE)!!.state == android.net.NetworkInfo.State.CONNECTED || connectivityManager.getNetworkInfo(
-            ConnectivityManager.TYPE_WIFI)!!.state == android.net.NetworkInfo.State.CONNECTED
+        val username = savedData.getDataUser()?.username
+        if (!username.isNullOrEmpty()){
+            getDataUser(username)
+        }
+
+        val infoApps = savedData.getDataApps()?.informasi
+        if (!infoApps.isNullOrEmpty()){
+            alertInformation(infoApps)
+        }
     }
 
-    private fun runnabelCekKoneksi() {
-        var snackbarNotShown = false
-        timerCekKoneksi = object : CountDownTimer(300000, 5000) {
-            override fun onTick(millisUntilFinished: Long) {
-                if(!isNetworkAvailable()){
-                    if (!snackbarNotShown){
-                        showSnackbarIndefinite(view, "Afwan, mohon periksa koneksi internet Anda")
-                        snackbarNotShown = true
-                    }
-                }
-                else{
-                    if (snackbarNotShown){
-                        showSnackbar(view, "Afwan, mohon periksa koneksi internet Anda")
-                        snackbarNotShown = false
+    private fun getDataUser(username: String) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(result: DatabaseError) {
+            }
+
+            override fun onDataChange(result: DataSnapshot) {
+                if (result.exists()) {
+                    val data = result.getValue(ModelUser::class.java)
+
+                    when {
+                        data?.token != savedData.getDataUser()?.token -> {
+                            logout("Maaf, akun Anda sedang masuk dari perangkat lain")
+                        }
+                        data?.status != Constant.statusActive -> {
+                            FirebaseUtils.stopRefresh()
+                            data?.let { deleteToken(it) }
+                        }
+                        else -> {
+                            savedData.setDataObject(data, Constant.reffUser)
+                        }
                     }
                 }
             }
+        }
 
-            override fun onFinish() {}
-        }.start()
+        FirebaseUtils.refreshDataWith1ChildObject1(
+            Constant.reffUser
+            , username
+            , valueEventListener
+        )
     }
 
-    private fun setData() {
-        val headerView = navView?.getHeaderView(0)
-
-        headerView?.foto?.load(defaultTempFoto) {
-            crossfade(true)
-            placeholder(R.drawable.ic_camera_white)
-            transformations(CircleCropTransformation())
-            error(R.drawable.ic_camera_white)
-            fallback(R.drawable.ic_camera_white)
-            memoryCachePolicy(CachePolicy.ENABLED)
+    private fun deleteToken(dataUser: ModelUser) {
+        val onCompleteListener = OnCompleteListener<Void> {
+            logout("Maaf, akun Anda dibekukan")
         }
+        val onFailureListener = OnFailureListener { }
 
-        headerView?.foto?.setOnClickListener {
-            drawerLayout?.closeDrawer(GravityCompat.START)
-            onClickFoto(defaultTempFoto, navController)
-        }
+        FirebaseUtils.setValueWith2ChildString(
+            Constant.reffUser
+            , dataUser.username
+            , Constant.reffToken
+            , ""
+            , onCompleteListener
+            , onFailureListener
+        )
+    }
+
+    private fun logout(message: String){
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+        FirebaseUtils.signOut()
+        savedData.setDataObject(ModelUser(), Constant.reffUser)
+        val intent = Intent(this, AuthActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        dismissKeyboard(this)
-        return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
+        onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
-    private fun showProgress() {
-        progress.visibility = View.VISIBLE
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-    }
+    private fun alertInformation(information: String?) {
+        val alert = AlertDialog.Builder(this)
+        alert.setTitle(Constant.attention)
+        alert.setMessage(information)
+        alert.setCancelable(true)
+        alert.setPositiveButton(
+            "Baik"
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
 
-    override fun onBackPressed() {
-        if (drawerLayout?.isDrawerOpen(GravityCompat.START)!!) {
-            drawerLayout?.closeDrawer(GravityCompat.START)
-        }
-        if (drawerLayout?.isDrawerOpen(GravityCompat.END)!!) {
-            drawerLayout?.closeDrawer(GravityCompat.END)
-        } else {
-            super.onBackPressed()
-        }
+        alert.show()
     }
 }

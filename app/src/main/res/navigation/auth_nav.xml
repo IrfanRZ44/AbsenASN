@@ -33,4 +33,19 @@
         android:name="id.exomatik.absenki.ui.auth.verifyRegister.VerifyRegisterFragment"
         android:label="fragment_verify_register"
         tools:layout="@layout/fragment_verify_register" />
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="id.exomatik.absenki.ui.auth.changePassword.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" />
+    <fragment
+        android:id="@+id/forgetPasswordFragment"
+        android:name="id.exomatik.absenki.ui.auth.forgetPassword.ForgetPasswordFragment"
+        android:label="fragment_forget_password"
+        tools:layout="@layout/fragment_forget_password" />
+    <fragment
+        android:id="@+id/verifyForgetPasswordFragment"
+        android:name="id.exomatik.absenki.ui.auth.verifyForgetPassword.VerifyForgetPasswordFragment"
+        android:label="fragment_verify_forget_password"
+        tools:layout="@layout/fragment_verify_forget_password" />
 </navigation>
