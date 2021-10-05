@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="id.exomatik.absenki.ui.main.account.about.AboutFragment">
+    tools:context="id.exomatik.absenasn.ui.main.account.about.AboutFragment">
 
     <data>
         <variable
             name="viewModel"
-            type="id.exomatik.absenki.ui.main.account.about.AboutViewModel"
+            type="id.exomatik.absenasn.ui.main.account.about.AboutViewModel"
             />
     </data>
     <RelativeLayout

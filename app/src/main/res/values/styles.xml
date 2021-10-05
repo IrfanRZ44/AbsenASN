@@ -141,4 +141,10 @@
         <item name="cardCornerRadius">@dimen/h1</item>
         <item name="cardElevation">@dimen/h2</item>
     </style>
+
+    <style name="CustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/text_h1</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+    </style>
 </resources>

@@ -2,13 +2,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="id.exomatik.absenki.ui.main.account.editProfil.EditProfilFragment"
+    tools:context="id.exomatik.absenasn.ui.main.account.editProfil.EditProfilFragment"
     >
 
     <data>
         <variable
             name="viewModel"
-            type="id.exomatik.absenki.ui.main.account.editProfil.EditProfilViewModel"
+            type="id.exomatik.absenasn.ui.main.account.editProfil.EditProfilViewModel"
             />
     </data>
 

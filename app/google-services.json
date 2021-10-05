@@ -1,41 +1,41 @@
 {
   "project_info": {
-    "project_number": "307432174352",
-    "project_id": "absenki-28acc",
-    "storage_bucket": "absenki-28acc.appspot.com"
+    "project_number": "342351514612",
+    "project_id": "absenasn",
+    "storage_bucket": "absenasn.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:307432174352:android:842db8cb700ac2d59bab95",
+        "mobilesdk_app_id": "1:342351514612:android:21fd5b6adaccc4171d47a1",
         "android_client_info": {
-          "package_name": "id.exomatik.absenki"
+          "package_name": "id.exomatik.absenasn"
         }
       },
       "oauth_client": [
         {
-          "client_id": "307432174352-uomt3nqn334ccf68g9oo7jl1mm3ltmas.apps.googleusercontent.com",
+          "client_id": "342351514612-1cjnpher1qlb5q3efcbo5s1g3pof4i8h.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "id.exomatik.absenki",
+            "package_name": "id.exomatik.absenasn",
             "certificate_hash": "6a110ee5c2f199a42a7ddc63ba52e0b3e68aae34"
           }
         },
         {
-          "client_id": "307432174352-0im24c0tf3rlu9r313qschfauevmnrpm.apps.googleusercontent.com",
+          "client_id": "342351514612-t64urjaopknntrpufd54j27grau0hkdm.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCW-RYInMjO7v9fMiztnbDWxkPAo5RWs2U"
+          "current_key": "AIzaSyARDS8dGJQWnc0JU_ez445MOXxfL_7kKJs"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "307432174352-0im24c0tf3rlu9r313qschfauevmnrpm.apps.googleusercontent.com",
+              "client_id": "342351514612-t64urjaopknntrpufd54j27grau0hkdm.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

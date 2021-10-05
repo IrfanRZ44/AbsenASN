@@ -1,4 +1,4 @@
-package id.exomatik.absenki
+package id.exomatik.absenasn
 
 import org.junit.Test
 

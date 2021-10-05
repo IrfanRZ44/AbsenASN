@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="id.exomatik.absenki">
+    package="id.exomatik.absenasn">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -17,7 +17,7 @@
         android:fullBackupContent="true"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name="id.exomatik.absenki.ui.auth.AuthActivity"
+        <activity android:name="id.exomatik.absenasn.ui.auth.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"
@@ -30,7 +30,43 @@
         </activity>
 
         <activity
-            android:name="id.exomatik.absenki.ui.main.MainActivity"
+            android:name="id.exomatik.absenasn.ui.auth.LoginActivity"
+            android:label="Login"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.auth.RegisterActivity"
+            android:label="Register"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.auth.VerifyRegisterActivity"
+            android:label="Verify Register"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.auth.ForgetPasswordActivity"
+            android:label="Forget Password"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.auth.ChangePasswordActivity"
+            android:label="Change Password"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.auth.VerifyForgetPasswordActivity"
+            android:label="Verify Forget Password"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.MainActivityTest"
             android:label="@string/main_activity"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"/>
