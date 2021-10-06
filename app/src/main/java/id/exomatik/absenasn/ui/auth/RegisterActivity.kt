@@ -50,6 +50,8 @@ class RegisterActivity : AppCompatActivity(){
     }
 
     private fun myCodeHere() {
+        savedData = DataSave(this)
+
         supportActionBar?.hide()
         val dataUser = intent.getParcelableExtra<ModelUser>(Constant.reffUser)
         if (dataUser != null){
@@ -237,7 +239,7 @@ class RegisterActivity : AppCompatActivity(){
         }
     }
 
-    fun getDateTglLahir() {
+    private fun getDateTglLahir() {
         dismissKeyboard(this)
         val datePickerDialog: DatePickerDialog
         val localCalendar = Calendar.getInstance()

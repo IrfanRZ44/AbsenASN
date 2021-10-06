@@ -1,28 +1,48 @@
-package id.exomatik.absenasn.ui.main.account.editPassword
+package id.exomatik.absenasn.ui.main.account
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.EditorInfo
+import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.MutableLiveData
+import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.material.textfield.TextInputLayout
-import id.exomatik.absenasn.base.BaseViewModel
+import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
+import id.exomatik.absenasn.ui.auth.SplashActivity
+import id.exomatik.absenasn.ui.main.MainActivity
 import id.exomatik.absenasn.utils.*
+import kotlinx.android.synthetic.main.activity_edit_password.*
 
-@SuppressLint("StaticFieldLeak")
-class EditPasswordViewModel(
-    private val savedData: DataSave,
-    private val activity: Activity?,
-    private val editPasswordOld: TextInputLayout,
-    private val editPasswordNew: TextInputLayout,
-    private val editConfirmPasswordNew: TextInputLayout
-) : BaseViewModel() {
-    val etPasswordOld = MutableLiveData<String>()
-    val etPasswordNew = MutableLiveData<String>()
-    val etConfirmPasswordNew = MutableLiveData<String>()
+class EditPasswordActivity : AppCompatActivity(){
+    private lateinit var savedData : DataSave
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_edit_password)
+        myCodeHere()
+        onClick()
+    }
+
+    private fun myCodeHere() {
+        savedData = DataSave(this)
+        supportActionBar?.hide()
+    }
+
+    private fun onClick(){
+        etConfirmPasswordNew.editText?.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                onClickEditPassword()
+                return@OnEditorActionListener false
+            }
+            false
+        })
+    }
 
     private fun setTextError(msg: String, editText: TextInputLayout){
         textStatus.text = msg
@@ -32,23 +52,24 @@ class EditPasswordViewModel(
     }
 
     private fun setNullError(){
-        editPasswordOld.error = null
-        editPasswordNew.error = null
-        editConfirmPasswordNew.error = null
+        etPasswordOld.error = null
+        etPasswordNew.error = null
+        etConfirmPasswordNew.error = null
     }
 
+    @SuppressLint("SetTextI18n")
     fun onClickEditPassword(){
         setNullError()
-        activity?.let { dismissKeyboard(it) }
+        dismissKeyboard(this)
 
         val username = savedData.getDataUser()?.username
-        val passwordOld = etPasswordOld.value
-        val passwordNew = etPasswordNew.value
-        val confirmPasswordNew = etConfirmPasswordNew.value
+        val passwordOld = etPasswordOld.editText?.text.toString()
+        val passwordNew = etPasswordNew.editText?.text.toString()
+        val confirmPasswordNew = etConfirmPasswordNew.editText?.text.toString()
 
 
-        if (!username.isNullOrEmpty() && !passwordOld.isNullOrEmpty()
-            && !passwordNew.isNullOrEmpty() && !confirmPasswordNew.isNullOrEmpty()
+        if (!username.isNullOrEmpty() && passwordOld.isNotEmpty()
+            && passwordNew.isNotEmpty() && confirmPasswordNew.isNotEmpty()
             && passwordNew == confirmPasswordNew
             && passwordNew.length >= 6 && isContainNumber(passwordNew) && (isContainSmallText(passwordNew) || isContainBigText(passwordNew))
         ) {
@@ -61,30 +82,30 @@ class EditPasswordViewModel(
                 updatePassword(username, md5PasswordNew)
             }
             else{
-                setTextError("Error, password lama yang Anda masukkan salah", editPasswordOld)
+                setTextError("Error, password lama yang Anda masukkan salah", etPasswordOld)
             }
         }
         else {
             if (username.isNullOrEmpty()) {
                 textStatus.text = "Error, terjadi kesalahan saat mengambil Username"
             }
-            else if (passwordNew.isNullOrEmpty()) {
-                setTextError("Error, mohon masukkan password baru", editPasswordNew)
+            else if (passwordNew.isEmpty()) {
+                setTextError("Error, mohon masukkan password baru", etPasswordNew)
             }
-            else if (confirmPasswordNew.isNullOrEmpty()) {
-                setTextError("Error, mohon masukkan konfirmasi password baru", editConfirmPasswordNew)
+            else if (confirmPasswordNew.isEmpty()) {
+                setTextError("Error, mohon masukkan konfirmasi password baru", etConfirmPasswordNew)
             }
             else if (passwordNew != confirmPasswordNew) {
-                setTextError("Error, password yang Anda masukkan berbeda", editConfirmPasswordNew)
+                setTextError("Error, password yang Anda masukkan berbeda", etConfirmPasswordNew)
             }
             else if (passwordNew.length < 6){
-                setTextError("Error, password harus minimal 6 digit", editPasswordNew)
+                setTextError("Error, password harus minimal 6 digit", etPasswordNew)
             }
             else if (!isContainNumber(passwordNew)){
-                setTextError("Error, password harus memiliki kombinasi angka", editPasswordNew)
+                setTextError("Error, password harus memiliki kombinasi angka", etPasswordNew)
             }
             else if (!isContainSmallText(passwordNew) && !isContainBigText(passwordNew)){
-                setTextError("Error, password harus memiliki kombinasi huruf", editPasswordNew)
+                setTextError("Error, password harus memiliki kombinasi huruf", etPasswordNew)
             }
         }
     }
@@ -123,13 +144,13 @@ class EditPasswordViewModel(
         val onCompleteListener = OnCompleteListener<Void> {
             progress.visibility = View.GONE
             if (it.isSuccessful){
-                Toast.makeText(activity, "Berhasil mengganti password", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Berhasil mengganti password", Toast.LENGTH_LONG).show()
 
                 savedData.setDataObject(ModelUser(), Constant.reffUser)
 
-                val intent = Intent(activity, AuthActivity::class.java)
-                activity?.startActivity(intent)
-                activity?.finish()
+                val intent = Intent(this, SplashActivity::class.java)
+                startActivity(intent)
+                finish()
             }
             else{
                 textStatus.text = it.exception?.message?:"Gagal Keluar"
@@ -148,5 +169,12 @@ class EditPasswordViewModel(
             , onCompleteListener
             , onFailureListener
         )
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

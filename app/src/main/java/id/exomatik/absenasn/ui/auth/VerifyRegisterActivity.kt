@@ -46,6 +46,8 @@ class VerifyRegisterActivity : AppCompatActivity(){
 
     @SuppressLint("SetTextI18n")
     private fun myCodeHere() {
+        savedData = DataSave(this)
+
         supportActionBar?.hide()
 
         try {

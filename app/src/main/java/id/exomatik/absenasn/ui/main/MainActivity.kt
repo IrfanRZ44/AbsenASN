@@ -38,6 +38,7 @@ class MainActivity : AppCompatActivity(){
     }
 
     private fun myCodeHere() {
+        savedData = DataSave(this)
         supportActionBar?.show()
 
         val username = savedData.getDataUser()?.username

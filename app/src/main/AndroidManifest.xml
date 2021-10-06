@@ -66,8 +66,32 @@
             android:theme="@style/CustomTheme"/>
 
         <activity
-            android:name="id.exomatik.absenasn.ui.main.MainActivityTest"
+            android:name="id.exomatik.absenasn.ui.main.MainActivity"
             android:label="@string/main_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.account.EditPasswordActivity"
+            android:label="Edit Password"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.account.EditProfilActivity"
+            android:label="Edit Profil"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.account.AboutActivity"
+            android:label="Tentang Aplikasi"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.utils.LihatFotoActivity"
+            android:label="Foto"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"/>
 

@@ -13,6 +13,7 @@ import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenasn.BuildConfig
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelInfoApps
+import id.exomatik.absenasn.ui.main.MainActivity
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.FirebaseUtils
@@ -30,6 +31,8 @@ class SplashActivity : AppCompatActivity(){
     }
 
     private fun myCodeHere() {
+        savedData = DataSave(this)
+
         supportActionBar?.hide()
         getInfoApps()
 
@@ -75,7 +78,7 @@ class SplashActivity : AppCompatActivity(){
 
     @SuppressLint("SetTextI18n")
     fun checkingSavedData() {
-        val dataApps = savedData?.getDataApps()
+        val dataApps = savedData.getDataApps()
 
         if (dataApps == null){
             getInfoApps()
@@ -116,7 +119,7 @@ class SplashActivity : AppCompatActivity(){
 
     private fun moveMainAct(){
         progress.visibility = View.GONE
-        val intent = Intent(this, MainActivityTest::class.java)
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }

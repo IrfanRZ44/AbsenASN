@@ -33,8 +33,10 @@ class VerifyForgetPasswordActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_forget_password)
+        setContentView(R.layout.activity_verify_forget_password)
         myCodeHere()
+
+        onClick()
     }
 
     @SuppressLint("SetTextI18n")
@@ -53,6 +55,17 @@ class VerifyForgetPasswordActivity : AppCompatActivity(){
         setUpEditText()
         setProgress()
         onBackPressed()
+    }
+
+    private fun onClick() {
+        imgBack.setOnClickListener {
+            onClickBack()
+        }
+
+        progressTimer.setOnClickListener {
+            progress.visibility = View.VISIBLE
+            sendCode()
+        }
     }
 
     private fun setProgress() {
@@ -209,7 +222,7 @@ class VerifyForgetPasswordActivity : AppCompatActivity(){
 
     private fun onClickBack(){
         dismissKeyboard(this)
-        val intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, ForgetPasswordActivity::class.java)
         startActivity(intent)
         finish()
     }

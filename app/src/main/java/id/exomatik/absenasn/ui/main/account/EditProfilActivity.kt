@@ -1,81 +1,138 @@
-@file:Suppress("DEPRECATION")
-
-package id.exomatik.absenasn.ui.main.account.editProfil
+package id.exomatik.absenasn.ui.main.account
 
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.net.Uri
+import android.os.Bundle
+import android.view.View
 import android.widget.RadioButton
-import android.widget.RadioGroup
-import androidx.lifecycle.MutableLiveData
-import androidx.navigation.NavController
+import androidx.appcompat.app.AppCompatActivity
+import coil.load
+import coil.request.CachePolicy
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.storage.UploadTask
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import id.exomatik.absenasn.R
-import id.exomatik.absenasn.base.BaseViewModel
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.utils.*
+import kotlinx.android.synthetic.main.activity_edit_profil.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-@SuppressLint("StaticFieldLeak")
-class EditProfilViewModel(
-    private val activity: Activity?,
-    private val dataSave: DataSave?,
-    private val navController: NavController,
-    private val editNamaLengkap: TextInputLayout,
-    private val editAlamat: TextInputLayout,
-    private val editTempatLahir: TextInputLayout,
-    private val editTanggalLahir: TextInputLayout,
-    private val radioJK: RadioGroup
-) : BaseViewModel() {
-    val etNama = MutableLiveData<String>()
-    val etFotoProfil = MutableLiveData<Uri>()
-    val etAlamat = MutableLiveData<String>()
-    val etTempatLahir = MutableLiveData<String>()
-    val etTanggalLahir = MutableLiveData<String>()
+class EditProfilActivity : AppCompatActivity(){
+    private lateinit var savedData : DataSave
+    private var etFotoProfil : Uri? = null
 
-    fun onClickLogin(){
-        activity?.let { dismissKeyboard(it) }
-        navController.navigate(R.id.loginFragment)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_edit_profil)
+        myCodeHere()
     }
 
-    fun setDataUser(data: ModelUser){
-        etNama.value = data.nama
-        etAlamat.value = data.alamat
-        etTanggalLahir.value = data.tanggalLahir
-        etTempatLahir.value = data.tempatLahir
-        etFotoProfil.value = Uri.parse(data.fotoProfil)
+    private fun myCodeHere() {
+        savedData = DataSave(this)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Edit Profil"
+        supportActionBar?.show()
+
+        val dataUser = savedData.getDataUser()
+        if (dataUser != null){
+            setDataUser(dataUser)
+        }
+
+        onClick()
+    }
+
+    private fun onClick() {
+        cardFotoProfil.setOnClickListener {
+            CropImage.activity()
+                .setGuidelines(CropImageView.Guidelines.ON)
+                .setAllowFlipping(true)
+                .setAllowRotation(true)
+                .setAspectRatio(1, 1)
+                .start(this)
+        }
+
+        btnSignUp.setOnClickListener {
+            onClickSave()
+        }
+
+        btnGetTglLahir.setOnClickListener {
+            getDateTglLahir()
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            val result = CropImage.getActivityResult(data)
+            val username = savedData.getDataUser()?.username
+
+            if (resultCode == Activity.RESULT_OK && !username.isNullOrEmpty()){
+                val imageUri = result.uri
+                etFotoProfil = imageUri
+
+                imgFotoProfil.load(imageUri) {
+                    crossfade(true)
+                    placeholder(R.drawable.ic_camera_white)
+                    error(R.drawable.ic_camera_white)
+                    fallback(R.drawable.ic_camera_white)
+                    memoryCachePolicy(CachePolicy.ENABLED)
+                }
+                saveFoto(imageUri, username)
+            }
+        }
+    }
+
+    private fun setDataUser(data: ModelUser){
+        etNamaLengkap.editText?.setText(data.nama)
+        etAlamat.editText?.setText(data.alamat)
+        etTglLahir.editText?.setText(data.tanggalLahir)
+        etTempatLahir.editText?.setText(data.tempatLahir)
+        etFotoProfil = Uri.parse(data.fotoProfil)
+
+        imgFotoProfil.load(etFotoProfil) {
+            crossfade(true)
+            placeholder(R.drawable.ic_camera_white)
+            error(R.drawable.ic_camera_white)
+            fallback(R.drawable.ic_camera_white)
+            memoryCachePolicy(CachePolicy.ENABLED)
+        }
 
         if (data.jk == "Perempuan"){
-            radioJK.check(R.id.rbJk2)
+            rgJK.check(R.id.rbJk2)
         }
         else{
-            radioJK.check(R.id.rbJk1)
+            rgJK.check(R.id.rbJk1)
         }
     }
 
-    fun onClickRegister(){
-        activity?.let { dismissKeyboard(it) }
+    @SuppressLint("SetTextI18n")
+    private fun onClickSave(){
+        dismissKeyboard(this)
         setNullError()
 
-        val radio = radioJK.checkedRadioButtonId
-        val btn = activity?.findViewById<RadioButton?>(radio)
+        val radio = rgJK.checkedRadioButtonId
+        val btn = findViewById<RadioButton?>(radio)
         val jenisKelamin = btn?.text.toString()
-        val namaLengkap = etNama.value
-        val tglLahir = etTanggalLahir.value
-        val tempatLahir = etTempatLahir.value
-        val alamat = etAlamat.value
-        val fotoProfil = etFotoProfil.value?.path
+        val namaLengkap = etNamaLengkap.editText?.text.toString()
+        val tglLahir = etTglLahir.editText?.text.toString()
+        val tempatLahir = etTempatLahir.editText?.text.toString()
+        val alamat = etAlamat.editText?.text.toString()
+        val fotoProfil = etFotoProfil?.path
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
-        val dataOld = dataSave?.getDataUser()
+        val dataOld = savedData.getDataUser()
 
-        if (!namaLengkap.isNullOrEmpty() && !tglLahir.isNullOrEmpty() && !tempatLahir.isNullOrEmpty()
-            && !fotoProfil.isNullOrEmpty() && !alamat.isNullOrEmpty()
+        if (namaLengkap.isNotEmpty() && tglLahir.isNotEmpty() && tempatLahir.isNotEmpty()
+            && !fotoProfil.isNullOrEmpty() && alamat.isNotEmpty()
             && radio > 0 && jenisKelamin.isNotEmpty() && dataOld != null
         ) {
             progress.visibility = View.VISIBLE
@@ -93,47 +150,46 @@ class EditProfilViewModel(
                 fotoProfil.isNullOrEmpty() -> {
                     textStatus.text = "Mohon upload foto profil"
                 }
-                namaLengkap.isNullOrEmpty() -> {
-                    setTextError("Error, Mohon masukkan nama lengkap", editNamaLengkap)
+                namaLengkap.isEmpty() -> {
+                    setTextError("Error, Mohon masukkan nama lengkap", etNamaLengkap)
                 }
                 dataOld == null -> {
                     textStatus.text = "Error, terjadi kesalahan database"
                 }
                 jenisKelamin.isEmpty() -> {
-                    editNamaLengkap.clearFocus()
+                    etNamaLengkap.clearFocus()
                     textStatus.text = "Error, Mohon pilih jenis kelamin"
                 }
-                alamat.isNullOrEmpty() -> {
-                    setTextError("Error, mohon masukkan alamat", editAlamat)
+                alamat.isEmpty() -> {
+                    setTextError("Error, mohon masukkan alamat", etAlamat)
                 }
-                tempatLahir.isNullOrEmpty() -> {
-                    setTextError("Error, Mohon masukkan tempat lahir", editTempatLahir)
+                tempatLahir.isEmpty() -> {
+                    setTextError("Error, Mohon masukkan tempat lahir", etTempatLahir)
                 }
-                tglLahir.isNullOrEmpty() -> {
+                tglLahir.isEmpty() -> {
                     textStatus.text = "Error, Mohon pilih tanggal lahir"
-                    editNamaLengkap.clearFocus()
+                    etNamaLengkap.clearFocus()
                     textStatus.text = "Error, Mohon pilih jenis kelamin"
-                    editTanggalLahir.requestFocus()
-                    editTanggalLahir.findFocus()
-                    editTanggalLahir.error = "Error, Mohon pilih tanggal lahir"
+                    etTglLahir.requestFocus()
+                    etTglLahir.findFocus()
+                    etTglLahir.error = "Error, Mohon pilih tanggal lahir"
                 }
             }
         }
     }
 
-    fun getDateTglLahir() {
-        activity?.let { dismissKeyboard(it) }
+    private fun getDateTglLahir() {
+        dismissKeyboard(this)
         val datePickerDialog: DatePickerDialog
         val localCalendar = Calendar.getInstance()
 
         try {
-            datePickerDialog = DatePickerDialog(
-                activity ?: throw Exception("Error, mohon mulai ulang aplikasi"),
+            datePickerDialog = DatePickerDialog(this,
                 { _, paramAnonymousInt1, paramAnonymousInt2, paramAnonymousInt3 ->
                     val dateSelected = Calendar.getInstance()
                     dateSelected[paramAnonymousInt1, paramAnonymousInt2] = paramAnonymousInt3
                     val dateFormatter = SimpleDateFormat(Constant.dateFormat1, Locale.US)
-                    etTanggalLahir.value = dateFormatter.format(dateSelected.time)
+                    etTglLahir.editText?.setText(dateFormatter.format(dateSelected.time))
                 },
                 localCalendar[Calendar.YEAR],
                 localCalendar[Calendar.MONTH],
@@ -147,10 +203,10 @@ class EditProfilViewModel(
     }
 
     private fun setNullError(){
-        editNamaLengkap.error = null
-        editTanggalLahir.error = null
-        editTempatLahir.error = null
-        editAlamat.error = null
+        etNamaLengkap.error = null
+        etTglLahir.error = null
+        etTempatLahir.error = null
+        etAlamat.error = null
     }
 
     private fun setTextError(msg: String, editText: TextInputLayout){
@@ -160,7 +216,7 @@ class EditProfilViewModel(
         editText.findFocus()
     }
 
-    fun saveFoto(image: Uri, username: String){
+    private fun saveFoto(image: Uri, username: String){
         val onSuccessListener = OnSuccessListener<UploadTask.TaskSnapshot> {
             getUrlFoto(it, username)
         }
@@ -170,7 +226,8 @@ class EditProfilViewModel(
             progress.visibility = View.GONE
         }
 
-        FirebaseUtils.simpanFoto(Constant.reffFotoUser, username
+        FirebaseUtils.simpanFoto(
+            Constant.reffFotoUser, username
             , image, onSuccessListener, onFailureListener)
     }
 
@@ -187,15 +244,17 @@ class EditProfilViewModel(
         FirebaseUtils.getUrlFoto(uploadTask, onSuccessListener, onFailureListener)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun saveUser(dataUser: ModelUser) {
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {
-                    dataSave?.setDataObject(
+                    savedData.setDataObject(
                         dataUser, Constant.reffUser
                     )
 
-                    navController.popBackStack()
+                    dismissKeyboard(this)
+                    finish()
                 } else {
                     progress.visibility = View.GONE
                     textStatus.text = "Gagal menyimpan data user"
@@ -211,15 +270,16 @@ class EditProfilViewModel(
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun saveUrlFotoUser(urlFoto: String, username: String) {
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {
                     textStatus.text = "Berhasil menyimpan foto"
-                    val dataUser = dataSave?.getDataUser()
+                    val dataUser = savedData.getDataUser()
                     dataUser?.fotoProfil = urlFoto
 
-                    dataSave?.setDataObject(
+                    savedData.setDataObject(
                         dataUser, Constant.reffUser
                     )
                 } else {

@@ -1,21 +1,21 @@
 package id.exomatik.absenasn.ui.main.beranda
 
-import android.os.Bundle
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import androidx.navigation.fragment.findNavController
-import androidx.viewpager.widget.ViewPager
-import coil.load
-import coil.request.CachePolicy
-import coil.transform.CircleCropTransformation
-import id.exomatik.absenasn.R
-import id.exomatik.absenasn.base.BaseFragmentBind
-import id.exomatik.absenasn.utils.Constant
-import id.exomatik.absenasn.utils.adapter.SectionsPagerAdapter
-import id.exomatik.absenasn.utils.getDateNow
-import id.exomatik.absenasn.utils.onClickFoto
-
+//import android.os.Bundle
+//import android.view.Menu
+//import android.view.MenuInflater
+//import android.view.MenuItem
+//import androidx.navigation.fragment.findNavController
+//import androidx.viewpager.widget.ViewPager
+//import coil.load
+//import coil.request.CachePolicy
+//import coil.transform.CircleCropTransformation
+//import id.exomatik.absenasn.R
+//import id.exomatik.absenasn.base.BaseFragmentBind
+//import id.exomatik.absenasn.utils.Constant
+//import id.exomatik.absenasn.utils.adapter.SectionsPagerAdapter
+//import id.exomatik.absenasn.utils.getDateNow
+//import id.exomatik.absenasn.utils.onClickFoto
+//
 //class BerandaFragment : BaseFragmentBind<FragmentBerandaBinding>() {
 //    override fun getLayoutResource(): Int = R.layout.fragment_beranda
 //

@@ -33,6 +33,7 @@ class LoginActivity : AppCompatActivity(){
     }
 
     fun myCodeHere() {
+        savedData = DataSave(this)
         supportActionBar?.hide()
 
     }

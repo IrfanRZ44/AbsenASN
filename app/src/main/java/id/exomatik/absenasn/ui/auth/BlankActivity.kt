@@ -16,6 +16,7 @@ class BlankActivity : AppCompatActivity(){
     }
 
     private fun myCodeHere() {
+        savedData = DataSave(this)
         supportActionBar?.hide()
     }
 
