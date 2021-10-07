@@ -48,13 +48,12 @@ class VerifyForgetPasswordActivity : AppCompatActivity(){
 
             progress.visibility = View.GONE
             progressTimer.isEnabled = false
-            sendCode()
         }catch (e: Exception){
             Toast.makeText(this, e.message + "Error, mohon ulangi proses masuk Anda", Toast.LENGTH_LONG).show()
         }
+        sendCode()
         setUpEditText()
         setProgress()
-        onBackPressed()
     }
 
     private fun onClick() {

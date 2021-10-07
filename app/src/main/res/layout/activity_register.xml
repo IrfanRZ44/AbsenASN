@@ -100,7 +100,6 @@
                     android:maxLines="1"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:text="@={viewModel.etUsername}"
                     android:digits="@string/digitsUsername"
                     />
             </com.google.android.material.textfield.TextInputLayout>
@@ -335,7 +334,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/h5"
-                android:layout_marginTop="@dimen/_40"
+                android:layout_marginTop="@dimen/h2"
                 android:layout_marginRight="@dimen/h5"
                 android:padding="@dimen/h3"
                 android:textSize="@dimen/text_h2"

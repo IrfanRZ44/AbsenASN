@@ -40,6 +40,10 @@ class ChangePasswordActivity : AppCompatActivity(){
             }
             false
         })
+
+        btnLogin.setOnClickListener {
+            onClickSave()
+        }
     }
 
     private fun setTextError(msg: String, editText: TextInputLayout){
@@ -129,5 +133,12 @@ class ChangePasswordActivity : AppCompatActivity(){
             , onCompleteListener
             , onFailureListener
         )
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, ForgetPasswordActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

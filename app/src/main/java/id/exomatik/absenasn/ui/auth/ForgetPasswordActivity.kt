@@ -38,6 +38,10 @@ class ForgetPasswordActivity : AppCompatActivity(){
             }
             false
         })
+
+        btnLogin.setOnClickListener {
+            onClickLogin()
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -149,8 +153,15 @@ class ForgetPasswordActivity : AppCompatActivity(){
 
     private fun verifyNumber(dataUser: ModelUser) {
         dismissKeyboard(this)
-        val intent = Intent(this, RegisterActivity::class.java)
+        val intent = Intent(this, VerifyForgetPasswordActivity::class.java)
         intent.putExtra(Constant.reffUser, dataUser)
+        startActivity(intent)
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }

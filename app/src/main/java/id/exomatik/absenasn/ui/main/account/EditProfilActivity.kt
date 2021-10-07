@@ -6,6 +6,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.RadioButton
 import androidx.appcompat.app.AppCompatActivity
@@ -46,6 +47,7 @@ class EditProfilActivity : AppCompatActivity(){
         if (dataUser != null){
             setDataUser(dataUser)
         }
+        etTglLahir.editText?.keyListener = null
 
         onClick()
     }
@@ -295,5 +297,20 @@ class EditProfilActivity : AppCompatActivity(){
         FirebaseUtils.setValueWith2ChildString(
             Constant.reffUser, username, Constant.fotoProfil, urlFoto, onCompleteListener, onFailureListener
         )
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }

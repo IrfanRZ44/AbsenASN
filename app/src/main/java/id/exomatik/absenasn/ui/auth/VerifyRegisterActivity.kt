@@ -33,13 +33,13 @@ class VerifyRegisterActivity : AppCompatActivity(){
     var phoneCode = ""
     var unverify = true
     var verifyId = ""
-    lateinit var etFotoProfil: Uri
-    lateinit var dataUser : ModelUser
+    var etFotoProfil: Uri? = null
+    var dataUser : ModelUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_splash)
+        setContentView(R.layout.activity_verify_register)
         myCodeHere()
         onClick()
     }
@@ -54,15 +54,15 @@ class VerifyRegisterActivity : AppCompatActivity(){
             etFotoProfil = intent.getParcelableExtra(Constant.reffFotoUser)?:throw Exception("Error, terjadi kesalahan saat pendaftaran. Mohon mendaftar dari awal dan pastikan koneksi Anda stabil")
             dataUser = intent.getParcelableExtra("dataUser")?:throw Exception("Error, terjadi kesalahan saat pendaftaran. Mohon mendaftar dari awal dan pastikan koneksi Anda stabil")
             verifyId = intent.getStringExtra("verifyId")?:throw Exception("Error, terjadi kesalahan saat pendaftaran. Mohon mendaftar dari awal dan pastikan koneksi Anda stabil")
-            textStatus.text = "SMS dengan kode verifikasi telah dikirim ke " + dataUser.phone
+            textStatus.text = "SMS dengan kode verifikasi telah dikirim ke " + dataUser?.phone
             progress.visibility = View.GONE
             progressTimer.isEnabled = false
         }catch (e: Exception){
             Toast.makeText(this, e.message + "Error, mohon ulangi proses masuk Anda", Toast.LENGTH_LONG).show()
         }
+        sendCode()
         setUpEditText()
         setProgress()
-        onBackPressed()
     }
 
     private fun onClick() {
@@ -251,7 +251,7 @@ class VerifyRegisterActivity : AppCompatActivity(){
                     if (task.isSuccessful) {
                         progress.visibility = View.GONE
 
-                        saveFoto(etFotoProfil)
+                        etFotoProfil?.let { saveFoto(it) }
                     } else {
                         textStatus.text = "Error, kode verifikasi salah"
                         progress.visibility = View.GONE
@@ -292,13 +292,15 @@ class VerifyRegisterActivity : AppCompatActivity(){
             progress.visibility = View.GONE
         }
 
-        FirebaseUtils.simpanFoto(Constant.reffFotoUser, dataUser.username
-            , image, onSuccessListener, onFailureListener)
+        dataUser?.username?.let {
+            FirebaseUtils.simpanFoto(Constant.reffFotoUser,
+                it, image, onSuccessListener, onFailureListener)
+        }
     }
 
     private fun getUrlFoto(uploadTask: UploadTask.TaskSnapshot) {
         val onSuccessListener = OnSuccessListener<Uri?>{
-            dataUser.fotoProfil = it.toString()
+            dataUser?.fotoProfil = it.toString()
 
             getUserToken()
         }
@@ -321,9 +323,9 @@ class VerifyRegisterActivity : AppCompatActivity(){
                     val token = result.result?.token
 
                     if (!token.isNullOrEmpty()){
-                        dataUser.token = token
-                        val md5Password = stringToMD5(dataUser.password)
-                        dataUser.password = md5Password
+                        dataUser?.token = token
+                        val md5Password = dataUser?.password?.let { stringToMD5(it) }
+                        dataUser?.password = md5Password?:""
 
                         addUserToFirebase()
                     }
@@ -372,13 +374,11 @@ class VerifyRegisterActivity : AppCompatActivity(){
             setEmptyEditText()
         }
 
-        FirebaseUtils.setValueObject(
-            Constant.reffUser
-            , dataUser.username
-            , dataUser
-            , onCompleteListener
-            , onFailureListener
-        )
+        dataUser?.let {
+            FirebaseUtils.setValueObject(
+                Constant.reffUser, it.username, it, onCompleteListener, onFailureListener
+            )
+        }
     }
 
     private fun sendCode() {
@@ -387,11 +387,11 @@ class VerifyRegisterActivity : AppCompatActivity(){
             override fun onVerificationCompleted(credential: PhoneAuthCredential) {
                 unverify = false
                 textStatus.text =
-                    "Berhasil memverifikasi nomor " + dataUser.phone
+                    "Berhasil memverifikasi nomor " + dataUser?.phone
                 progress.visibility = View.GONE
                 progressTimer.isEnabled = false
 
-                saveFoto(etFotoProfil)
+                etFotoProfil?.let { saveFoto(it) }
                 progress.visibility = View.GONE
             }
 
@@ -429,7 +429,7 @@ class VerifyRegisterActivity : AppCompatActivity(){
                             progress.visibility = View.GONE
                             progressTimer.isEnabled = false
 
-                            textStatus.text = "Kami sudah mengirimkan kode verifikasi ke nomor ${dataUser.phone}"
+                            textStatus.text = "Kami sudah mengirimkan kode verifikasi ke nomor ${dataUser?.phone}"
                             unverify = false
                             setProgress()
 
@@ -440,6 +440,6 @@ class VerifyRegisterActivity : AppCompatActivity(){
             }
         }
 
-        FirebaseUtils.registerUser(dataUser.phone, callbacks, this)
+        dataUser?.phone?.let { FirebaseUtils.registerUser(it, callbacks, this) }
     }
 }

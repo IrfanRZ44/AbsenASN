@@ -54,6 +54,7 @@
             android:layout_marginRight="@dimen/_30"
             android:layout_centerHorizontal="true"
             android:textAlignment="center"
+            android:textColor="@color/black"
             android:id="@+id/textStatus"
             />
 

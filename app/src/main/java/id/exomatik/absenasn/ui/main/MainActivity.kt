@@ -16,6 +16,8 @@ import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.ui.auth.SplashActivity
+import id.exomatik.absenasn.ui.main.account.AccountFragment
+import id.exomatik.absenasn.ui.main.beranda.BlankFragment
 import id.exomatik.absenasn.ui.main.blank1.Blank1Fragment
 import id.exomatik.absenasn.ui.main.blank2.Blank2Fragment
 import id.exomatik.absenasn.utils.Constant
@@ -39,7 +41,6 @@ class MainActivity : AppCompatActivity(){
 
     private fun myCodeHere() {
         savedData = DataSave(this)
-        supportActionBar?.show()
 
         val username = savedData.getDataUser()?.username
         if (!username.isNullOrEmpty()){
@@ -127,8 +128,8 @@ class MainActivity : AppCompatActivity(){
     @Suppress("DEPRECATION")
     private fun setupViewPager(pager: ViewPager) {
         val adapter = SectionsPagerAdapter(supportFragmentManager)
-        adapter.addFragment(Blank1Fragment(), "Dashboard")
-        adapter.addFragment(Blank2Fragment(), "Account")
+        adapter.addFragment(BlankFragment(), "Dashboard")
+        adapter.addFragment(AccountFragment(), "Account")
 
         pager.adapter = adapter
 

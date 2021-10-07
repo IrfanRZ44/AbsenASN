@@ -10,13 +10,16 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import coil.load
+import coil.request.CachePolicy
+import coil.transform.CircleCropTransformation
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.ui.auth.SplashActivity
 import id.exomatik.absenasn.utils.*
-import kotlinx.android.synthetic.main.fragment_account.*
+import kotlinx.android.synthetic.main.fragment_account.view.*
 
 class AccountFragment : Fragment() {
     private lateinit var savedData: DataSave
@@ -38,10 +41,21 @@ class AccountFragment : Fragment() {
     private fun myCodeHere() {
         val supportActionBar = (activity as AppCompatActivity).supportActionBar
         supportActionBar?.hide()
+
+        v.textPoin.text = savedData.getDataUser()?.username
+        v.textRupiah.text = savedData.getDataUser()?.phone
+        v.imgFoto.load(savedData.getDataUser()?.fotoProfil) {
+            crossfade(true)
+            transformations(CircleCropTransformation())
+            placeholder(R.drawable.ic_logo)
+            error(R.drawable.ic_logo)
+            fallback(R.drawable.ic_logo)
+            memoryCachePolicy(CachePolicy.ENABLED)
+        }
     }
 
     private fun onClick(){
-        imgFoto.setOnClickListener {
+        v.imgFoto.setOnClickListener {
             savedData.getDataUser()?.fotoProfil?.let { it1 -> activity?.let { it2 ->
                 onClickFoto(it1,
                     it2
@@ -49,19 +63,19 @@ class AccountFragment : Fragment() {
             } }
         }
 
-        btnEditProfil.setOnClickListener {
+        v.btnEditProfil.setOnClickListener {
             val intent = Intent(activity, EditProfilActivity::class.java)
-            startActivity(intent)
+            activity?.startActivity(intent)
         }
 
-        btnEditPassword.setOnClickListener {
+        v.btnEditPassword.setOnClickListener {
             val intent = Intent(activity, EditPasswordActivity::class.java)
             activity?.startActivity(intent)
             activity?.finish()
         }
 
-        btnRate.setOnClickListener {
-            startActivity(
+        v.btnRate.setOnClickListener {
+            activity?.startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
                     Uri.parse("market://details?id=${activity?.packageName}")
@@ -69,21 +83,21 @@ class AccountFragment : Fragment() {
             )
         }
 
-        btnAccount.setOnClickListener {
+        v.btnAccount.setOnClickListener {
             val intent = Intent(activity, AboutActivity::class.java)
             activity?.startActivity(intent)
         }
 
-        btnLogout.setOnClickListener {
+        v.btnLogout.setOnClickListener {
             onClickLogout()
         }
     }
 
     private fun deleteToken(dataUser: ModelUser) {
-        progress.visibility = View.VISIBLE
+        v.progress.visibility = View.VISIBLE
 
         val onCompleteListener = OnCompleteListener<Void> {
-            progress.visibility = View.GONE
+            v.progress.visibility = View.GONE
             if (it.isSuccessful){
                 Toast.makeText(activity, "Berhasil Keluar", Toast.LENGTH_LONG).show()
 
@@ -98,7 +112,7 @@ class AccountFragment : Fragment() {
             }
         }
         val onFailureListener = OnFailureListener {
-            progress.visibility = View.GONE
+            v.progress.visibility = View.GONE
             Toast.makeText(activity, it.message, Toast.LENGTH_LONG).show()
         }
 

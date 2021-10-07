@@ -3,6 +3,7 @@ package id.exomatik.absenasn.ui.main.account
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -31,7 +32,9 @@ class EditPasswordActivity : AppCompatActivity(){
 
     private fun myCodeHere() {
         savedData = DataSave(this)
-        supportActionBar?.hide()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Edit Password"
+        supportActionBar?.show()
     }
 
     private fun onClick(){
@@ -42,6 +45,10 @@ class EditPasswordActivity : AppCompatActivity(){
             }
             false
         })
+
+        btnSave.setOnClickListener {
+            onClickEditPassword()
+        }
     }
 
     private fun setTextError(msg: String, editText: TextInputLayout){
@@ -169,6 +176,18 @@ class EditPasswordActivity : AppCompatActivity(){
             , onCompleteListener
             , onFailureListener
         )
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     override fun onBackPressed() {

@@ -59,6 +59,7 @@ class RegisterActivity : AppCompatActivity(){
                 intent.getParcelableExtra(Constant.reffFotoUser), dataUser
             )
         }
+        etTglLahir.editText?.keyListener = null
 
         onClick()
     }
@@ -71,6 +72,10 @@ class RegisterActivity : AppCompatActivity(){
             }
             false
         })
+
+        btnSignUp.setOnClickListener {
+            onClickRegister()
+        }
 
         textLogin.setOnClickListener {
             dismissKeyboard(this)
@@ -482,5 +487,12 @@ class RegisterActivity : AppCompatActivity(){
         FirebaseUtils.setValueObject(
             Constant.reffUser, dataUser.username, dataUser, onCompleteListener, onFailureListener
         )
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

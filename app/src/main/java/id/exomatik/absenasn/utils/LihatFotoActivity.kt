@@ -1,11 +1,13 @@
 package id.exomatik.absenasn.utils
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import coil.request.CachePolicy
 import id.exomatik.absenasn.R
 import kotlinx.android.synthetic.main.activity_lihat_foto.*
+
 
 class LihatFotoActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,8 +18,9 @@ class LihatFotoActivity : AppCompatActivity(){
     }
 
     private fun myCodeHere() {
-        supportActionBar?.show()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Foto"
+        supportActionBar?.show()
 
         val urlFoto= intent.getStringExtra("urlFoto")
 
@@ -27,6 +30,16 @@ class LihatFotoActivity : AppCompatActivity(){
             error(R.drawable.ic_camera_white)
             fallback(R.drawable.ic_camera_white)
             memoryCachePolicy(CachePolicy.ENABLED)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 }

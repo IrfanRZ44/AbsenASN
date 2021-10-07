@@ -17,7 +17,7 @@ package id.exomatik.absenasn.ui.main.beranda
 //import id.exomatik.absenasn.utils.onClickFoto
 //
 //class BerandaFragment : BaseFragmentBind<FragmentBerandaBinding>() {
-//    override fun getLayoutResource(): Int = R.layout.fragment_beranda
+//    override fun getLayoutResource(): Int = R.layout.fragment_admin
 //
 //    override fun myCodeHere() {
 //        supportActionBar?.setDisplayHomeAsUpEnabled(true)

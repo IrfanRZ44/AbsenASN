@@ -1,6 +1,7 @@
 package id.exomatik.absenasn.ui.main.account
 
 import android.os.Bundle
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.utils.DataSave
@@ -18,8 +19,20 @@ class AboutActivity : AppCompatActivity(){
 
     private fun myCodeHere() {
         savedData = DataSave(this)
-        supportActionBar?.hide()
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.title = "Tentang Aplikasi"
+        supportActionBar?.show()
 
         textAbout.text = savedData.getDataApps()?.aboutApps
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

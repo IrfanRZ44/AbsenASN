@@ -60,7 +60,7 @@ class LoginActivity : AppCompatActivity(){
 
         btnForgetPassword.setOnClickListener {
             dismissKeyboard(this)
-            val intent = Intent(this, VerifyForgetPasswordActivity::class.java)
+            val intent = Intent(this, ForgetPasswordActivity::class.java)
             startActivity(intent)
             finish()
         }
@@ -108,7 +108,6 @@ class LoginActivity : AppCompatActivity(){
                     try {
                         val tkn = result.result?.token
                             ?: throw Exception("Error, kesalahan saat menyimpan token")
-
                         when {
                             textInput.take(1) == "0" -> {
                                 val phone = textInput.replaceFirst("0", "+62")
@@ -128,6 +127,7 @@ class LoginActivity : AppCompatActivity(){
                     }
                 } else {
                     progress.visibility = View.GONE
+//                    textStatus.text = "Gagal mendapatkan token"
                     textStatus.text = "Gagal mendapatkan token"
                 }
             }
