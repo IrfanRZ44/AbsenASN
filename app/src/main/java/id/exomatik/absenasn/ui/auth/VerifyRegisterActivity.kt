@@ -11,6 +11,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
@@ -18,7 +19,6 @@ import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.FirebaseException
 import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
-import com.google.firebase.iid.InstanceIdResult
 import com.google.firebase.storage.UploadTask
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
@@ -299,10 +299,13 @@ class VerifyRegisterActivity : AppCompatActivity(){
     }
 
     private fun getUrlFoto(uploadTask: UploadTask.TaskSnapshot) {
-        val onSuccessListener = OnSuccessListener<Uri?>{
-            dataUser?.fotoProfil = it.toString()
+        val onSuccessListener = OnSuccessListener<Uri?>{ it2 ->
+            dataUser?.fotoProfil = it2.toString()
 
-            getUserToken()
+            val md5Password = dataUser?.password?.let { stringToMD5(it) }
+            dataUser?.password = md5Password?:""
+
+            addUserToFirebase()
         }
 
         val onFailureListener = OnFailureListener {
@@ -314,53 +317,13 @@ class VerifyRegisterActivity : AppCompatActivity(){
     }
 
     @SuppressLint("SetTextI18n")
-    @Suppress("DEPRECATION")
-    private fun getUserToken() {
-        progress.visibility = View.VISIBLE
-        val onCompleteListener =
-            OnCompleteListener<InstanceIdResult> { result ->
-                if (result.isSuccessful) {
-                    val token = result.result?.token
-
-                    if (!token.isNullOrEmpty()){
-                        dataUser?.token = token
-                        val md5Password = dataUser?.password?.let { stringToMD5(it) }
-                        dataUser?.password = md5Password?:""
-
-                        addUserToFirebase()
-                    }
-                    else{
-                        progress.visibility = View.GONE
-                        textStatus.text = "Gagal mendapatkan token"
-                        setEmptyEditText()
-                    }
-
-                } else {
-                    progress.visibility = View.GONE
-                    textStatus.text = "Gagal mendapatkan token"
-                    setEmptyEditText()
-                }
-            }
-
-        FirebaseUtils.getUserToken(
-            onCompleteListener
-        )
-    }
-
-    @SuppressLint("SetTextI18n")
     private fun addUserToFirebase() {
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {
-                    savedData.setDataObject(
-                        dataUser, Constant.reffUser
-                    )
-
                     progress.visibility = View.GONE
-                    textStatus.text = "Berhasil menyimpan user"
-                    val intent = Intent(this, SplashActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    textStatus.text = "Berhasil mendaftar"
+                    dialogSucces()
                 } else {
                     progress.visibility = View.GONE
                     textStatus.text = "Gagal menyimpan data user"
@@ -441,5 +404,23 @@ class VerifyRegisterActivity : AppCompatActivity(){
         }
 
         dataUser?.phone?.let { FirebaseUtils.registerUser(it, callbacks, this) }
+    }
+
+    private fun dialogSucces() {
+        val alert = AlertDialog.Builder(this)
+        alert.setTitle("Pendaftaran Berhasil")
+        alert.setMessage("Mohon tunggu proses verifikasi dalam waktu 1x24 jam")
+        alert.setCancelable(false)
+
+        alert.setPositiveButton(
+            Constant.iya
+        ) { dialog, _ ->
+            dialog.dismiss()
+            val intent = Intent(this, SplashActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+
+        alert.show()
     }
 }

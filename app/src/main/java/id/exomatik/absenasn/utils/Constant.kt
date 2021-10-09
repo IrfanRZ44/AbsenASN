@@ -62,6 +62,7 @@ object Constant {
     const val noMessage = "Silahkan mengirim pesan untuk memulai obrolan"
     const val noListMessage = "Afwan, Anda belum mempunyai pesan"
     const val noData = "Afwan, tidak ada data yang ditemukan"
+    const val noDataPegawai = "Maaf, belum ada pegawai yang perlu di verifikasi"
     const val noRequest = "Afwan, belum ada permintaan verifikasi"
     const val alertLogout = "Apakah Anda yakin ingin keluar dari akun?"
     const val alertHapus = "Apakah Anda yakin ingin menghapus data akun anda?"
@@ -88,11 +89,16 @@ object Constant {
     const val belum_terkonfirmasi = "Belum terkonfirmasi"
     const val hapus_pesan = "Hapus pesan?"
 
+    const val levelAdmin = "Admin"
+    const val levelUser = "User"
+
     const val statusActive = "active"
     const val statusBanned = "banned"
     const val statusPending = "pending"
     const val statusRequest = "request"
+    const val statusRejected = "rejected"
 
+    const val comment = "comment"
     const val manual = "manual"
     const val invalid = "invalid"
     const val status = "status"
@@ -104,5 +110,6 @@ object Constant {
     const val read = "read"
     const val unread = "unread"
     const val sended = "sended"
+    const val kirim = "Kirim"
     const val message = "message"
 }

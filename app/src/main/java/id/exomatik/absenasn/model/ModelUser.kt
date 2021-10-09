@@ -11,12 +11,14 @@ data class ModelUser(
     var token: String = "",
     var nama: String = "",
     var jk: String = "",
+    var jenisAkun: String = "",
     var tempatLahir: String = "",
     var tanggalLahir: String = "",
     var alamat: String = "",
     var status: String = "",
+    var comment: String = "",
     var fotoProfil: String = "",
     var lastLogin: String = "",
     var updatedAt: String = "",
-    var createdAt: String = ""
-) : Parcelable
+    var createdAt: String = "",
+    ) : Parcelable

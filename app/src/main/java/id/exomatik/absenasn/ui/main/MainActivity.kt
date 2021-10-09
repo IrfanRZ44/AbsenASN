@@ -3,6 +3,8 @@ package id.exomatik.absenasn.ui.main
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -17,14 +19,14 @@ import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.ui.auth.SplashActivity
 import id.exomatik.absenasn.ui.main.account.AccountFragment
-import id.exomatik.absenasn.ui.main.beranda.BlankFragment
-import id.exomatik.absenasn.ui.main.blank1.Blank1Fragment
-import id.exomatik.absenasn.ui.main.blank2.Blank2Fragment
+import id.exomatik.absenasn.ui.main.admin.AdminFragment
+import id.exomatik.absenasn.ui.main.admin.VerifyPegawaiActivity
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.FirebaseUtils
 import id.exomatik.absenasn.utils.adapter.SectionsPagerAdapter
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity(){
     private lateinit var savedData : DataSave
@@ -41,6 +43,8 @@ class MainActivity : AppCompatActivity(){
 
     private fun myCodeHere() {
         savedData = DataSave(this)
+        supportActionBar?.show()
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         val username = savedData.getDataUser()?.username
         if (!username.isNullOrEmpty()){
@@ -79,9 +83,7 @@ class MainActivity : AppCompatActivity(){
         }
 
         FirebaseUtils.refreshDataWith1ChildObject1(
-            Constant.reffUser
-            , username
-            , valueEventListener
+            Constant.reffUser, username, valueEventListener
         )
     }
 
@@ -92,12 +94,12 @@ class MainActivity : AppCompatActivity(){
         val onFailureListener = OnFailureListener { }
 
         FirebaseUtils.setValueWith2ChildString(
-            Constant.reffUser
-            , dataUser.username
-            , Constant.reffToken
-            , ""
-            , onCompleteListener
-            , onFailureListener
+            Constant.reffUser,
+            dataUser.username,
+            Constant.reffToken,
+            "",
+            onCompleteListener,
+            onFailureListener
         )
     }
 
@@ -128,7 +130,7 @@ class MainActivity : AppCompatActivity(){
     @Suppress("DEPRECATION")
     private fun setupViewPager(pager: ViewPager) {
         val adapter = SectionsPagerAdapter(supportFragmentManager)
-        adapter.addFragment(BlankFragment(), "Dashboard")
+        adapter.addFragment(AdminFragment(), "Dashboard")
         adapter.addFragment(AccountFragment(), "Account")
 
         pager.adapter = adapter
@@ -137,10 +139,12 @@ class MainActivity : AppCompatActivity(){
             override fun onTabSelected(tab: TabLayout.Tab) {
                 when (tab.position) {
                     0 -> {
+                        supportActionBar?.title = "Beranda"
                         tabs.getTabAt(0)?.icon = resources.getDrawable(R.drawable.ic_logo_white)
                         tabs.getTabAt(1)?.icon = resources.getDrawable(R.drawable.ic_profile_gray)
                     }
                     else -> {
+                        supportActionBar?.title = "Akun"
                         tabs.getTabAt(0)?.icon = resources.getDrawable(R.drawable.ic_logo_gray)
                         tabs.getTabAt(1)?.icon = resources.getDrawable(R.drawable.ic_profile_white)
                     }
@@ -153,5 +157,29 @@ class MainActivity : AppCompatActivity(){
 
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        if (savedData.getDataUser()?.jenisAkun == Constant.levelAdmin){
+            menuInflater.inflate(R.menu.toolbar_notif, menu)
+        }
+
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                finish()
+                true
+            }
+            R.id.actionNotif -> {
+                val intent = Intent(this, VerifyPegawaiActivity::class.java)
+                startActivity(intent)
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 }

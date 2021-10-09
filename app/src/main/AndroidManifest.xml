@@ -48,6 +48,12 @@
             android:theme="@style/CustomTheme"/>
 
         <activity
+            android:name="id.exomatik.absenasn.ui.auth.RegisterAgainActivity"
+            android:label="Register"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
             android:name="id.exomatik.absenasn.ui.auth.ForgetPasswordActivity"
             android:label="Forget Password"
             android:screenOrientation="portrait"
@@ -86,6 +92,12 @@
         <activity
             android:name="id.exomatik.absenasn.ui.main.account.AboutActivity"
             android:label="Tentang Aplikasi"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.admin.VerifyPegawaiActivity"
+            android:label="Verifikasi Pegawai"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"/>
 

@@ -8,7 +8,6 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.RadioButton
@@ -21,8 +20,6 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.FirebaseException
-import com.google.firebase.FirebaseTooManyRequestsException
 import com.google.firebase.auth.*
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
@@ -37,10 +34,10 @@ import kotlinx.android.synthetic.main.activity_register.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RegisterActivity : AppCompatActivity(){
+class RegisterAgainActivity : AppCompatActivity(){
     private lateinit var savedData : DataSave
     private var etFotoProfil : Uri? = null
-    private var unverify = true
+    private var dataUser : ModelUser? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,11 +50,10 @@ class RegisterActivity : AppCompatActivity(){
         savedData = DataSave(this)
 
         supportActionBar?.hide()
-        val dataUser = intent.getParcelableExtra<ModelUser>(Constant.reffUser)
-        if (dataUser != null){
-            setDataUser(
-                intent.getParcelableExtra(Constant.reffFotoUser), dataUser
-            )
+        val data = intent.getParcelableExtra<ModelUser>(Constant.reffUser)
+        if (data != null){
+            dataUser = data
+            setDataUser(data)
         }
         etTglLahir.editText?.keyListener = null
 
@@ -115,22 +111,25 @@ class RegisterActivity : AppCompatActivity(){
                     fallback(R.drawable.ic_camera_white)
                     memoryCachePolicy(CachePolicy.ENABLED)
                 }
+
+                dataUser?.username?.let { saveFoto(imageUri, it) }
             }
         }
     }
 
-    private fun setDataUser(fotoProfil: Uri?, data: ModelUser){
+    private fun setDataUser(data: ModelUser){
         etUsername.editText?.setText(data.username)
-        etPassword.editText?.setText(data.password)
-        etConfirmPassword.editText?.setText(data.password)
+        etUsername.visibility = View.GONE
+        viewHaveAccount.visibility = View.GONE
+        etUsername.editText?.isFocusable = false
         etNamaLengkap.editText?.setText(data.nama)
         etAlamat.editText?.setText(data.alamat)
         etTglLahir.editText?.setText(data.tanggalLahir)
         etTempatLahir.editText?.setText(data.tempatLahir)
         etNoHp.editText?.setText(data.phone.replaceFirst("+62", "0"))
-        etFotoProfil = fotoProfil
+        etFotoProfil = Uri.parse(data.fotoProfil)
 
-        imgFotoProfil.load(fotoProfil) {
+        imgFotoProfil.load(data.fotoProfil) {
             crossfade(true)
             placeholder(R.drawable.ic_camera_white)
             error(R.drawable.ic_camera_white)
@@ -176,14 +175,14 @@ class RegisterActivity : AppCompatActivity(){
             val hp = noHp.replaceFirst("0", "+62")
             progress.visibility = View.VISIBLE
 
-            val dataUser = ModelUser(
+            val tempData = ModelUser(
                 username, password, hp, "", namaLengkap,
                 jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat,
-                Constant.statusRequest, "", "", tglSekarang,
+                Constant.statusRequest, "", dataUser?.fotoProfil?:"", tglSekarang,
                 tglSekarang, tglSekarang
             )
 
-            cekUserName(dataUser)
+            cekHandphone(tempData)
         }
         else{
             if (fotoProfil == null){
@@ -287,38 +286,31 @@ class RegisterActivity : AppCompatActivity(){
         editText.findFocus()
     }
 
-    private fun cekUserName(dataUser: ModelUser) {
-        val valueEventListener = object : ValueEventListener {
-            override fun onCancelled(result: DatabaseError) {
-                cekHandphone(dataUser)
-            }
-
-            override fun onDataChange(result: DataSnapshot) {
-                if (result.exists()) {
-                    progress.visibility = View.GONE
-                    setTextError("Gagal, Username sudah digunakan", etUsername)
-                } else {
-                    cekHandphone(dataUser)
-                }
-            }
-        }
-        FirebaseUtils.searchDataWith1ChildObject(
-            Constant.reffUser, Constant.username, dataUser.username, valueEventListener
-        )
-    }
-
     private fun cekHandphone(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                signUp(dataUser)
+                addUserToFirebase(dataUser)
             }
 
             override fun onDataChange(result: DataSnapshot) {
                 if (result.exists()) {
-                    progress.visibility = View.GONE
-                    setTextError("Gagal, No Handphone sudah terdaftar", etNoHp)
+                    var tempData = ModelUser()
+                    for (snapshot in result.children) {
+                        val data = snapshot.getValue(ModelUser::class.java)
+                        if(data != null){
+                            tempData = data
+                        }
+                    }
+
+                    if (tempData.phone == dataUser.phone){
+                        addUserToFirebase(dataUser)
+                    }
+                    else{
+                        progress.visibility = View.GONE
+                        setTextError("Gagal, No Handphone sudah terdaftar", etNoHp)
+                    }
                 } else {
-                    signUp(dataUser)
+                    addUserToFirebase(dataUser)
                 }
             }
         }
@@ -328,92 +320,9 @@ class RegisterActivity : AppCompatActivity(){
         )
     }
 
-    private fun signUp(dataUser: ModelUser) {
-        val callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
-            override fun onVerificationCompleted(credential: PhoneAuthCredential) {
-                if (unverify) {
-                    signIn(credential, dataUser)
-                }
-                unverify = false
-            }
-
-            @SuppressLint("SetTextI18n")
-            override fun onVerificationFailed(e: FirebaseException) {
-                when (e) {
-                    is FirebaseAuthInvalidCredentialsException -> {
-                        textStatus.text = "Error, Nomor Handphone tidak Valid"
-                    }
-                    is FirebaseTooManyRequestsException -> {
-                        textStatus.text = "Error, Anda sudah terlalu banyak mengirimkan permintaan coba lagi nanti"
-                    }
-                    else -> {
-                        textStatus.text = e.message
-                    }
-                }
-                progress.visibility = View.GONE
-            }
-
-            @Suppress("DEPRECATION")
-            override fun onCodeSent(
-                verificationId: String,
-                token: PhoneAuthProvider.ForceResendingToken
-            ) {
-                object : CountDownTimer(8000, 1000) {
-                    override fun onTick(millisUntilFinished: Long) {
-                    }
-
-                    override fun onFinish() {
-                        if (unverify) {
-                            progress.visibility = View.GONE
-                            moveVerifyRegister(verificationId, dataUser)
-                        }
-                    }
-                }.start()
-            }
-        }
-
-        try {
-            FirebaseUtils.registerUser(
-                dataUser.phone,
-                callbacks, this
-            )
-        } catch (e: Exception) {
-            textStatus.text = e.message
-            progress.visibility = View.GONE
-        }
-    }
-
-    private fun moveVerifyRegister(verificationId: String, dataUser: ModelUser){
-        val intent = Intent(this, VerifyRegisterActivity::class.java)
-        intent.putExtra("verifyId", verificationId)
-        intent.putExtra("auth", true)
-        intent.putExtra("dataUser", dataUser)
-        intent.putExtra(Constant.reffFotoUser, etFotoProfil)
-        startActivity(intent)
-        unverify = false
-        finish()
-    }
-
-    @SuppressLint("SetTextI18n")
-    fun signIn(credential: AuthCredential, dataUser: ModelUser) {
-        progress.visibility = View.VISIBLE
-
-        val onCoCompleteListener =
-            OnCompleteListener<AuthResult> { task ->
-                if (task.isSuccessful) {
-                    etFotoProfil?.let { saveFoto(it, dataUser) }
-                } else {
-                    progress.visibility = View.GONE
-                    textStatus.text = "Gagal masuk ke Akun Anda"
-                }
-            }
-
-        FirebaseUtils.signIn(credential, onCoCompleteListener)
-    }
-
-    private fun saveFoto(image: Uri, dataUser: ModelUser){
+    private fun saveFoto(image: Uri, username: String){
         val onSuccessListener = OnSuccessListener<UploadTask.TaskSnapshot> {
-            getUrlFoto(it, dataUser)
+            getUrlFoto(it, username)
         }
 
         val onFailureListener = OnFailureListener {
@@ -421,15 +330,15 @@ class RegisterActivity : AppCompatActivity(){
             progress.visibility = View.GONE
         }
 
-        FirebaseUtils.simpanFoto(Constant.reffFotoUser, dataUser.username
+        FirebaseUtils.simpanFoto(Constant.reffFotoUser, username
             , image, onSuccessListener, onFailureListener)
     }
 
-    private fun getUrlFoto(uploadTask: UploadTask.TaskSnapshot, dataUser: ModelUser) {
+    private fun getUrlFoto(uploadTask: UploadTask.TaskSnapshot, username: String) {
         val onSuccessListener = OnSuccessListener<Uri?>{
-            dataUser.fotoProfil = it.toString()
+            dataUser?.fotoProfil = it.toString()
 
-            addUserToFirebase(dataUser)
+            saveUrlFoto(it.toString(), username)
         }
 
         val onFailureListener = OnFailureListener {
@@ -464,6 +373,28 @@ class RegisterActivity : AppCompatActivity(){
         )
     }
 
+    @SuppressLint("SetTextI18n")
+    private fun saveUrlFoto(urlFoto: String, username: String) {
+        val onCompleteListener =
+            OnCompleteListener<Void> { result ->
+                if (result.isSuccessful) {
+                    textStatus.text = "Berhasil menyimpan foto"
+                } else {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Gagal menyimpan foto"
+                }
+            }
+
+        val onFailureListener = OnFailureListener { result ->
+            progress.visibility = View.GONE
+            textStatus.text = result.message
+        }
+
+        FirebaseUtils.setValueWith2ChildString(
+            Constant.reffUser, username, "fotoProfil", urlFoto, onCompleteListener, onFailureListener
+        )
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         val intent = Intent(this, LoginActivity::class.java)
@@ -473,7 +404,7 @@ class RegisterActivity : AppCompatActivity(){
 
     private fun dialogSucces() {
         val alert = AlertDialog.Builder(this)
-        alert.setTitle("Pendaftaran Berhasil")
+        alert.setTitle("Pendaftaran Ulang Berhasil")
         alert.setMessage("Mohon tunggu proses verifikasi dalam waktu 1x24 jam")
         alert.setCancelable(false)
 

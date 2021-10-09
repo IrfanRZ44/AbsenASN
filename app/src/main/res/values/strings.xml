@@ -150,4 +150,7 @@
     <string name="silahkan_verifikasi_akun_anda_untuk_melanjutkan">Silahkan verifikasi Akun Anda untuk melanjutkan</string>
     <string name="verifikasi">Verifikasi</string>
     <string name="silahkan_masukkan_password_baru_anda">Silahkan masukkan password baru Anda</string>
+    <string name="uin_alauddin_makassar">UIN Alauddin Makassar</string>
+    <string name="baik">Baik</string>
+    <string name="menuggu_verifikasi">Menunggu Verifikasi</string>
 </resources>

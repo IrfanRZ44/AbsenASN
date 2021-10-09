@@ -141,7 +141,8 @@ class EditProfilActivity : AppCompatActivity(){
 
             val dataUser = ModelUser(
                 dataOld.username, dataOld.password, dataOld.phone, dataOld.token, namaLengkap,
-                jenisKelamin, tempatLahir, tglLahir, alamat, Constant.statusActive, dataOld.fotoProfil, tglSekarang,
+                jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat,
+                Constant.statusActive, "", dataOld.fotoProfil, tglSekarang,
                 tglSekarang, dataOld.createdAt
             )
 

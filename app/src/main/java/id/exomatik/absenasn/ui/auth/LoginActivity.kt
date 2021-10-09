@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
@@ -127,7 +128,6 @@ class LoginActivity : AppCompatActivity(){
                     }
                 } else {
                     progress.visibility = View.GONE
-//                    textStatus.text = "Gagal mendapatkan token"
                     textStatus.text = "Gagal mendapatkan token"
                 }
             }
@@ -163,10 +163,26 @@ class LoginActivity : AppCompatActivity(){
                         }
                     }
                     else{
-                        etUsername.editText?.requestFocus()
-                        etUsername.editText?.findFocus()
-                        etUsername.editText?.error = "Maaf, username belum terdaftar atau telah di banned oleh sistem"
-                        textStatus.text = "Maaf, username belum terdaftar atau telah di banned oleh sistem"
+                        when {
+                            data == null -> {
+                                etUsername.editText?.requestFocus()
+                                etUsername.editText?.findFocus()
+                                etUsername.editText?.error = "Maaf, username belum terdaftar"
+                                textStatus.text = "Maaf, username belum terdaftar"
+                            }
+                            data.status == Constant.statusRequest -> {
+                                dialogSucces()
+                            }
+                            data.status == Constant.statusRejected -> {
+                                dialogRejected(data)
+                            }
+                            else -> {
+                                etUsername.editText?.requestFocus()
+                                etUsername.editText?.findFocus()
+                                etUsername.editText?.error = "Maaf, akun telah di banned oleh sistem"
+                                textStatus.text = "Maaf, akun telah di banned oleh sistem"
+                            }
+                        }
                     }
                 } else {
                     etUsername.editText?.requestFocus()
@@ -195,7 +211,7 @@ class LoginActivity : AppCompatActivity(){
                 if (result.exists()) {
                     var dataUser: ModelUser? = null
                     for (snapshot in result.children) {
-                        val data = result.getValue(ModelUser::class.java)
+                        val data = snapshot.getValue(ModelUser::class.java)
 
                         if (data?.phone == phone){
                             dataUser = data
@@ -215,10 +231,26 @@ class LoginActivity : AppCompatActivity(){
                         }
                     }
                     else{
-                        etUsername.editText?.requestFocus()
-                        etUsername.editText?.findFocus()
-                        etUsername.editText?.error = "Maaf, nomor HP belum terdaftar atau telah di banned oleh sistem"
-                        textStatus.text = "Maaf, nomor HP belum terdaftar atau telah di banned oleh sistem"
+                        when {
+                            dataUser == null -> {
+                                etUsername.editText?.requestFocus()
+                                etUsername.editText?.findFocus()
+                                etUsername.editText?.error = "Maaf, nomor HP belum terdaftar"
+                                textStatus.text = "Maaf, nomor HP belum terdaftar"
+                            }
+                            dataUser.status == Constant.statusRequest -> {
+                                dialogSucces()
+                            }
+                            dataUser.status == Constant.statusRejected -> {
+                                dialogRejected(dataUser)
+                            }
+                            else -> {
+                                etUsername.editText?.requestFocus()
+                                etUsername.editText?.findFocus()
+                                etUsername.editText?.error = "Maaf, akun telah di banned oleh sistem"
+                                textStatus.text = "Maaf, akun telah di banned oleh sistem"
+                            }
+                        }
                     }
                 } else {
                     etUsername.editText?.requestFocus()
@@ -230,6 +262,14 @@ class LoginActivity : AppCompatActivity(){
         }
 
         FirebaseUtils.searchDataWith1ChildObject(Constant.reffUser, Constant.phone, phone, valueEventListener)
+    }
+
+    private fun registerAgain(dataUser: ModelUser){
+        dismissKeyboard(this)
+        val intent = Intent(this, RegisterAgainActivity::class.java)
+        intent.putExtra(Constant.reffUser, dataUser)
+        startActivity(intent)
+        finish()
     }
 
     @SuppressLint("SetTextI18n")
@@ -262,5 +302,38 @@ class LoginActivity : AppCompatActivity(){
             , onCompleteListener
             , onFailureListener
         )
+    }
+
+    private fun dialogRejected(dataUser: ModelUser) {
+        val alert = AlertDialog.Builder(this)
+        alert.setTitle("Ditolak")
+        alert.setMessage("Maaf, pendaftaran Anda ditolak oleh Admin dengan Alasan : \n\n${dataUser.comment}")
+        alert.setPositiveButton(
+            "Daftar Ulang"
+        ) { dialog, _ ->
+            dialog.dismiss()
+            registerAgain(dataUser)
+        }
+
+        alert.setNegativeButton(
+            "Batal"
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        alert.show()
+    }
+
+    private fun dialogSucces() {
+        val alert = AlertDialog.Builder(this)
+        alert.setTitle("Pendaftaran Anda Sedang Di Proses")
+        alert.setMessage("Mohon tunggu proses verifikasi dalam waktu 1x24 jam")
+        alert.setPositiveButton(
+            Constant.iya
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        alert.show()
     }
 }
