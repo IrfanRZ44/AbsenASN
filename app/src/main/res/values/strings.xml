@@ -159,4 +159,6 @@
     <string name="pilih_jam_masuk">Pilih Jam Mulai</string>
     <string name="pilih_jam_pulang">Pilih Jam Selesai</string>
     <string name="batal">Batal</string>
+    <string name="absen">Absen</string>
+    <string name="kirim">Kirim</string>
 </resources>

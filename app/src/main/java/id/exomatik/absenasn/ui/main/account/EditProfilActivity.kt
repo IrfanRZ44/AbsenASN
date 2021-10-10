@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import coil.load
 import coil.request.CachePolicy
@@ -141,7 +142,7 @@ class EditProfilActivity : AppCompatActivity(){
 
             val dataUser = ModelUser(
                 dataOld.username, dataOld.password, dataOld.phone, dataOld.token, namaLengkap,
-                jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat,
+                jenisKelamin, dataOld.jenisAkun, tempatLahir, tglLahir, alamat,
                 Constant.statusActive, "", dataOld.fotoProfil, tglSekarang,
                 tglSekarang, dataOld.createdAt
             )
@@ -278,7 +279,7 @@ class EditProfilActivity : AppCompatActivity(){
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {
-                    textStatus.text = "Berhasil menyimpan foto"
+                    Toast.makeText(this, "Berhasil menyimpan foto", Toast.LENGTH_LONG).show()
                     val dataUser = savedData.getDataUser()
                     dataUser?.fotoProfil = urlFoto
 

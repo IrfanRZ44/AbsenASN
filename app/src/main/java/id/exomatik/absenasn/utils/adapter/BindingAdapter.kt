@@ -45,6 +45,11 @@ fun getDateNow(dateFormat: String): String{
     }
 }
 
+fun getTimeStamp(): String{
+    val tsLong = System.currentTimeMillis() / 1000
+    return tsLong.toString()
+}
+
 fun isContainNumber(password: String): Boolean {
     val passwordTerm = "(?=.*[0-9]).{4,}"
 

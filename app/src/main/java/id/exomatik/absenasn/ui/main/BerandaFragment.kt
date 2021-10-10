@@ -9,6 +9,7 @@ import androidx.viewpager.widget.ViewPager
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.ui.main.admin.daftarPegawai.DaftarPegawaiFragment
 import id.exomatik.absenasn.ui.main.admin.hariAbsen.HariAbsenFragment
+import id.exomatik.absenasn.ui.main.pegawai.absensi.AbsensiFragment
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.adapter.SectionsPagerAdapter
@@ -48,10 +49,10 @@ class BerandaFragment : Fragment() {
             adapter.addFragment(HariAbsenFragment(), "Hari Absen")
             adapter.addFragment(DaftarPegawaiFragment(), "Pegawai")
         }
-//        else{
-//            adapter.addFragment(AbsensiFragment(viewModel.dataInstansi.value), "Absensi")
+        else{
+            adapter.addFragment(AbsensiFragment(), "Absensi")
 //            adapter.addFragment(RiwayatFragment(viewModel.dataInstansi.value), "Riwayat")
-//        }
+        }
 
         pager.adapter = adapter
     }

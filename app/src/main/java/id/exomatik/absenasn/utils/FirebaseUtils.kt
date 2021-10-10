@@ -18,8 +18,16 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.InstanceIdResult
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import id.exomatik.absenasn.model.ModelAbsensi
 import id.exomatik.absenasn.model.ModelHariKerja
+import id.exomatik.absenasn.services.notification.APIService
+import id.exomatik.absenasn.services.notification.Common
+import id.exomatik.absenasn.services.notification.model.MyResponse
+import id.exomatik.absenasn.services.notification.model.Sender
 import java.util.concurrent.TimeUnit
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 object FirebaseUtils {
     private lateinit var database: FirebaseDatabase
@@ -68,6 +76,19 @@ object FirebaseUtils {
             .addOnCompleteListener(onCompleteListener)
             .addOnFailureListener(onFailureListener)
     }
+
+    fun saveAbsensiWithUnique1Child(
+        reff: String, data: ModelAbsensi
+        , onCompleteListener: OnCompleteListener<Void>
+        , onFailureListener: OnFailureListener
+    ) {
+        val ref = FirebaseDatabase.getInstance().getReference(reff)
+        val id = ref.push()
+        data.id = id.key.toString()
+        id.setValue(data)
+            .addOnCompleteListener(onCompleteListener)
+            .addOnFailureListener(onFailureListener)
+    }
 //
 //    fun simpanNotif(data: ModelNotif) {
 //        val ref = FirebaseDatabase.getInstance().getreff(reffNotif)
@@ -85,32 +106,32 @@ object FirebaseUtils {
 //            .equalTo(value)
 //            .addListenerForSingleValueEvent(eventListener)
 //    }
-//
-//    fun sendNotif(sender: Sender) {
-//        val mService: APIService = Common.fCMClient
-//        mService.sendNotification(sender)
-//            ?.enqueue(object : Callback<MyResponse?> {
-//                override fun onResponse(
-//                    call: Call<MyResponse?>?,
-//                    response: Response<MyResponse?>?
-//                ) {
-//                    if (response != null) {
-//                        if (response.isSuccessful) {
-//                            showLog("Notify Succes")
-//                        } else {
-//                            showLog("Notify Failed")
-//                        }
-//                    } else {
-//                        showLog("Null Response")
-//                    }
-//                }
-//
-//                override fun onFailure(call: Call<MyResponse?>?, t: Throwable) {
-//                    showLog(t.message)
-//                }
-//            })
-//    }
-//
+
+    fun sendNotif(sender: Sender) {
+        val mService: APIService = Common.fCMClient
+        mService.sendNotification(sender)
+            ?.enqueue(object : Callback<MyResponse?> {
+                override fun onResponse(
+                    call: Call<MyResponse?>?,
+                    response: Response<MyResponse?>?
+                ) {
+                    if (response != null) {
+                        if (response.isSuccessful) {
+                            showLog("Notify Succes")
+                        } else {
+                            showLog("Notify Failed")
+                        }
+                    } else {
+                        showLog("Null Response")
+                    }
+                }
+
+                override fun onFailure(call: Call<MyResponse?>?, t: Throwable) {
+                    showLog(t.message)
+                }
+            })
+    }
+
     fun searchDataWith1ChildObject(
         reff: String,
         search: String,

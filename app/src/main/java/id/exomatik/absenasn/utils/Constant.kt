@@ -28,13 +28,20 @@ object Constant {
     const val reffDeleteBarang = "deleteBarang"
 
     const val reffUser = "Users"
+    const val reffAbsensi = "Absensi"
     const val reffHariAbsen = "HariAbsen"
     const val reffInfoApps = "InfoApps"
+    const val reffFotoAbsensi = "fotoAbsensi"
     const val reffFotoUser = "fotoUser"
+    const val reffFotoUser2 = "fotoUser2"
 
     const val reffSuccess = "Success"
 
+    const val idHari = "idHari"
+    const val idAbsen = "idAbsen"
+    const val jenis = "jenis"
     const val indexTanggalKerja = "tanggalKerja"
+    const val indexHariUsername = "indexHariUsername"
 
     const val codeRequestFoto = 100
     const val codeRequestGallery = 1
@@ -43,6 +50,8 @@ object Constant {
     const val codeRequestPhone = 1
     const val codeRequestLocationUpdate = 10
     const val codeRequestResultCrop = 400
+    const val codeRequestStorage = 104
+    const val codeRequestCamera = 100
 
     const val defaultTempFoto = "https://www.google.co.id/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png"
     const val timeFormat = "HH:mm"
@@ -102,6 +111,12 @@ object Constant {
     const val absen1 = "Upacara Korpri 17"
     const val absen2 = "Upacara Hari Amal Bakti"
     const val absen3 = "Upacara Hari besar Nasional"
+
+    const val absenHadir = "Hadir"
+    const val absenSakit = "Sakit"
+    const val absenIzin = "Izin"
+    const val absenAlpa = "Alpa"
+    const val absenCuti = "Cuti"
 
     const val statusActive = "active"
     const val statusBanned = "banned"
