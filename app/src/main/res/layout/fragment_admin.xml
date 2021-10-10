@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/gray1"
     android:theme="@style/CustomStyle"
-    tools:context="id.exomatik.absenasn.ui.main.admin.AdminFragment"
+    tools:context="id.exomatik.absenasn.ui.main.BerandaFragment"
     >
     <include
         android:id="@+id/cardHeader"

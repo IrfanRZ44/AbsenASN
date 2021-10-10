@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    style="@style/cardView"
+    android:id="@+id/cardView"
+    android:layout_margin="@dimen/h2"
+    app:cardCornerRadius="@dimen/h2"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/h2"
+        >
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textJenisAbsen"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="false"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_h3"
+            android:textStyle="bold"
+            android:fontFamily="@font/roboto_regular"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAlignment="textStart"
+            tools:ignore="RelativeOverlap" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textTanggal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_h2"
+            android:fontFamily="@font/roboto_regular"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAlignment="textStart"
+            android:layout_below="@+id/textJenisAbsen"
+            />
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/textWaktu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_h2"
+            android:fontFamily="@font/roboto_regular"
+            android:maxLines="2"
+            android:lines="2"
+            android:ellipsize="end"
+            android:layout_below="@+id/textTanggal"
+            />
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnDelete"
+            android:src="@drawable/ic_delete_black"
+            android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="false"
+            android:layout_marginTop="@dimen/h2"
+            />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>

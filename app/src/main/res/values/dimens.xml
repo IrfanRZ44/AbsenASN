@@ -14,16 +14,16 @@
 
     <dimen name="lebar_logo">160dp</dimen>
 
-    <dimen name="text_super_large">50sp</dimen>
-    <dimen name="text_very_big">25sp</dimen>
-    <dimen name="text_h7">30sp</dimen>
-    <dimen name="text_h6">24sp</dimen>
-    <dimen name="text_h5">20sp</dimen>
-    <dimen name="text_h4">18sp</dimen>
-    <dimen name="text_h3">16sp</dimen>
-    <dimen name="text_h2">14sp</dimen>
-    <dimen name="text_h1">12sp</dimen>
-    <dimen name="text_h0">8sp</dimen>
+    <dimen name="text_super_large">45sp</dimen>
+    <dimen name="text_very_big">23sp</dimen>
+    <dimen name="text_h7">28sp</dimen>
+    <dimen name="text_h6">22sp</dimen>
+    <dimen name="text_h5">18sp</dimen>
+    <dimen name="text_h4">16sp</dimen>
+    <dimen name="text_h3">14sp</dimen>
+    <dimen name="text_h2">12sp</dimen>
+    <dimen name="text_h1">10sp</dimen>
+<!--    <dimen name="text_h0">8sp</dimen>-->
 
     <dimen name="rating_min_height">25dp</dimen>
     <dimen name="rating_min_width">25dp</dimen>

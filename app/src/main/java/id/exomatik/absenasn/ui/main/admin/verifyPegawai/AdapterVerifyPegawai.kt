@@ -1,4 +1,4 @@
-package id.exomatik.absenasn.ui.main.admin
+package id.exomatik.absenasn.ui.main.admin.verifyPegawai
 
 import android.annotation.SuppressLint
 import android.app.Activity
@@ -18,12 +18,12 @@ import id.exomatik.absenasn.utils.onClickFoto
 import kotlinx.android.synthetic.main.item_pegawai.view.*
 import kotlin.collections.ArrayList
 
-class AdapterDaftarPegawai(
+class AdapterVerifyPegawai(
     private val listData: ArrayList<ModelUser>,
     private val activity: Activity,
     private val onClikAccept: (ModelUser, Int) -> Unit,
     private val onClikRejected: (ModelUser, Int) -> Unit,
-) : RecyclerView.Adapter<AdapterDaftarPegawai.AfiliasiHolder>() {
+) : RecyclerView.Adapter<AdapterVerifyPegawai.AfiliasiHolder>() {
 
     inner class AfiliasiHolder(private val v: View) :
         RecyclerView.ViewHolder(v) {
@@ -40,7 +40,6 @@ class AdapterDaftarPegawai(
                 placeholder(R.drawable.ic_camera_white)
                 error(R.drawable.ic_camera_white)
                 fallback(R.drawable.ic_camera_white)
-                transformations(CircleCropTransformation())
                 memoryCachePolicy(coil.request.CachePolicy.ENABLED)
             }
 

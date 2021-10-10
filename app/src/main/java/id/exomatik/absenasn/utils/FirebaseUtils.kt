@@ -18,6 +18,7 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.iid.InstanceIdResult
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.UploadTask
+import id.exomatik.absenasn.model.ModelHariKerja
 import java.util.concurrent.TimeUnit
 
 object FirebaseUtils {
@@ -55,18 +56,18 @@ object FirebaseUtils {
 //    private lateinit var queryAfiliasi2: Query
 //    private lateinit var refreshDataAfiliasi2: ValueEventListener
 //
-//    fun saveJadwalWithUnique1Child(
-//        reff: String, data: ModelJadwal
-//        , onCompleteListener: OnCompleteListener<Void>
-//        , onFailureListener: OnFailureListener
-//    ) {
-//        val ref = FirebaseDatabase.getInstance().getreff(reff)
-//        val id = ref.push()
-//        data.idJadwal = id.key.toString()
-//        id.setValue(data)
-//            .addOnCompleteListener(onCompleteListener)
-//            .addOnFailureListener(onFailureListener)
-//    }
+    fun saveHariKerjaWithUnique1Child(
+        reff: String, data: ModelHariKerja
+        , onCompleteListener: OnCompleteListener<Void>
+        , onFailureListener: OnFailureListener
+    ) {
+        val ref = FirebaseDatabase.getInstance().getReference(reff)
+        val id = ref.push()
+        data.id = id.key.toString()
+        id.setValue(data)
+            .addOnCompleteListener(onCompleteListener)
+            .addOnFailureListener(onFailureListener)
+    }
 //
 //    fun simpanNotif(data: ModelNotif) {
 //        val ref = FirebaseDatabase.getInstance().getreff(reffNotif)
@@ -613,18 +614,18 @@ object FirebaseUtils {
 //            .addOnFailureListener(onFailureListener)
 //    }
 //
-//    fun deleteValueWith1Child(
-//        reff: String, child: String
-//        , onCompleteListener: OnCompleteListener<Void>
-//        , onFailureListener: OnFailureListener
-//    ) {
-//        database = FirebaseDatabase.getInstance()
-//        database.getreff(reff)
-//            .child(child)
-//            .removeValue()
-//            .addOnCompleteListener(onCompleteListener)
-//            .addOnFailureListener(onFailureListener)
-//    }
+    fun deleteValueWith1Child(
+        reff: String, child: String
+        , onCompleteListener: OnCompleteListener<Void>
+        , onFailureListener: OnFailureListener
+    ) {
+        database = FirebaseDatabase.getInstance()
+        database.getReference(reff)
+            .child(child)
+            .removeValue()
+            .addOnCompleteListener(onCompleteListener)
+            .addOnFailureListener(onFailureListener)
+    }
 //
 //    fun deleteNotif(idNotif: String) {
 //        database = FirebaseDatabase.getInstance()

@@ -87,6 +87,7 @@ dependencies {
     implementation("io.coil-kt:coil:1.2.1")
     implementation 'id.zelory:compressor:2.1.0'
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
+    implementation 'com.github.wangjiegulu:rfab:2.0.0'
 
     //view pager
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'

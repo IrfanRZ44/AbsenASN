@@ -1,4 +1,4 @@
-package id.exomatik.absenasn.ui.main.admin
+package id.exomatik.absenasn.ui.main.admin.verifyPegawai
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.activity_verify_pegawai.*
 
 class VerifyPegawaiActivity : AppCompatActivity(){
     private lateinit var savedData : DataSave
-    val listData = ArrayList<ModelUser>()
-    var adapter: AdapterDaftarPegawai? = null
+    private val listData = ArrayList<ModelUser>()
+    private var adapter: AdapterVerifyPegawai? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,7 @@ class VerifyPegawaiActivity : AppCompatActivity(){
     }
 
     private fun initAdapter() {
-        adapter = AdapterDaftarPegawai(
+        adapter = AdapterVerifyPegawai(
             listData, this,
         { dataData: ModelUser, position: Int -> onClickItemAccept(dataData, position) },
         { dataData: ModelUser, position: Int -> onClickItemRejected(dataData, position) })

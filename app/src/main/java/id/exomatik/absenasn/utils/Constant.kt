@@ -28,10 +28,13 @@ object Constant {
     const val reffDeleteBarang = "deleteBarang"
 
     const val reffUser = "Users"
+    const val reffHariAbsen = "HariAbsen"
     const val reffInfoApps = "InfoApps"
     const val reffFotoUser = "fotoUser"
 
     const val reffSuccess = "Success"
+
+    const val indexTanggalKerja = "tanggalKerja"
 
     const val codeRequestFoto = 100
     const val codeRequestGallery = 1
@@ -62,7 +65,9 @@ object Constant {
     const val noMessage = "Silahkan mengirim pesan untuk memulai obrolan"
     const val noListMessage = "Afwan, Anda belum mempunyai pesan"
     const val noData = "Afwan, tidak ada data yang ditemukan"
+    const val noDataHariAbsen = "Maaf, belum ada data hari absen"
     const val noDataPegawai = "Maaf, belum ada pegawai yang perlu di verifikasi"
+    const val noDataPegawaiVerified = "Maaf, belum ada data pegawai"
     const val noRequest = "Afwan, belum ada permintaan verifikasi"
     const val alertLogout = "Apakah Anda yakin ingin keluar dari akun?"
     const val alertHapus = "Apakah Anda yakin ingin menghapus data akun anda?"
@@ -72,6 +77,7 @@ object Constant {
     const val attention = "Perhatian"
     const val yakin = "Yakin"
     const val yakinBatal = "Yakin ingin membatalkan permintaan?"
+    const val yakinDelete = "Yakin ingin menghapus?"
     const val iya = "Iya"
     const val batal = "Batal"
     const val tolak = "TOLAK"
@@ -91,6 +97,11 @@ object Constant {
 
     const val levelAdmin = "Admin"
     const val levelUser = "User"
+
+    const val jenisAbsen = "Jenis Absen"
+    const val absen1 = "Upacara Korpri 17"
+    const val absen2 = "Upacara Hari Amal Bakti"
+    const val absen3 = "Upacara Hari besar Nasional"
 
     const val statusActive = "active"
     const val statusBanned = "banned"

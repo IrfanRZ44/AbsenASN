@@ -19,8 +19,7 @@ import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.ui.auth.SplashActivity
 import id.exomatik.absenasn.ui.main.account.AccountFragment
-import id.exomatik.absenasn.ui.main.admin.AdminFragment
-import id.exomatik.absenasn.ui.main.admin.VerifyPegawaiActivity
+import id.exomatik.absenasn.ui.main.admin.verifyPegawai.VerifyPegawaiActivity
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.FirebaseUtils
@@ -130,7 +129,7 @@ class MainActivity : AppCompatActivity(){
     @Suppress("DEPRECATION")
     private fun setupViewPager(pager: ViewPager) {
         val adapter = SectionsPagerAdapter(supportFragmentManager)
-        adapter.addFragment(AdminFragment(), "Dashboard")
+        adapter.addFragment(BerandaFragment(), "Dashboard")
         adapter.addFragment(AccountFragment(), "Account")
 
         pager.adapter = adapter

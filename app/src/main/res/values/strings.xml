@@ -153,4 +153,10 @@
     <string name="uin_alauddin_makassar">UIN Alauddin Makassar</string>
     <string name="baik">Baik</string>
     <string name="menuggu_verifikasi">Menunggu Verifikasi</string>
+    <string name="tanggal_absen">Tanggal Absen</string>
+    <string name="tambah_hari_absen">Tambah Hari Absen</string>
+    <string name="pilih_tanggal_absen">Pilih Tanggal Absen</string>
+    <string name="pilih_jam_masuk">Pilih Jam Mulai</string>
+    <string name="pilih_jam_pulang">Pilih Jam Selesai</string>
+    <string name="batal">Batal</string>
 </resources>

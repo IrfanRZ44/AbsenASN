@@ -143,8 +143,12 @@
     </style>
 
     <style name="CustomTabText" parent="TextAppearance.Design.Tab">
-        <item name="android:textSize">@dimen/text_h1</item>
+        <item name="android:textSize">@dimen/text_h2</item>
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="CustomTabTextMain" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/text_h3</item>
     </style>
 </resources>

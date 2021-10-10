@@ -33,6 +33,7 @@
         app:tabSelectedTextColor="@color/gray12"
         app:tabGravity="center"
         app:tabIconTint="@color/gray12"
+        app:tabTextAppearance="@style/CustomTabTextMain"
         android:layout_alignParentBottom="true"
         />
 </RelativeLayout>
