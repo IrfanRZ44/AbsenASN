@@ -165,4 +165,10 @@
     <string name="rotate">Rotate</string>
     <string name="flash">Flash</string>
     <string name="detail">Detail</string>
+    <string name="konfirmasi">Konfirmasi</string>
+    <string name="chat_wa">Chat WA</string>
+    <string name="alpa">Alpa</string>
+    <string name="cuti">Cuti</string>
+    <string name="sakit">Sakit</string>
+    <string name="izin">Izin</string>
 </resources>

@@ -37,8 +37,6 @@ class DaftarPegawaiFragment : Fragment() {
         getDaftarPegawai()
 
         v.swipeRefresh.setOnRefreshListener {
-            listData.clear()
-            adapter?.notifyDataSetChanged()
             v.swipeRefresh.isRefreshing = false
             getDaftarPegawai()
         }
@@ -59,6 +57,8 @@ class DaftarPegawaiFragment : Fragment() {
     }
 
     private fun getDaftarPegawai() {
+        listData.clear()
+        adapter?.notifyDataSetChanged()
         v.progress.visibility = View.VISIBLE
 
         val valueEventListener = object : ValueEventListener {

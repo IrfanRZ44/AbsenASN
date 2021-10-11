@@ -1,6 +1,7 @@
 package id.exomatik.absenasn.ui.main.admin.sudahAbsen
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,7 @@ import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelAbsensi
 import id.exomatik.absenasn.model.ModelHariKerja
 import id.exomatik.absenasn.model.ModelUser
+import id.exomatik.absenasn.ui.main.admin.sudahAbsen.detailAbsensi.DetailAbsensiActivity
 import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.fragment_sudah_absen.view.*
 
@@ -39,8 +41,6 @@ class SudahAbsenFragment : Fragment() {
         getHariKerja(getDateNow(Constant.dateFormat1))
 
         v.swipeRefresh.setOnRefreshListener {
-            listData.clear()
-            adapter?.notifyDataSetChanged()
             getHariKerja(getDateNow(Constant.dateFormat1))
             v.swipeRefresh.isRefreshing = false
         }
@@ -55,6 +55,8 @@ class SudahAbsenFragment : Fragment() {
     }
 
     private fun getHariKerja(indexKodeTanggal: String) {
+        listData.clear()
+        adapter?.notifyDataSetChanged()
         v.progress.visibility = View.VISIBLE
 
         val valueEventListener = object : ValueEventListener {
@@ -134,14 +136,12 @@ class SudahAbsenFragment : Fragment() {
             v.textStatus.text = "Error, gagal mendapatkan data pegawai"
         }
         else{
-            showLog("detail absensi")
-//            val bundle = Bundle()
-//            val fragmentTujuan = DetailAbsensiFragment()
-//            bundle.putParcelable(Constant.reffAbsensi, dataAbsen)
-//            bundle.putParcelable(Constant.reffUser, dataUser)
-//            bundle.putBoolean(Constant.request, true)
-//            fragmentTujuan.arguments = bundle
-//            navController.navigate(R.id.detailAbsensiFragment, bundle)
+            val intent = Intent(activity, DetailAbsensiActivity::class.java)
+            intent.putExtra(Constant.reffAbsensi, dataAbsen)
+            intent.putExtra(Constant.reffUser, dataUser)
+            intent.putExtra(Constant.request, true)
+            activity?.startActivity(intent)
+            activity?.finish()
         }
     }
 }

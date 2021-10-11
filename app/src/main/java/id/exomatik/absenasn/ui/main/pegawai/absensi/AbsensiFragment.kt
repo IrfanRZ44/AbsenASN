@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Location
 import android.location.LocationManager
 import android.os.Bundle
 import android.provider.Settings
@@ -15,6 +16,7 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
@@ -28,9 +30,11 @@ import id.exomatik.absenasn.utils.FirebaseUtils
 import id.exomatik.absenasn.utils.getDateNow
 import kotlinx.android.synthetic.main.activity_kirim_absen.*
 import kotlinx.android.synthetic.main.fragment_absensi.view.*
+import java.lang.Math.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.pow
 
 class AbsensiFragment : Fragment() {
     private lateinit var savedData: DataSave
@@ -121,7 +125,24 @@ class AbsensiFragment : Fragment() {
                 Constant.codeRequestLocation
             )
         } else {
-            navigateRequest()
+            val fusedLocationClient = LocationServices.getFusedLocationProviderClient(act)
+
+            fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
+                if (location?.latitude != null){
+
+                    if (comparingLocation(location.latitude, location.longitude) < Constant.defaultRadiusJarak) {
+                        navigateRequest()
+                    } else{
+                        v.progress.visibility = View.GONE
+                        v.textStatus.text = "Error, pastikan Anda berada 100 meter dalam lingkup kampus UIN Alauddin Makassar"
+                    }
+                }
+                else{
+                    v.progress.visibility = View.GONE
+                    v.textStatus.text = "Error, gagal mendapatkan lokasi terkini"
+                }
+
+            }
         }
     }
 
@@ -133,13 +154,30 @@ class AbsensiFragment : Fragment() {
             Constant.codeRequestStorage -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 checkPermissionCamera(context)
             }
-            Constant.codeRequestCamera ->if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Constant.codeRequestCamera -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                activity?.let { checkPermissionLocation(it) }
+            }
+            Constant.codeRequestLocation -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 navigateRequest()
             }
             else ->
-                v.textStatus.text = "Mohon izinkan penyimpanan dan camera"
-
+                v.textStatus.text = "Mohon izinkan penyimpanan, camera dan lokasi"
         }
+    }
+
+    private fun comparingLocation(lat2: Double, lng2: Double): Double {
+        val lat1 = Constant.defaultLatitudeUIN
+        val lng1 = Constant.defaultLongitudeUIN
+        val earthRadius = 6371.0
+        val dLat = toRadians(lat2 - lat1)
+        val dLng = toRadians(lng2 - lng1)
+        val sindLat = sin(dLat / 2)
+        val sindLng = sin(dLng / 2)
+        val a = sindLat.pow(2.0) + (sindLng.pow(2.0)
+                * cos(toRadians(lat1)) * cos(toRadians(lat2)))
+        val c = 2 * atan2(sqrt(a), sqrt(1 - a))
+
+        return earthRadius * c // output distance, in MILES
     }
 
     @SuppressLint("SimpleDateFormat")

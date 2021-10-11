@@ -12,6 +12,7 @@ import id.exomatik.absenasn.ui.main.admin.daftarPegawai.DaftarPegawaiFragment
 import id.exomatik.absenasn.ui.main.admin.hariAbsen.HariAbsenFragment
 import id.exomatik.absenasn.ui.main.admin.sudahAbsen.SudahAbsenFragment
 import id.exomatik.absenasn.ui.main.pegawai.absensi.AbsensiFragment
+import id.exomatik.absenasn.ui.main.riwayat.RiwayatFragment
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.adapter.SectionsPagerAdapter
@@ -51,11 +52,12 @@ class BerandaFragment : Fragment() {
             adapter.addFragment(SudahAbsenFragment(), "Sudah Absen")
             adapter.addFragment(BelumAbsenFragment(), "Belum Absen")
             adapter.addFragment(HariAbsenFragment(), "Hari Absen")
+            adapter.addFragment(RiwayatFragment(), "Riwayat")
             adapter.addFragment(DaftarPegawaiFragment(), "Pegawai")
         }
         else{
             adapter.addFragment(AbsensiFragment(), "Absensi")
-//            adapter.addFragment(RiwayatFragment(viewModel.dataInstansi.value), "Riwayat")
+            adapter.addFragment(RiwayatFragment(), "Riwayat")
         }
 
         pager.adapter = adapter

@@ -66,8 +66,6 @@ class HariAbsenFragment : Fragment() {
         getDataHariKerja()
 
         v.swipeRefresh.setOnRefreshListener {
-            listData.clear()
-            adapter?.notifyDataSetChanged()
             v.swipeRefresh.isRefreshing = false
             getDataHariKerja()
         }
@@ -437,6 +435,8 @@ class HariAbsenFragment : Fragment() {
     }
 
     private fun getDataHariKerja() {
+        listData.clear()
+        adapter?.notifyDataSetChanged()
         v.progress.visibility = View.VISIBLE
 
         val valueEventListener = object : ValueEventListener {

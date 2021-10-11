@@ -36,6 +36,8 @@
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="com.exomatik.absenasn.fcm_TARGET_NOTIFICATION_PEGAWAI"/>
+                <action android:name="com.exomatik.absenasn.fcm_TARGET_NOTIFICATION_ADMIN"/>
             </intent-filter>
         </activity>
 
@@ -120,6 +122,18 @@
         <activity
             android:name="id.exomatik.absenasn.ui.main.pegawai.camera.CameraActivity"
             android:label="Kamera"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.admin.sudahAbsen.detailAbsensi.DetailAbsensiActivity"
+            android:label="Detail Absensi"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.admin.belumAbsen.detailPegawai.DetailPegawaiActivity"
+            android:label="Detail Pegawai"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"/>
 

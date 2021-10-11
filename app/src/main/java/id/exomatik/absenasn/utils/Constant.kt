@@ -55,6 +55,12 @@ object Constant {
     const val codeRequestCamera = 100
 
     const val defaultTempFoto = "https://www.google.co.id/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png"
+    const val defaultFotoAlpa = "https://firebasestorage.googleapis.com/v0/b/absenki-28acc.appspot.com/o/fotoAbsensi%2Ficon_alpa.png?alt=media&token=8c5e24a2-7629-447c-97fe-3993bc563dc9"
+    const val defaultFotoSakit = "https://firebasestorage.googleapis.com/v0/b/absenki-28acc.appspot.com/o/fotoAbsensi%2Ficon_sakit.png?alt=media&token=74b105cb-dd85-47a9-8d92-70dd30bafedf"
+    const val defaultLatitudeUIN = -5.205353860844862
+    const val defaultLongitudeUIN = 119.49674215712335
+    const val defaultRadiusJarak = 0.05
+
     const val timeFormat = "HH:mm"
     const val dateFormat1 = "dd-MM-yyyy"
     const val dateFormat2 = "dd-MMM-yyyy"

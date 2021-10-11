@@ -17,22 +17,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvData"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/h1"
+                android:layout_marginTop="@dimen/h2"
                 android:layout_marginBottom="@dimen/h1"
                 android:fontFamily="@font/roboto_regular"
                 android:textColor="@color/black"
-                android:textSize="@dimen/text_h2" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvData"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/textStatus"
+                android:textSize="@dimen/text_h2"
+                android:layout_below="@id/rvData"
                 />
 
             <include

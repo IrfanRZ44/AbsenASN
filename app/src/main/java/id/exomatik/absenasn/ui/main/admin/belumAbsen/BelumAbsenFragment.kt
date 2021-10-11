@@ -1,6 +1,7 @@
 package id.exomatik.absenasn.ui.main.admin.belumAbsen
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,7 @@ import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelHariKerja
 import id.exomatik.absenasn.model.ModelUser
+import id.exomatik.absenasn.ui.main.admin.belumAbsen.detailPegawai.DetailPegawaiActivity
 import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.fragment_belum_absen.view.*
 
@@ -38,8 +40,6 @@ class BelumAbsenFragment : Fragment() {
         getHariKerja(getDateNow(Constant.dateFormat1))
 
         v.swipeRefresh.setOnRefreshListener {
-            listData.clear()
-            adapter?.notifyDataSetChanged()
             getHariKerja(getDateNow(Constant.dateFormat1))
             v.swipeRefresh.isRefreshing = false
         }
@@ -52,6 +52,8 @@ class BelumAbsenFragment : Fragment() {
     }
 
     private fun getHariKerja(indexKodeTanggal: String) {
+        listData.clear()
+        adapter?.notifyDataSetChanged()
         v.progress.visibility = View.VISIBLE
 
         val valueEventListener = object : ValueEventListener {
@@ -98,6 +100,8 @@ class BelumAbsenFragment : Fragment() {
             override fun onCancelled(result: DatabaseError) {
                 v.textStatus.text = result.message
                 v.progress.visibility = View.GONE
+
+                cekList()
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -111,9 +115,11 @@ class BelumAbsenFragment : Fragment() {
                             getUserNotAbsensi(hariKerja, data)
                         }
                     }
+
+                    cekList()
                 }
                 else{
-                    v.textStatus.text = Constant.noDataPegawai
+                    v.textStatus.text = Constant.noDataBelumAbsen
                 }
             }
         }
@@ -123,7 +129,7 @@ class BelumAbsenFragment : Fragment() {
         )
     }
 
-    fun getUserNotAbsensi(hariKerja: ModelHariKerja, dataUser: ModelUser) {
+    private fun getUserNotAbsensi(hariKerja: ModelHariKerja, dataUser: ModelUser) {
         val indexHariUsername = "${hariKerja.id}__${dataUser.username}"
         v.progress.visibility = View.VISIBLE
 
@@ -163,13 +169,10 @@ class BelumAbsenFragment : Fragment() {
     }
 
     private fun onClickItem(data: ModelUser) {
-        showLog(data.username)
-//        val bundle = Bundle()
-//        val fragmentTujuan = DetailPegawaiFragment()
-//        bundle.putParcelable(Constant.reffUser, data)
-//        bundle.putParcelable(Constant.reffHariKerja, dataHariKerja)
-//        fragmentTujuan.arguments = bundle
-//        navController.navigate(R.id.detailPegawaiFragment, bundle)
+        val intent = Intent(activity, DetailPegawaiActivity::class.java)
+        intent.putExtra(Constant.reffUser, data)
+        intent.putExtra(Constant.reffHariAbsen, dataHariKerja)
+        activity?.startActivity(intent)
+        activity?.finish()
     }
 }
-
