@@ -42,6 +42,7 @@ object Constant {
     const val jenis = "jenis"
     const val indexTanggalKerja = "tanggalKerja"
     const val indexHariUsername = "indexHariUsername"
+    const val indexIDHari = "id_hari"
 
     const val codeRequestFoto = 100
     const val codeRequestGallery = 1
@@ -77,6 +78,9 @@ object Constant {
     const val noDataHariAbsen = "Maaf, belum ada data hari absen"
     const val noDataPegawai = "Maaf, belum ada pegawai yang perlu di verifikasi"
     const val noDataPegawaiVerified = "Maaf, belum ada data pegawai"
+    const val noDataAbsen = "Maaf, belum ada pegawai yang sudah absen"
+    const val noDataBelumAbsen = "Semua pegawai sudah absen hari ini"
+
     const val noRequest = "Afwan, belum ada permintaan verifikasi"
     const val alertLogout = "Apakah Anda yakin ingin keluar dari akun?"
     const val alertHapus = "Apakah Anda yakin ingin menghapus data akun anda?"

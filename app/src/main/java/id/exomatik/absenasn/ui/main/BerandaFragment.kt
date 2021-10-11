@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import id.exomatik.absenasn.R
+import id.exomatik.absenasn.ui.main.admin.belumAbsen.BelumAbsenFragment
 import id.exomatik.absenasn.ui.main.admin.daftarPegawai.DaftarPegawaiFragment
 import id.exomatik.absenasn.ui.main.admin.hariAbsen.HariAbsenFragment
+import id.exomatik.absenasn.ui.main.admin.sudahAbsen.SudahAbsenFragment
 import id.exomatik.absenasn.ui.main.pegawai.absensi.AbsensiFragment
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
@@ -46,6 +48,8 @@ class BerandaFragment : Fragment() {
         val adapter = SectionsPagerAdapter(childFragmentManager)
 
         if (savedData.getDataUser()?.jenisAkun == Constant.levelAdmin){
+            adapter.addFragment(SudahAbsenFragment(), "Sudah Absen")
+            adapter.addFragment(BelumAbsenFragment(), "Belum Absen")
             adapter.addFragment(HariAbsenFragment(), "Hari Absen")
             adapter.addFragment(DaftarPegawaiFragment(), "Pegawai")
         }

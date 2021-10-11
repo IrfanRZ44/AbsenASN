@@ -1,4 +1,3 @@
-
 package id.exomatik.absenasn.model
 
 import android.os.Parcelable

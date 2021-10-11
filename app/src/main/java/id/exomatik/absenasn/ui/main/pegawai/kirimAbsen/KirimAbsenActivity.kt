@@ -29,6 +29,7 @@ import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.services.notification.model.Notification
 import id.exomatik.absenasn.services.notification.model.Sender
 import id.exomatik.absenasn.ui.main.MainActivity
+import id.exomatik.absenasn.ui.main.pegawai.camera.CameraActivity
 import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.activity_kirim_absen.*
 
@@ -49,11 +50,12 @@ class KirimAbsenActivity : AppCompatActivity() {
         onClick()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun init() {
         btnAbsen.isEnabled = false
         idHari = intent.getStringExtra(Constant.idHari)
         idAbsensi = intent.getStringExtra(Constant.idAbsen)
-        jenisAbsensi = intent.getStringExtra(Constant.jenis)
+        jenisAbsensi = intent.getStringExtra(Constant.jenisAbsen)
 
         val fotoOld = intent.getStringExtra(Constant.reffFotoUser)
         val fotoFromCamera = intent.getParcelableExtra<Uri>(Constant.reffFotoUser2)
@@ -68,15 +70,15 @@ class KirimAbsenActivity : AppCompatActivity() {
         }
 
         if (!idAbsensi.isNullOrEmpty()){
-            supportActionBar?.title = "Absensi Datang Ulang"
+            supportActionBar?.title = "Absensi Ulang"
         }
         else{
-            supportActionBar?.title = "Absensi Datang"
+            supportActionBar?.title = "Absensi"
         }
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.show()
         etUsername.editText?.setText(savedData.getDataUser()?.username)
-        textJenisAbsen.text = jenisAbsensi
+        textJenisAbsen.text = "Absen $jenisAbsensi"
     }
 
     private fun onClick() {
@@ -85,19 +87,12 @@ class KirimAbsenActivity : AppCompatActivity() {
         }
 
         cardFoto.setOnClickListener {
-            showLog("Camera")
-//            val bundle = Bundle()
-//            val fragmentTujuan = CameraFragment()
-//            bundle.putParcelable(Constant.reffInstansi, dataInstansi.value)
-//            bundle.putString(Constant.idHari, idHari)
-//            bundle.putString(Constant.idAbsen, idAbsensi)
-//            bundle.putString(Constant.jenis, jenisAbsensi)
-//            bundle.putString(Constant.kodeInstansi, kodeInstansi)
-//            bundle.putString(Constant.desc, etDesc.value)
-//            bundle.putString(Constant.kategori, etKategori)
-//            fragmentTujuan.arguments = bundle
-//            val navOption = NavOptions.Builder().setPopUpTo(R.id.cameraFragment, true).build()
-//            findNavController().navigate(R.id.cameraFragment,bundle, navOption)
+            val intent = Intent(this, CameraActivity::class.java)
+            intent.putExtra(Constant.idHari, idHari)
+            intent.putExtra(Constant.idAbsen, idAbsensi)
+            intent.putExtra(Constant.jenisAbsen, jenisAbsensi)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -110,6 +105,7 @@ class KirimAbsenActivity : AppCompatActivity() {
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
+            progress.visibility = View.GONE
             textStatus.text = "Anda belum mengizinkan akses lokasi aplikasi ini"
 
             ActivityCompat.requestPermissions(
@@ -161,7 +157,7 @@ class KirimAbsenActivity : AppCompatActivity() {
             val tglSplit = dateCreated.split("-")
 
             val resultAbsen = ModelAbsensi("", usernameUser, hariId, "",
-                latitude, longitude, jenis, Constant.statusRequest,
+                latitude, longitude, Constant.absenHadir, Constant.statusRequest,
                 tglSplit[0], tglSplit[1], tglSplit[2], dateCreated, timeCreated,
                 "${hariId}__${usernameUser}", dateTimeCreated, dateTimeCreated
             )
@@ -176,11 +172,11 @@ class KirimAbsenActivity : AppCompatActivity() {
                 }
                 usernameUser.isNullOrEmpty() -> {
                     progress.visibility = View.GONE
-                    textStatus.text = "Error, terjadi kesalahan sistem database user"
+                    textStatus.text = "Error, terjadi kesalahan sistem database"
                 }
                 jenis.isNullOrEmpty() -> {
                     progress.visibility = View.GONE
-                    textStatus.text = "Error, terjadi kesalahan sistem database jenis"
+                    textStatus.text = "Error, terjadi kesalahan sistem database"
                 }
                 else -> {
                     progress.visibility = View.GONE

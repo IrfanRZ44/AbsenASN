@@ -118,6 +118,12 @@
             android:theme="@style/CustomTheme"/>
 
         <activity
+            android:name="id.exomatik.absenasn.ui.main.pegawai.camera.CameraActivity"
+            android:label="Kamera"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
+
+        <activity
             android:name="id.exomatik.absenasn.utils.LihatFotoActivity"
             android:label="Foto"
             android:screenOrientation="portrait"
@@ -136,6 +142,10 @@
                 android:resource="@xml/file_paths">
             </meta-data>
         </provider>
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
     </application>
 
 </manifest>

@@ -2,6 +2,7 @@ package id.exomatik.absenasn.ui.main.pegawai.absensi
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -11,6 +12,7 @@ import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.database.DataSnapshot
@@ -19,9 +21,12 @@ import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelAbsensi
 import id.exomatik.absenasn.model.ModelHariKerja
-import id.exomatik.absenasn.ui.auth.ForgetPasswordActivity
 import id.exomatik.absenasn.ui.main.pegawai.kirimAbsen.KirimAbsenActivity
-import id.exomatik.absenasn.utils.*
+import id.exomatik.absenasn.utils.Constant
+import id.exomatik.absenasn.utils.DataSave
+import id.exomatik.absenasn.utils.FirebaseUtils
+import id.exomatik.absenasn.utils.getDateNow
+import kotlinx.android.synthetic.main.activity_kirim_absen.*
 import kotlinx.android.synthetic.main.fragment_absensi.view.*
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -46,6 +51,7 @@ class AbsensiFragment : Fragment() {
 
 
     private fun init() {
+        v.btnAbsen.isEnabled = false
         getDataHariAbsen(getDateNow(Constant.dateFormat1))
     }
 
@@ -80,17 +86,42 @@ class AbsensiFragment : Fragment() {
     @Suppress("DEPRECATION")
     private fun checkPermissionCamera(ctx: Context?){
         val permissionsCamera = arrayOf(Manifest.permission.CAMERA)
+        val act = activity
 
-        if (ctx != null){
+        if (ctx != null && act != null){
             if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(permissionsCamera, Constant.codeRequestCamera)
             }
             else{
-                navigateRequest()
+                checkPermissionLocation(act)
             }
         }
         else{
             v.textStatus.text = "Error, mohon mulai ulang aplikasi"
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun checkPermissionLocation(act: Activity){
+        if (ContextCompat.checkSelfPermission(act, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED &&
+            ActivityCompat.checkSelfPermission(
+                act, Manifest.permission.ACCESS_COARSE_LOCATION
+            )
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            textStatus.text = "Anda belum mengizinkan akses lokasi aplikasi ini"
+
+            ActivityCompat.requestPermissions(
+                act,
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                Constant.codeRequestLocation
+            )
+        } else {
+            navigateRequest()
         }
     }
 
@@ -217,6 +248,7 @@ class AbsensiFragment : Fragment() {
         )
     }
 
+    @SuppressLint("SetTextI18n")
     private fun getDataAbsensi(hariAbsen: ModelHariKerja) {
         val indexHariUsername = "${hariAbsen.id}__${savedData.getDataUser()?.username}"
         v.progress.visibility = View.VISIBLE
@@ -226,8 +258,15 @@ class AbsensiFragment : Fragment() {
                 val timeNow = getDateNow(Constant.timeFormat)
                 v.textStatus.text = result.message
                 v.progress.visibility = View.GONE
-                v.btnAbsen.isEnabled = comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
-                        comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)
+                if (comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
+                    comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)){
+                    v.btnAbsen.isEnabled = true
+                    v.textKeterangan2.text = "Absen sudah dimulai, silahkan melakukan absensi"
+                }
+                else{
+                    v.btnAbsen.isEnabled = false
+                    v.textKeterangan2.text = "Absen belum dimulai"
+                }
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -237,11 +276,14 @@ class AbsensiFragment : Fragment() {
                 if (result.exists()) {
                     var izin = false
                     var masuk = false
+                    var tempJenis = ""
+                    var tempStatus = ""
 
                     for (snapshot in result.children) {
                         val data = snapshot.getValue(ModelAbsensi::class.java)
 
                         if (data != null && data.indexHariUsername == indexHariUsername){
+                            tempJenis = data.jenis
                             if (data.jenis == Constant.absenAlpa) {
                                 if (!izin) {
                                     izin = true
@@ -270,6 +312,7 @@ class AbsensiFragment : Fragment() {
                                         masuk = false
                                     }
                                     else{
+                                        tempStatus = data.status
                                         masuk = true
                                     }
                                 }
@@ -279,22 +322,50 @@ class AbsensiFragment : Fragment() {
 
                     if (izin){
                         v.btnAbsen.isEnabled = false
+                        v.textKeterangan2.text = "Anda sudah dikonfirmasi $tempJenis oleh Admin"
                     }
                     else if (!izin && !masuk){
-                        v.btnAbsen.isEnabled = comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
-                                comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)
+                        if (comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
+                            comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)){
+                            v.btnAbsen.isEnabled = true
+                            v.textKeterangan2.text = "Absen Anda sebelumnya ditolak oleh Admin, silahkan melakukan Absensi ulang"
+                        }
+                        else{
+                            v.btnAbsen.isEnabled = false
+                            v.textKeterangan2.text = "Absen Anda sebelumnya ditolak oleh Admin"
+                        }
                     }
                     else if (!izin && masuk){
                         v.btnAbsen.isEnabled = false
+                        if (tempStatus == Constant.statusActive){
+                            v.textKeterangan2.text = "Anda sudah melakukan Absensi hari ini"
+                        }
+                        else{
+                            v.textKeterangan2.text = "Anda sudah melakukan Absensi hari ini, silahkan menunggu konfirmasi Admin"
+                        }
                     }
                     else{
-                        v.btnAbsen.isEnabled = comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
-                                comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)
+                        if (comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
+                            comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)){
+                            v.btnAbsen.isEnabled = true
+                            v.textKeterangan2.text = "Absen sudah dimulai, silahkan melakukan absensi"
+                        }
+                        else{
+                            v.btnAbsen.isEnabled = false
+                            v.textKeterangan2.text = "Absen belum dimulai"
+                        }
                     }
                 }
                 else{
-                    v.btnAbsen.isEnabled = comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
-                            comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)
+                    if (comparingTimesAfter(hariAbsen.jamPulang, timeNow, false) &&
+                        comparingTimesAfter(hariAbsen.jamMasuk, timeNow, true)){
+                        v.btnAbsen.isEnabled = true
+                        v.textKeterangan2.text = "Absen sudah dimulai, silahkan melakukan absensi"
+                    }
+                    else{
+                        v.btnAbsen.isEnabled = false
+                        v.textKeterangan2.text = "Absen belum dimulai"
+                    }
                 }
             }
         }
@@ -309,7 +380,7 @@ class AbsensiFragment : Fragment() {
         intent.putExtra(Constant.idHari, dataHariAbsen?.id)
         intent.putExtra(Constant.idAbsen, idAbsensi)
         intent.putExtra(Constant.reffFotoUser, urlFoto)
-        intent.putExtra(Constant.jenis, dataHariAbsen?.jenisAbsen)
+        intent.putExtra(Constant.jenisAbsen, dataHariAbsen?.jenisAbsen)
         activity?.startActivity(intent)
         activity?.finish()
     }
