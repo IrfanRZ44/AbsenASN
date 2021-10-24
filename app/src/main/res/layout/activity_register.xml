@@ -236,6 +236,52 @@
                 style="@style/customEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/jabatan"
+                android:textColorHint="@color/gray2"
+                android:layout_marginTop="@dimen/h2"
+                app:errorEnabled="true"
+                android:id="@+id/etJabatan"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/textStandardWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/customEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/unit_kerja"
+                android:textColorHint="@color/gray2"
+                android:layout_marginTop="@dimen/h2"
+                app:errorEnabled="true"
+                android:id="@+id/etUnitKerja"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/textStandardWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/customEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/tempat_lahir"
                 android:textColorHint="@color/gray2"
                 android:layout_marginTop="@dimen/h2"

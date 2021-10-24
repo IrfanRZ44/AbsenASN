@@ -3,27 +3,37 @@ package id.exomatik.absenasn.ui.main.pegawai.absensi
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.hardware.biometrics.BiometricPrompt
 import android.location.Location
 import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
+import android.os.CancellationSignal
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.OnFailureListener
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelAbsensi
 import id.exomatik.absenasn.model.ModelHariKerja
-import id.exomatik.absenasn.ui.main.pegawai.kirimAbsen.KirimAbsenActivity
+import id.exomatik.absenasn.model.ModelUser
+import id.exomatik.absenasn.services.notification.model.Notification
+import id.exomatik.absenasn.services.notification.model.Sender
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.FirebaseUtils
@@ -41,7 +51,24 @@ class AbsensiFragment : Fragment() {
     private lateinit var v : View
     private var dataHariAbsen: ModelHariKerja? = null
     private var idAbsensi : String? = ""
-    private var urlFoto : String? = ""
+    private var latit = ""
+    private var longit = ""
+    private var cancellationSignal: CancellationSignal? = null
+    private val  authenticationCallback: BiometricPrompt.AuthenticationCallback
+        get() =
+            @RequiresApi(Build.VERSION_CODES.P)
+            object: BiometricPrompt.AuthenticationCallback() {
+                override fun onAuthenticationError(errorCode: Int, errString: CharSequence?) {
+                    super.onAuthenticationError(errorCode, errString)
+                    notifyUser("Authentikasi error: $errString")
+                }
+                override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult?) {
+                    super.onAuthenticationSucceeded(result)
+
+                    notifyUser("Authentikasi Berhasil!")
+                    navigateRequest()
+                }
+            }
 
     override fun onCreateView(paramLayoutInflater: LayoutInflater, paramViewGroup: ViewGroup?, paramBundle: Bundle?): View {
         v = paramLayoutInflater.inflate(R.layout.fragment_absensi, paramViewGroup, false)
@@ -56,6 +83,8 @@ class AbsensiFragment : Fragment() {
 
     private fun init() {
         v.btnAbsen.isEnabled = false
+
+        activity?.let { checkBiometricSupport(it) }
         getDataHariAbsen(getDateNow(Constant.dateFormat1))
     }
 
@@ -131,7 +160,9 @@ class AbsensiFragment : Fragment() {
                 if (location?.latitude != null){
 
                     if (comparingLocation(location.latitude, location.longitude) < Constant.defaultRadiusJarak) {
-                        navigateRequest()
+                        latit = location.latitude.toString()
+                        longit = location.longitude.toString()
+                        showFingerPrint(act)
                     } else{
                         v.progress.visibility = View.GONE
                         v.textStatus.text = "Error, pastikan Anda berada 100 meter dalam lingkup kampus UIN Alauddin Makassar"
@@ -158,7 +189,7 @@ class AbsensiFragment : Fragment() {
                 activity?.let { checkPermissionLocation(it) }
             }
             Constant.codeRequestLocation -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                navigateRequest()
+                activity?.let { checkPermissionLocation(it) }
             }
             else ->
                 v.textStatus.text = "Mohon izinkan penyimpanan, camera dan lokasi"
@@ -346,7 +377,6 @@ class AbsensiFragment : Fragment() {
                                 if (!izin && !masuk){
                                     if (data.status == Constant.statusRejected){
                                         idAbsensi = data.id
-                                        urlFoto = data.foto_absensi
                                         masuk = false
                                     }
                                     else{
@@ -413,13 +443,218 @@ class AbsensiFragment : Fragment() {
         )
     }
 
+    private fun showFingerPrint(act: Activity){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            val biometricPrompt : BiometricPrompt = BiometricPrompt.Builder(act)
+                .setTitle("Absen ASN")
+                .setSubtitle("Authentikasi dibutuhkan")
+                .setDescription("Fingerprint")
+                .setNegativeButton("Batalkan", act.mainExecutor, { _, _ ->
+                }).build()
+            biometricPrompt.authenticate(getCancellationSignal(), act.mainExecutor, authenticationCallback)
+        }
+        else {
+            notifyUser("Maaf, HP Anda belum support untuk melakukan authentikasi fingerprint")
+        }
+    }
+
     private fun navigateRequest(){
-        val intent = Intent(activity, KirimAbsenActivity::class.java)
-        intent.putExtra(Constant.idHari, dataHariAbsen?.id)
-        intent.putExtra(Constant.idAbsen, idAbsensi)
-        intent.putExtra(Constant.reffFotoUser, urlFoto)
-        intent.putExtra(Constant.jenisAbsen, dataHariAbsen?.jenisAbsen)
-        activity?.startActivity(intent)
-        activity?.finish()
+        if (latit.isNotEmpty() && longit.isNotEmpty()){
+            progress.visibility = View.VISIBLE
+            validateData(latit, longit)
+        }
+        else{
+            notifyUser("Error, lokasi tidak ditemukan")
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun validateData(latitude: String, longitude: String){
+        progress.visibility = View.VISIBLE
+
+        val dateCreated = getDateNow(Constant.dateFormat1)
+        val dateTimeCreated = getDateNow(Constant.dateTimeFormat1)
+        val timeCreated = getDateNow(Constant.timeFormat)
+        val usernameUser = savedData.getDataUser()?.username
+        val namaUser = savedData.getDataUser()?.nama
+        val jabatanUser = savedData.getDataUser()?.jabatan
+        val unitKerjaUser = savedData.getDataUser()?.unit_kerja
+        val hariId = dataHariAbsen?.id
+        val jenis = dataHariAbsen?.jenisAbsen
+
+        if (!usernameUser.isNullOrEmpty() && !hariId.isNullOrEmpty() && !jenis.isNullOrEmpty()
+            && !namaUser.isNullOrEmpty() && !jabatanUser.isNullOrEmpty() && !unitKerjaUser.isNullOrEmpty()
+        ){
+            val tglSplit = dateCreated.split("-")
+            val resultAbsen = ModelAbsensi("", usernameUser, hariId, namaUser, jabatanUser, unitKerjaUser,
+                latitude, longitude, Constant.absenHadir, Constant.statusRequest,
+                tglSplit[0], tglSplit[1], tglSplit[2], dateCreated, timeCreated,
+                "${hariId}__${usernameUser}", dateTimeCreated, dateTimeCreated
+            )
+
+            val id = idAbsensi
+            if (!id.isNullOrEmpty()){
+                resultAbsen.id = id
+                updateAbsensi(resultAbsen)
+            }
+            else{
+                createAbsen(resultAbsen)
+            }
+        }
+        else{
+            when {
+                usernameUser.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, terjadi kesalahan sistem database"
+                }
+                namaUser.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, nama user tidak ditemukan, silahkan login ulang"
+                }
+                jabatanUser.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, jabatan user tidak ditemukan, silahkan login ulang"
+                }
+                unitKerjaUser.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, unit kerja user tidak ditemukan, silahkan login ulang"
+                }
+                jenis.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, terjadi kesalahan sistem database"
+                }
+                else -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, mohon login ulang"
+                }
+            }
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun createAbsen(dataAbsen: ModelAbsensi){
+        progress.visibility = View.VISIBLE
+
+        val onCompleteListener = OnCompleteListener<Void> { result ->
+            progress.visibility = View.GONE
+            if (result.isSuccessful) {
+                textStatus.text = "Berhasil absensi"
+                Toast.makeText(activity, "Berhasil absensi", Toast.LENGTH_LONG).show()
+
+                sendNotification()
+                v.swipeRefresh.isRefreshing = false
+                latit = ""
+                longit = ""
+                getDataHariAbsen(getDateNow(Constant.dateFormat1))
+            } else {
+                textStatus.text = "Gagal absensi"
+            }
+        }
+
+        val onFailureListener = OnFailureListener { result ->
+            progress.visibility = View.GONE
+            textStatus.text = result.message
+        }
+
+        FirebaseUtils.saveAbsensiWithUnique1Child(
+            Constant.reffAbsensi, dataAbsen, onCompleteListener, onFailureListener
+        )
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun updateAbsensi(dataAbsen: ModelAbsensi){
+        progress.visibility = View.VISIBLE
+
+        val onCompleteListener =
+            OnCompleteListener<Void> { result ->
+                progress.visibility = View.GONE
+                if (result.isSuccessful) {
+                    textStatus.text = "Berhasil melakukan absensi ulang"
+                    Toast.makeText(activity, "Berhasil melakukan absensi ulang", Toast.LENGTH_LONG).show()
+
+                    sendNotification()
+                    v.swipeRefresh.isRefreshing = false
+                    latit = ""
+                    longit = ""
+                    getDataHariAbsen(getDateNow(Constant.dateFormat1))
+                } else {
+                    textStatus.text = "Gagal absensi"
+                }
+            }
+
+        val onFailureListener = OnFailureListener { result ->
+            progress.visibility = View.GONE
+            textStatus.text = result.message
+        }
+
+        FirebaseUtils.setValueWith1ChildObject(
+            Constant.reffAbsensi, dataAbsen.id, dataAbsen, onCompleteListener, onFailureListener
+        )
+    }
+
+    private fun sendNotification(){
+        val notification = Notification(
+            "${savedData.getDataUser()?.nama} sudah melakukan absensi",
+            "Absen ASN"
+            , "id.exomatik.absenasn.fcm_TARGET_NOTIFICATION_ADMIN"
+        )
+
+        getDataAdmin(notification)
+    }
+
+    private fun getDataAdmin(notification: Notification){
+        progress.visibility = View.VISIBLE
+
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(result: DatabaseError) {
+                textStatus.text = result.message
+                progress.visibility = View.GONE
+            }
+
+            override fun onDataChange(result: DataSnapshot) {
+                progress.visibility = View.GONE
+                if (result.exists()) {
+                    for (snapshot in result.children) {
+                        val data = snapshot.getValue(ModelUser::class.java)
+
+                        val sender = Sender(notification, data?.token)
+                        FirebaseUtils.sendNotif(sender)
+                    }
+                }
+                else{
+                    textStatus.text = Constant.noData
+                }
+            }
+        }
+
+        FirebaseUtils.searchDataWith1ChildObject(
+            Constant.reffUser, Constant.reffJenisAkun, Constant.levelAdmin, valueEventListener
+        )
+    }
+
+    private fun notifyUser(message: String) {
+        Toast.makeText(activity, message, Toast.LENGTH_SHORT).show()
+    }
+    private fun getCancellationSignal(): CancellationSignal {
+        cancellationSignal = CancellationSignal()
+        cancellationSignal?.setOnCancelListener {
+            notifyUser("Authentication was cancelled by the user")
+        }
+        return cancellationSignal as CancellationSignal
+    }
+
+    private fun checkBiometricSupport(act: Activity): Boolean {
+        val keyguardManager : KeyguardManager = act.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        if(!keyguardManager.isKeyguardSecure) {
+            notifyUser("Fingerprint hs not been enabled in settings.")
+            return false
+        }
+        if (ActivityCompat.checkSelfPermission(act, Manifest.permission.USE_BIOMETRIC) !=PackageManager.PERMISSION_GRANTED) {
+            notifyUser("Fingerprint hs not been enabled in settings.")
+            return false
+        }
+        return if (act.packageManager.hasSystemFeature(PackageManager.FEATURE_FINGERPRINT)) {
+            true
+        } else true
     }
 }

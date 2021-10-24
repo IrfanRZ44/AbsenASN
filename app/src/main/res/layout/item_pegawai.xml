@@ -18,8 +18,8 @@
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgFoto"
-            android:layout_width="@dimen/_70"
-            android:layout_height="@dimen/_70"
+            android:layout_width="@dimen/_80"
+            android:layout_height="@dimen/_80"
             android:padding="@dimen/h1"
             android:scaleType="centerInside" />
 
@@ -68,10 +68,25 @@
                 android:textSize="@dimen/text_h2" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textAlamat"
+                android:id="@+id/textJabatan"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textHp"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/btnReject"
+                android:ellipsize="end"
+                android:fontFamily="@font/roboto_regular"
+                android:lines="1"
+                android:maxLines="1"
+                android:text="@string/jabatan"
+                android:textAlignment="textStart"
+                android:textSize="@dimen/text_h2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textAlamat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/textJabatan"
                 android:layout_alignParentStart="true"
                 android:layout_toStartOf="@+id/btnReject"
                 android:ellipsize="end"

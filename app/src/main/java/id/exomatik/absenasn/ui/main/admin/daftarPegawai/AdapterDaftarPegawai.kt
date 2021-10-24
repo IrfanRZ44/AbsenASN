@@ -34,6 +34,7 @@ class AdapterDaftarPegawai(
             v.textNama.text = itemData.nama
             v.textHp.text = "No Hp : ${itemData.phone}"
             v.textAlamat.text = "Alamat : ${itemData.alamat}"
+            v.textJabatan.text = "Jabatan/UnitKerja : ${itemData.jabatan}/${itemData.unit_kerja}"
 
             v.imgFoto.load(itemData.fotoProfil) {
                 crossfade(true)
@@ -67,6 +68,8 @@ class AdapterDaftarPegawai(
             val etNama = dialogView.findViewById<TextInputLayout>(R.id.etNama)
             val etJenisKelamin = dialogView.findViewById<TextInputLayout>(R.id.etJenisKelamin)
             val etAlamat = dialogView.findViewById<TextInputLayout>(R.id.etAlamat)
+            val etJabatan = dialogView.findViewById<TextInputLayout>(R.id.etJabatan)
+            val etUnitKerja = dialogView.findViewById<TextInputLayout>(R.id.etUnitKerja)
             val etTempatLahir = dialogView.findViewById<TextInputLayout>(R.id.etTempatLahir)
             val etTglLahir = dialogView.findViewById<TextInputLayout>(R.id.etTglLahir)
             val btnBaik = dialogView.findViewById<AppCompatButton>(R.id.btnBaik)
@@ -74,6 +77,8 @@ class AdapterDaftarPegawai(
             etNama.editText?.setText(data.nama)
             etJenisKelamin.editText?.setText(data.jk)
             etAlamat.editText?.setText(data.alamat)
+            etJabatan.editText?.setText(data.jabatan)
+            etUnitKerja.editText?.setText(data.unit_kerja)
             etTempatLahir.editText?.setText(data.tempatLahir)
             etTglLahir.editText?.setText(data.tanggalLahir)
 

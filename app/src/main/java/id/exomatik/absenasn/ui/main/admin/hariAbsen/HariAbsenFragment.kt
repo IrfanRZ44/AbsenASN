@@ -413,10 +413,10 @@ class HariAbsenFragment : Fragment() {
                     adapter?.notifyDataSetChanged()
                     v.textStatus.text = ""
                     alert.dismiss()
-                    Toast.makeText(activity, "Berhasil menambah hari kerja", Toast.LENGTH_LONG).show()
+                    Toast.makeText(activity, "Berhasil menambah hari absen", Toast.LENGTH_LONG).show()
                     sortingJadwal()
                 } else {
-                    v.textStatus.text = "Gagal menambah hari kerja"
+                    v.textStatus.text = "Gagal menambah hari absen"
                 }
             }
 

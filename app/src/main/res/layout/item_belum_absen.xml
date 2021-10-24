@@ -42,6 +42,16 @@
                 android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textJabatan"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/roboto_regular"
+                android:text="@string/jabatan"
+                android:textSize="@dimen/text_h2"
+                android:textColor="@color/black"
+                />
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textTglLahir"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

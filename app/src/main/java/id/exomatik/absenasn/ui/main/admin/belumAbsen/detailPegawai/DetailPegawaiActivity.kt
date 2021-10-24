@@ -50,6 +50,7 @@ class DetailPegawaiActivity : AppCompatActivity() {
         dataUser = intent.getParcelableExtra(Constant.reffUser)
         dataHariKerja = intent.getParcelableExtra(Constant.reffHariAbsen)
         textUsernameNama.text = "Nama Pegawai ${dataUser?.nama}"
+        textJabatanUnitKerja.text = "Jabatan/Unit Kerja ${dataUser?.jabatan}/${dataUser?.unit_kerja}"
         textPhone.text = dataUser?.phone
 
         imgFoto.load(dataUser?.fotoProfil) {

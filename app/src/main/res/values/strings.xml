@@ -171,4 +171,6 @@
     <string name="cuti">Cuti</string>
     <string name="sakit">Sakit</string>
     <string name="izin">Izin</string>
+    <string name="jabatan">Jabatan</string>
+    <string name="unit_kerja">Unit Kerja</string>
 </resources>

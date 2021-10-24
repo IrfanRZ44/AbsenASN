@@ -160,6 +160,8 @@ class RegisterAgainActivity : AppCompatActivity(){
         val tglLahir = etTglLahir.editText?.text.toString()
         val tempatLahir = etTempatLahir.editText?.text.toString()
         val alamat = etAlamat.editText?.text.toString()
+        val jabatan = etJabatan.editText?.text.toString()
+        val unitKerja = etUnitKerja.editText?.text.toString()
         val noHp = etNoHp.editText?.text.toString()
         val fotoProfil = etFotoProfil
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
@@ -170,6 +172,7 @@ class RegisterAgainActivity : AppCompatActivity(){
             && (isContainSmallText(password) || isContainBigText(password))
             && namaLengkap.isNotEmpty() && tglLahir.isNotEmpty() && tempatLahir.isNotEmpty()
             && fotoProfil != null && noHp.isNotEmpty() && alamat.isNotEmpty()
+            && jabatan.isNotEmpty() && unitKerja.isNotEmpty()
             && (noHp.length in 10..13) && radio > 0 && jenisKelamin.isNotEmpty()
         ) {
             val hp = noHp.replaceFirst("0", "+62")
@@ -177,7 +180,7 @@ class RegisterAgainActivity : AppCompatActivity(){
 
             val tempData = ModelUser(
                 username, password, hp, "", namaLengkap,
-                jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat,
+                jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat, jabatan, unitKerja,
                 Constant.statusRequest, "", dataUser?.fotoProfil?:"", tglSekarang,
                 tglSekarang, tglSekarang
             )
@@ -218,6 +221,12 @@ class RegisterAgainActivity : AppCompatActivity(){
             }
             else if (alamat.isEmpty()){
                 setTextError("Error, mohon masukkan alamat", etAlamat)
+            }
+            else if (jabatan.isEmpty()){
+                setTextError("Error, mohon masukkan jabatan", etJabatan)
+            }
+            else if (unitKerja.isEmpty()){
+                setTextError("Error, mohon masukkan unit kerja", etUnitKerja)
             }
             else if (tempatLahir.isEmpty()){
                 setTextError("Error, Mohon masukkan tempat lahir", etTempatLahir)

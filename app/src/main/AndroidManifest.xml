@@ -43,12 +43,6 @@
         </activity>
 
         <activity
-            android:name="id.exomatik.absenasn.ui.main.MainTesActivity"
-            android:label="@string/main_activity"
-            android:screenOrientation="portrait"
-            android:theme="@style/CustomTheme"/>
-
-        <activity
             android:name="id.exomatik.absenasn.ui.auth.LoginActivity"
             android:label="Login"
             android:screenOrientation="portrait"
@@ -117,12 +111,6 @@
         <activity
             android:name="id.exomatik.absenasn.ui.main.admin.verifyPegawai.VerifyPegawaiActivity"
             android:label="Verifikasi Pegawai"
-            android:screenOrientation="portrait"
-            android:theme="@style/CustomTheme"/>
-
-        <activity
-            android:name="id.exomatik.absenasn.ui.main.pegawai.kirimAbsen.KirimAbsenActivity"
-            android:label="Absensi"
             android:screenOrientation="portrait"
             android:theme="@style/CustomTheme"/>
 

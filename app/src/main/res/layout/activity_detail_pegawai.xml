@@ -69,6 +69,15 @@
                     app:fontFamily="@font/roboto_regular"
                     android:textSize="@dimen/text_h3"
                     android:textColor="@color/black"
+                    android:id="@+id/textJabatanUnitKerja"
+                    />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fontFamily="@font/roboto_regular"
+                    android:textSize="@dimen/text_h3"
+                    android:textColor="@color/black"
                     android:id="@+id/textPhone"
                     />
 

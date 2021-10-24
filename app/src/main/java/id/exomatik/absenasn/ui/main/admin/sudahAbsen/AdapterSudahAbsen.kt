@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
@@ -33,7 +34,7 @@ class AdapterSudahAbsen(
         RecyclerView.ViewHolder(itemV) {
         @SuppressLint("SetTextI18n")
         fun bindAfiliasi(itemData: ModelAbsensi) {
-            getDataUser(itemData, itemV.textNama, itemV.btnKonfirmasi)
+            getDataUser(itemData, itemV.textNama, itemV.textJabatan, itemV.imgFoto, itemV.btnKonfirmasi)
             itemV.textTanggal.text = "${itemData.jam} / ${itemData.tanggalKerja}"
             itemV.textJenis.text = "Absen : ${itemData.jenis}"
 
@@ -59,25 +60,16 @@ class AdapterSudahAbsen(
                     itemV.textStatus.setTextColor(Color.BLACK)
                 }
             }
-            itemV.imgFoto.load(itemData.foto_absensi) {
-                crossfade(true)
-                transformations(CircleCropTransformation())
-                placeholder(R.drawable.ic_camera_white)
-                error(R.drawable.ic_camera_white)
-                fallback(R.drawable.ic_camera_white)
-                memoryCachePolicy(CachePolicy.ENABLED)
-            }
-
-            itemV.imgFoto.setOnClickListener {
-                activity?.let { it1 -> onClickFoto(itemData.foto_absensi, it1) }
-            }
         }
     }
 
-    private fun getDataUser(itemData: ModelAbsensi, textNama: AppCompatTextView, btnKonfirmasi: AppCompatButton){
+    @SuppressLint("SetTextI18n")
+    private fun getDataUser(itemData: ModelAbsensi, textNama: AppCompatTextView, textJabatan: AppCompatTextView,
+                            imgFoto: AppCompatImageView, btnKonfirmasi: AppCompatButton){
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
                 textNama.text = itemData.username_user
+                textJabatan.text = "-"
                 btnKonfirmasi.setOnClickListener {
                     onClik(itemData, null)
                 }
@@ -89,12 +81,28 @@ class AdapterSudahAbsen(
 
                     if (data != null){
                         textNama.text = data.nama
+                        textJabatan.text = "${data.jabatan}/${data.unit_kerja}"
+
+                        imgFoto.load(data.fotoProfil) {
+                            crossfade(true)
+                            transformations(CircleCropTransformation())
+                            placeholder(R.drawable.ic_camera_white)
+                            error(R.drawable.ic_camera_white)
+                            fallback(R.drawable.ic_camera_white)
+                            memoryCachePolicy(CachePolicy.ENABLED)
+                        }
+
+                        imgFoto.setOnClickListener {
+                            activity?.let { it1 -> onClickFoto(data.fotoProfil, it1) }
+                        }
+
                         btnKonfirmasi.setOnClickListener {
                             onClik(itemData, data)
                         }
                     }
                     else{
                         textNama.text = itemData.username_user
+                        textJabatan.text = "-"
                         btnKonfirmasi.setOnClickListener {
                             onClik(itemData, null)
                         }
@@ -102,6 +110,7 @@ class AdapterSudahAbsen(
                 }
                 else{
                     textNama.text = itemData.username_user
+                    textJabatan.text = "-"
                     btnKonfirmasi.setOnClickListener {
                         onClik(itemData, null)
                     }

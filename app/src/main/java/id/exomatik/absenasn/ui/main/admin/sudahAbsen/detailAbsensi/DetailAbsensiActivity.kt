@@ -56,9 +56,10 @@ class DetailAbsensiActivity : AppCompatActivity(), OnMapReadyCallback {
         val requestOpen = intent.getBooleanExtra(Constant.request, false)
 
         textNama.text = "Pegawai ${dataUser?.nama}"
+        textJabatan.text = "Jabatan/UnitKerja ${dataUser?.jabatan}/${dataUser?.unit_kerja}"
         textUsernamePhone.text = dataUser?.phone
         textJenisAbsenJam.text = "Telah Absen pada pukul ${dataAbsensi?.jam}"
-        imgFoto.load(dataAbsensi?.foto_absensi) {
+        imgFoto.load(dataUser?.fotoProfil) {
             crossfade(true)
             transformations(CircleCropTransformation())
             placeholder(R.drawable.ic_camera_white)
@@ -181,7 +182,7 @@ class DetailAbsensiActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun clickFoto(){
-        onClickFoto(dataAbsensi?.foto_absensi?:"", this)
+        onClickFoto(dataUser?.fotoProfil?:"", this)
     }
 
     @SuppressLint("SetTextI18n")

@@ -20,7 +20,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.ui.main.MainActivity
-import id.exomatik.absenasn.ui.main.pegawai.kirimAbsen.KirimAbsenActivity
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.getTimeStamp
@@ -168,13 +167,13 @@ class CameraActivity : AppCompatActivity(), SurfaceHolder.Callback {
 
             val imagePath = Uri.fromFile(file)
 
-            val intent = Intent(this, KirimAbsenActivity::class.java)
-            intent.putExtra(Constant.idHari, idHari)
-            intent.putExtra(Constant.idAbsen, idAbsensi)
-            intent.putExtra(Constant.reffFotoUser2, imagePath)
-            intent.putExtra(Constant.jenisAbsen, jenisAbsensi)
-            startActivity(intent)
-            finish()
+//            val intent = Intent(this, KirimAbsenActivity::class.java)
+//            intent.putExtra(Constant.idHari, idHari)
+//            intent.putExtra(Constant.idAbsen, idAbsensi)
+//            intent.putExtra(Constant.reffFotoUser2, imagePath)
+//            intent.putExtra(Constant.jenisAbsen, jenisAbsensi)
+//            startActivity(intent)
+//            finish()
 
             out.close()
         } catch (e: Exception) {

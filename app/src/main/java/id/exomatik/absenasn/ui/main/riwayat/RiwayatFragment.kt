@@ -13,6 +13,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
@@ -392,7 +393,7 @@ class RiwayatFragment : Fragment() {
             createExcel()
         }
         else{
-            v.textStatus.text = "Maaf, tanggal ${v.etPickDate.editText?.text} bukan hari absen"
+            Toast.makeText(activity, "Maaf, tanggal ${v.etPickDate.editText?.text} bukan hari absen", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -500,9 +501,9 @@ class RiwayatFragment : Fragment() {
         try {
             outputStream = FileOutputStream(file)
             excelData.write(outputStream)
-            Toast.makeText(activity, "File excel tersimpan pada ${file.path}", Toast.LENGTH_LONG).show()
+            activity?.let { dialogSucces("File excel tersimpan pada ${file.path}", it) }
 
-            activity?.let { openFile(it, file) }
+//            activity?.let { openFile(it, file) }
         } catch (e: IOException) {
             e.printStackTrace()
             v.textStatus.text = "Gagal menyimpan file excel + ${e.message}"
@@ -513,6 +514,19 @@ class RiwayatFragment : Fragment() {
                 v.textStatus.text = ex.message
             }
         }
+    }
+
+    private fun dialogSucces(msg: String, act: Activity) {
+        val alert = AlertDialog.Builder(act)
+        alert.setTitle("Berhasil Mendownload File")
+        alert.setMessage(msg)
+        alert.setPositiveButton(
+            Constant.iya
+        ) { dialog, _ ->
+            dialog.dismiss()
+        }
+
+        alert.show()
     }
 
     private fun openFile(act: Activity, filePath: File) {

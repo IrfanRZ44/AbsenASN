@@ -25,6 +25,7 @@ class AdapterBelumAbsen(
         @SuppressLint("SetTextI18n")
         fun bindAfiliasi(itemData: ModelUser) {
             itemV.textNama.text = itemData.nama
+            itemV.textJabatan.text = "${itemData.jabatan}/${itemData.unit_kerja}"
             itemV.textTglLahir.text = "${itemData.tempatLahir}, ${itemData.tanggalLahir}"
             itemV.textJenisKelamin.text = itemData.jk
             itemV.textAlamat.text = itemData.alamat
