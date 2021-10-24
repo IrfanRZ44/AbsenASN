@@ -9,6 +9,8 @@ data class ModelAbsensi(
     var username_user: String = "",
     var id_hari: String = "",
     var foto_absensi: String = "",
+    var nama: String = "",
+    var jabatan: String = "",
     var latitude: String = "",
     var longitude: String = "",
     var jenis: String = "",

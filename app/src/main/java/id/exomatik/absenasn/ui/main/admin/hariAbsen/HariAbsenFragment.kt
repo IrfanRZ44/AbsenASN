@@ -55,13 +55,13 @@ class HariAbsenFragment : Fragment() {
 
         savedData = DataSave(context)
         init()
-        onClick()
 
         return v
     }
 
     private fun init() {
         initAdapter()
+        floatingAction()
         activity?.let { it -> showDialogInput(it) }
         getDataHariKerja()
 
@@ -69,10 +69,6 @@ class HariAbsenFragment : Fragment() {
             v.swipeRefresh.isRefreshing = false
             getDataHariKerja()
         }
-    }
-
-    fun onClick(){
-        floatingAction()
     }
 
     private fun floatingAction() {

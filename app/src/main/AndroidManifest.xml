@@ -16,6 +16,7 @@
     <uses-feature android:name="android.hardware.camera" android:required="true"/>
     <uses-feature android:name="android.hardware.camera.front" android:required="true"/>
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
 
     <application
         android:allowBackup="true"
@@ -40,6 +41,12 @@
                 <action android:name="com.exomatik.absenasn.fcm_TARGET_NOTIFICATION_ADMIN"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="id.exomatik.absenasn.ui.main.MainTesActivity"
+            android:label="@string/main_activity"
+            android:screenOrientation="portrait"
+            android:theme="@style/CustomTheme"/>
 
         <activity
             android:name="id.exomatik.absenasn.ui.auth.LoginActivity"
@@ -155,6 +162,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths">
             </meta-data>
+        </provider>
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths"/>
         </provider>
 
         <meta-data

@@ -14,6 +14,7 @@ import id.exomatik.absenasn.BuildConfig
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelInfoApps
 import id.exomatik.absenasn.ui.main.MainActivity
+import id.exomatik.absenasn.ui.main.MainTesActivity
 import id.exomatik.absenasn.utils.Constant
 import id.exomatik.absenasn.utils.DataSave
 import id.exomatik.absenasn.utils.FirebaseUtils
@@ -119,7 +120,8 @@ class SplashActivity : AppCompatActivity(){
 
     private fun moveMainAct(){
         progress.visibility = View.GONE
-        val intent = Intent(this, MainActivity::class.java)
+//        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, MainTesActivity::class.java)
         startActivity(intent)
         finish()
     }

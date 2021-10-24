@@ -52,6 +52,9 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.32"
     implementation 'androidx.core:core-ktx:1.5.0'
+    implementation files('libs\\poi-3.15.jar')
+    implementation files('libs\\poi-ooxml-3.15.jar')
+    implementation files('libs\\poi-ooxml-schemas-3.15.jar')
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -89,6 +92,7 @@ dependencies {
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
     implementation 'com.github.wangjiegulu:rfab:2.0.0'
     implementation 'com.github.bumptech.glide:glide:4.12.0'
+    implementation "androidx.biometric:biometric:1.1.0"
 
     //view pager
     implementation 'com.tbuonomo.andrui:viewpagerdotsindicator:4.1.2'
