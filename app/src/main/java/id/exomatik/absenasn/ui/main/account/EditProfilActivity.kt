@@ -49,6 +49,10 @@ class EditProfilActivity : AppCompatActivity(){
             setDataUser(dataUser)
         }
         etTglLahir.editText?.keyListener = null
+        if (savedData.getDataUser()?.jenisAkun == Constant.levelUser){
+            etJabatan.visibility = View.VISIBLE
+            etUnitKerja.visibility = View.VISIBLE
+        }
 
         onClick()
     }
@@ -130,6 +134,8 @@ class EditProfilActivity : AppCompatActivity(){
         val tglLahir = etTglLahir.editText?.text.toString()
         val tempatLahir = etTempatLahir.editText?.text.toString()
         val alamat = etAlamat.editText?.text.toString()
+        val jabatan = etJabatan.editText?.text.toString()
+        val unitKerja = etUnitKerja.editText?.text.toString()
         val fotoProfil = etFotoProfil?.path
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
         val dataOld = savedData.getDataUser()
@@ -142,7 +148,7 @@ class EditProfilActivity : AppCompatActivity(){
 
             val dataUser = ModelUser(
                 dataOld.username, dataOld.password, dataOld.phone, dataOld.token, namaLengkap,
-                jenisKelamin, dataOld.jenisAkun, tempatLahir, tglLahir, alamat,
+                jenisKelamin, dataOld.jenisAkun, tempatLahir, tglLahir, alamat, jabatan, unitKerja,
                 Constant.statusActive, "", dataOld.fotoProfil, tglSekarang,
                 tglSekarang, dataOld.createdAt
             )

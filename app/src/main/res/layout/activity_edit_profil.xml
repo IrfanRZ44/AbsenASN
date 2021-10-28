@@ -147,7 +147,54 @@
                     android:maxLines="1"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:text="@={viewModel.etAlamat}"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/customEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/jabatan"
+                android:textColorHint="@color/gray2"
+                android:layout_marginTop="@dimen/h2"
+                app:errorEnabled="true"
+                android:id="@+id/etJabatan"
+                android:visibility="gone"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/textStandardWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/customEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/unit_kerja"
+                android:textColorHint="@color/gray2"
+                android:layout_marginTop="@dimen/h2"
+                app:errorEnabled="true"
+                android:id="@+id/etUnitKerja"
+                android:visibility="gone"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/textStandardWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -171,7 +218,6 @@
                     android:maxLines="1"
                     android:textAlignment="textStart"
                     android:textColor="@color/black"
-                    android:text="@={viewModel.etTempatLahir}"
                     />
             </com.google.android.material.textfield.TextInputLayout>
 
