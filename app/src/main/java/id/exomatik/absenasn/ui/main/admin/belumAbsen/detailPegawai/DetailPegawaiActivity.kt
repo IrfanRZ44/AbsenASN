@@ -22,13 +22,11 @@ import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.services.notification.model.Notification
 import id.exomatik.absenasn.services.notification.model.Sender
 import id.exomatik.absenasn.ui.main.MainActivity
-import id.exomatik.absenasn.utils.Constant
-import id.exomatik.absenasn.utils.FirebaseUtils
-import id.exomatik.absenasn.utils.getDateNow
-import id.exomatik.absenasn.utils.onClickFoto
+import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.activity_detail_pegawai.*
 
 class DetailPegawaiActivity : AppCompatActivity() {
+    private lateinit var savedData : DataSave
     private var dataUser : ModelUser? = null
     private var dataHariKerja : ModelHariKerja? = null
 
@@ -37,6 +35,7 @@ class DetailPegawaiActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_detail_pegawai)
 
+        savedData = DataSave(this)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.title = "Belum Absen"
         supportActionBar?.show()
@@ -93,10 +92,12 @@ class DetailPegawaiActivity : AppCompatActivity() {
         onClickFoto(dataUser?.fotoProfil?:"", this)
     }
 
+    @SuppressLint("SetTextI18n")
     private fun onClickWA(){
         try {
             progress.visibility = View.VISIBLE
-            val text = "Salam Exomatik... Hari ini Anda belum melakukan absensi harian pegawai"
+//            val text = "Salam Exomatik... Hari ini Anda belum melakukan absensi harian pegawai"
+            val text = savedData.getDataApps()?.messageWhatsapp?:"Assalamualaikum Warrahmatullahi... Hari ini Anda belum melakukan absensi pegawai"
 
             val phoneNumber = dataUser?.phone
             val url = "https://api.whatsapp.com/send?phone=$phoneNumber&text=$text"
@@ -106,9 +107,9 @@ class DetailPegawaiActivity : AppCompatActivity() {
             startActivity(i)
             progress.visibility = View.GONE
         } catch (e: ActivityNotFoundException){
-            textStatus.text = e.message
+            textStatus.text = "Error ${e.message}"
         } catch (e: PackageManager.NameNotFoundException){
-            textStatus.text = e.message
+            textStatus.text = "Error ${e.message}"
         }
     }
 
@@ -172,7 +173,8 @@ class DetailPegawaiActivity : AppCompatActivity() {
         val tglSplit = dateCreated.split("-")
 
         val resultAbsen = ModelAbsensi("", usernameUser,
-            dataHari.id, foto, "0", "0", jenis, Constant.statusActive,
+            dataHari.id, foto, dataUser?.jabatan?:"-", dataUser?.unit_kerja?:"-"
+            , "0", "0", jenis, Constant.statusActive,
             tglSplit[0], tglSplit[1], tglSplit[2], dateCreated, timeCreated,
             "${dataHari.id}__${usernameUser}", dateTimeCreated, dateTimeCreated
         )

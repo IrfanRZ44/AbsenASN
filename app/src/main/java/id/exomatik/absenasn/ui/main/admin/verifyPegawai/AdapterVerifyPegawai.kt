@@ -15,7 +15,7 @@ import com.google.android.material.textfield.TextInputLayout
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.utils.onClickFoto
-import kotlinx.android.synthetic.main.item_pegawai.view.*
+import kotlinx.android.synthetic.main.item_verify_pegawai.view.*
 import kotlin.collections.ArrayList
 
 class AdapterVerifyPegawai(
@@ -29,8 +29,6 @@ class AdapterVerifyPegawai(
         RecyclerView.ViewHolder(v) {
         @SuppressLint("SetTextI18n")
         fun bindAfiliasi(itemData: ModelUser, position: Int) {
-            v.btnAccept.visibility = View.VISIBLE
-            v.btnReject.visibility = View.VISIBLE
             v.textNama.text = itemData.nama
             v.textHp.text = "No Hp : ${itemData.phone}"
             v.textAlamat.text = "Alamat : ${itemData.alamat}"
@@ -110,7 +108,7 @@ class AdapterVerifyPegawai(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AfiliasiHolder {
         return AfiliasiHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_pegawai,
+                R.layout.item_verify_pegawai,
                 parent,
                 false
             )

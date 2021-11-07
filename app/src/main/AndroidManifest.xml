@@ -8,8 +8,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        tools:ignore="ScopedStorage" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -17,6 +16,11 @@
     <uses-feature android:name="android.hardware.camera.front" android:required="true"/>
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
+    <queries>
+        <package android:name="com.whatsapp" />
+    </queries>
 
     <application
         android:allowBackup="true"
@@ -27,7 +31,9 @@
         android:theme="@style/CustomTheme"
         android:fullBackupContent="true"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="m"
+        android:requestLegacyExternalStorage="true"
+        >
         <activity android:name="id.exomatik.absenasn.ui.auth.SplashActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait"

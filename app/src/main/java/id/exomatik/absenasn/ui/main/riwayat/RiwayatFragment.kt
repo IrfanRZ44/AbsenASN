@@ -4,8 +4,10 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -16,7 +18,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
@@ -117,7 +118,7 @@ class RiwayatFragment : Fragment() {
             override fun onRFACItemLabelClick(position: Int, item: RFACLabelItem<Any>?) {
                 when(position) {
                     0 -> {
-                        onClickDownload()
+                        context?.let { checkPermissionStorage(it) }
                     }
                 }
                 rfabHelper.toggleContent()
@@ -126,7 +127,7 @@ class RiwayatFragment : Fragment() {
             override fun onRFACItemIconClick(position: Int, item: RFACLabelItem<Any>?) {
                 when(position) {
                     0 -> {
-                        onClickDownload()
+                        context?.let { checkPermissionStorage(it) }
                     }
                 }
                 rfabHelper.toggleContent()
@@ -172,6 +173,35 @@ class RiwayatFragment : Fragment() {
             datePickerDialog.show()
         } catch (e: java.lang.Exception) {
             v.textStatus.text = e.message
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun checkPermissionStorage(ctx: Context){
+        val permissionStorage = arrayOf(
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(ctx, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+
+            requestPermissions(permissionStorage, Constant.codeRequestStorage)
+        }
+        else{
+            onClickDownload()
+        }
+    }
+
+    @SuppressLint("SetTextI18n")
+    @Suppress("DEPRECATION")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            Constant.codeRequestStorage -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                onClickDownload()
+            }
+            else ->
+                v.textStatus.text = "Mohon izinkan penyimpanan"
         }
     }
 
@@ -357,7 +387,7 @@ class RiwayatFragment : Fragment() {
                 } == PackageManager.PERMISSION_GRANTED) {
                 true
             } else {
-                v.textStatus.text = "Izin menyimpan file pada penyimpanan telepon ditolak"
+                Toast.makeText(context, "Izin menyimpan file pada penyimpanan telepon ditolak", Toast.LENGTH_LONG).show()
                 activity?.let {
                     ActivityCompat.requestPermissions(
                         it,
@@ -502,11 +532,9 @@ class RiwayatFragment : Fragment() {
             outputStream = FileOutputStream(file)
             excelData.write(outputStream)
             activity?.let { dialogSucces("File excel tersimpan pada ${file.path}", it) }
-
-//            activity?.let { openFile(it, file) }
         } catch (e: IOException) {
             e.printStackTrace()
-            v.textStatus.text = "Gagal menyimpan file excel + ${e.message}"
+            Toast.makeText(context, "Gagal menyimpan file excel + ${e.message}", Toast.LENGTH_LONG).show()
 
             try {
                 outputStream?.close()
@@ -521,7 +549,14 @@ class RiwayatFragment : Fragment() {
         alert.setTitle("Berhasil Mendownload File")
         alert.setMessage(msg)
         alert.setPositiveButton(
-            Constant.iya
+            "Buka File"
+        ) { dialog, _ ->
+            openFile()
+            dialog.dismiss()
+        }
+
+        alert.setNegativeButton(
+            "Tutup"
         ) { dialog, _ ->
             dialog.dismiss()
         }
@@ -529,16 +564,21 @@ class RiwayatFragment : Fragment() {
         alert.show()
     }
 
-    private fun openFile(act: Activity, filePath: File) {
-        val intent = Intent()
-        intent.action = Intent.ACTION_VIEW
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-
-        showLog(filePath.path)
-        val fileProvider = FileProvider.getUriForFile(act, act.packageName, filePath)
-
-        intent.setDataAndType(fileProvider, "application/vnd.ms-excel")
-        activity?.startActivity(Intent.createChooser(intent, "Open file"))
+    @Suppress("DEPRECATION")
+    private fun openFile() {
+//        val intent = Intent()
+//        intent.action = Intent.ACTION_VIEW
+//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//
+//        val fileProvider = FileProvider.getUriForFile(act, act.packageName, filePath)
+//
+//        intent.setDataAndType(fileProvider, "application/vnd.ms-excel")
+//        activity?.startActivity(Intent.createChooser(intent, "Open file"))
+        val path =  "${Environment.getExternalStorageDirectory()}/Download/"
+        val uri = Uri.parse(path)
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.setDataAndType(uri, "*/*")
+        startActivity(intent)
     }
 
     private fun makeCell(index: Int, text: String, row: Row, cellStyle: CellStyle) : Cell {

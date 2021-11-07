@@ -16,20 +16,20 @@ import com.google.android.material.textfield.TextInputLayout
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.R
 import id.exomatik.absenasn.utils.onClickFoto
-import kotlinx.android.synthetic.main.item_pegawai.view.*
+import kotlinx.android.synthetic.main.item_daftar_pegawai.view.*
 import kotlin.collections.ArrayList
 
 class AdapterDaftarPegawai(
     private val listData: ArrayList<ModelUser>,
     private val activity: Activity?,
+    private val onClikDelete: (ModelUser, Int) -> Unit
 ) : RecyclerView.Adapter<AdapterDaftarPegawai.AfiliasiHolder>() {
 
     inner class AfiliasiHolder(private val v: View) :
         RecyclerView.ViewHolder(v) {
         @SuppressLint("SetTextI18n")
-        fun bindAfiliasi(itemData: ModelUser) {
-            v.btnAccept.visibility = View.GONE
-            v.btnReject.visibility = View.GONE
+        fun bindAfiliasi(itemData: ModelUser, position: Int) {
+            v.btnDelete.visibility = View.VISIBLE
             v.textWait.visibility = View.GONE
             v.textNama.text = itemData.nama
             v.textHp.text = "No Hp : ${itemData.phone}"
@@ -51,6 +51,10 @@ class AdapterDaftarPegawai(
 
             v.setOnClickListener {
                 showDialogDetail(itemData)
+            }
+
+            v.btnDelete.setOnClickListener {
+                onClikDelete(itemData, position)
             }
         }
     }
@@ -109,7 +113,7 @@ class AdapterDaftarPegawai(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AfiliasiHolder {
         return AfiliasiHolder(
             LayoutInflater.from(parent.context).inflate(
-                R.layout.item_pegawai,
+                R.layout.item_daftar_pegawai,
                 parent,
                 false
             )
@@ -118,6 +122,6 @@ class AdapterDaftarPegawai(
 
     override fun getItemCount(): Int = listData.size
     override fun onBindViewHolder(holder: AfiliasiHolder, position: Int) {
-        holder.bindAfiliasi(listData[position])
+        holder.bindAfiliasi(listData[position], position)
     }
 }

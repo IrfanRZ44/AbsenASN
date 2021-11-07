@@ -111,26 +111,7 @@ class AbsensiFragment : Fragment() {
             requestPermissions(permissionStorage, Constant.codeRequestStorage)
         }
         else{
-            checkPermissionCamera(ctx)
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    @Suppress("DEPRECATION")
-    private fun checkPermissionCamera(ctx: Context?){
-        val permissionsCamera = arrayOf(Manifest.permission.CAMERA)
-        val act = activity
-
-        if (ctx != null && act != null){
-            if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(permissionsCamera, Constant.codeRequestCamera)
-            }
-            else{
-                checkPermissionLocation(act)
-            }
-        }
-        else{
-            v.textStatus.text = "Error, mohon mulai ulang aplikasi"
+            activity?.let { checkPermissionLocation(it) }
         }
     }
 
@@ -183,9 +164,6 @@ class AbsensiFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             Constant.codeRequestStorage -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkPermissionCamera(context)
-            }
-            Constant.codeRequestCamera -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 activity?.let { checkPermissionLocation(it) }
             }
             Constant.codeRequestLocation -> if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
