@@ -108,6 +108,31 @@
                 style="@style/customEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/nip_nidn_id"
+                android:layout_marginTop="@dimen/h2"
+                android:textColorHint="@color/gray2"
+                app:errorEnabled="true"
+                app:counterMaxLength="25"
+                app:counterEnabled="true"
+                android:id="@+id/etId"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/textStandardWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    android:digits="@string/digitsPhone"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/customEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/kata_sandi"
                 android:textColorHint="@color/gray2"
                 android:layout_marginTop="@dimen/h2"
@@ -236,6 +261,29 @@
                 style="@style/customEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/pangkat"
+                android:textColorHint="@color/gray2"
+                android:layout_marginTop="@dimen/h2"
+                app:errorEnabled="true"
+                android:id="@+id/etPangkat"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    style="@style/textStandardWhite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="textCapSentences"
+                    android:maxLines="1"
+                    android:textAlignment="textStart"
+                    android:textColor="@color/black"
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/customEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:hint="@string/jabatan"
                 android:textColorHint="@color/gray2"
                 android:layout_marginTop="@dimen/h2"
@@ -259,11 +307,11 @@
                 style="@style/customEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/unit_kerja"
+                android:hint="@string/unit_organisasi"
                 android:textColorHint="@color/gray2"
                 android:layout_marginTop="@dimen/h2"
                 app:errorEnabled="true"
-                android:id="@+id/etUnitKerja"
+                android:id="@+id/etUnitOrganisasi"
                 >
 
                 <com.google.android.material.textfield.TextInputEditText

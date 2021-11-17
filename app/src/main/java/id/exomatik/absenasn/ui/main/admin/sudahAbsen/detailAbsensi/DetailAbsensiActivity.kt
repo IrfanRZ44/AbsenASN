@@ -56,7 +56,7 @@ class DetailAbsensiActivity : AppCompatActivity(), OnMapReadyCallback {
         val requestOpen = intent.getBooleanExtra(Constant.request, false)
 
         textNama.text = "Pegawai ${dataUser?.nama}"
-        textJabatan.text = "Jabatan/UnitKerja ${dataUser?.jabatan}/${dataUser?.unit_kerja}"
+        textJabatan.text = "Jabatan/UnitOrganisasi ${dataUser?.jabatan}/${dataUser?.unit_organisasi}"
         textUsernamePhone.text = dataUser?.phone
         textJenisAbsenJam.text = "Telah Absen pada pukul ${dataAbsensi?.jam}"
         imgFoto.load(dataUser?.fotoProfil) {

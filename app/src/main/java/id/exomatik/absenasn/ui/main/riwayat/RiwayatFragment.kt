@@ -7,7 +7,6 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
@@ -18,6 +17,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.database.DataSnapshot
@@ -48,6 +48,7 @@ class RiwayatFragment : Fragment() {
     private lateinit var savedData: DataSave
     private lateinit var v : View
     private val listData = ArrayList<ModelAbsensi>()
+    private val listDownload = ArrayList<ModelAbsensi>()
     private var adapter: AdapterRiwayat? = null
     private var dataHariKerja: ModelHariKerja? = null
 
@@ -327,6 +328,10 @@ class RiwayatFragment : Fragment() {
                         if (data != null && data.id_hari == indexKodeHari){
                             listData.add(data)
                             adapter?.notifyDataSetChanged()
+
+                            if (data.jenis == Constant.absenHadir){
+                                listDownload.add(data)
+                            }
                         }
                     }
                 }
@@ -484,7 +489,9 @@ class RiwayatFragment : Fragment() {
 
             sheet.setColumnWidth(0, (15 * 75))
             sheet.setColumnWidth(1, (15 * 350))
-            sheet.setColumnWidth(2, (15 * 220))
+            sheet.setColumnWidth(2, (15 * 300))
+            sheet.setColumnWidth(4, (15 * 300))
+            sheet.setColumnWidth(5, (15 * 300))
 
             var i = 3
             while(i < 3) {
@@ -500,7 +507,7 @@ class RiwayatFragment : Fragment() {
             excelRow6(sheet, wb)
             excelRow7(sheet, wb)
 
-            excelRowAbsensi(sheet, cellStyle, listData)
+            excelRowAbsensi(sheet, cellStyle, listDownload)
 
             saveFile(wb)
         }
@@ -512,11 +519,15 @@ class RiwayatFragment : Fragment() {
     private fun excelRowAbsensi(sheet: Sheet, cellStyle: CellStyle, listAbsensi: List<ModelAbsensi>){
         var indexRow = 8
         for (i in listAbsensi.indices){
+            val number = i + 1
             val row = sheet.createRow(indexRow++)
 
-            makeCell(0, "$i.", row, cellStyle)
+            makeCell(0, "$number.", row, cellStyle)
             makeCell(1, listAbsensi[i].nama, row, cellStyle)
-            makeCell(2, listAbsensi[i].jabatan, row, cellStyle)
+            makeCell(2, listAbsensi[i].nip, row, cellStyle)
+            makeCell(3, listAbsensi[i].pangkat, row, cellStyle)
+            makeCell(4, listAbsensi[i].jabatan, row, cellStyle)
+            makeCell(5, listAbsensi[i].unit_organisasi, row, cellStyle)
         }
     }
 
@@ -531,7 +542,7 @@ class RiwayatFragment : Fragment() {
         try {
             outputStream = FileOutputStream(file)
             excelData.write(outputStream)
-            activity?.let { dialogSucces("File excel tersimpan pada ${file.path}", it) }
+            activity?.let { dialogSucces(file, it) }
         } catch (e: IOException) {
             e.printStackTrace()
             Toast.makeText(context, "Gagal menyimpan file excel + ${e.message}", Toast.LENGTH_LONG).show()
@@ -544,14 +555,14 @@ class RiwayatFragment : Fragment() {
         }
     }
 
-    private fun dialogSucces(msg: String, act: Activity) {
+    private fun dialogSucces(file: File, act: Activity) {
         val alert = AlertDialog.Builder(act)
         alert.setTitle("Berhasil Mendownload File")
-        alert.setMessage(msg)
+        alert.setMessage("File excel tersimpan pada ${file.path}")
         alert.setPositiveButton(
             "Buka File"
         ) { dialog, _ ->
-            openFile()
+            openFile(file, act)
             dialog.dismiss()
         }
 
@@ -565,20 +576,32 @@ class RiwayatFragment : Fragment() {
     }
 
     @Suppress("DEPRECATION")
-    private fun openFile() {
-//        val intent = Intent()
-//        intent.action = Intent.ACTION_VIEW
-//        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    private fun openFile(file: File, act: Activity) {
+        val intent = Intent()
+        intent.action = Intent.ACTION_VIEW
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        val fileProvider = FileProvider.getUriForFile(act, "id.exomatik.absenasn.provider", file)
+
+        intent.setDataAndType(fileProvider, "application/vnd.ms-excel")
+        activity?.startActivity(Intent.createChooser(intent, "Open file"))
+
+//        val path =  "${Environment.getExternalStorageDirectory()}/Download/"
+//        val path =  "${Environment.getExternalStorageDirectory()}/${Environment.DIRECTORY_DOWNLOADS}/"
+//        val path =  "${Environment.getExternalStorageDirectory()}/Unduhan/"
+
+//        asdasd
+//        val path =  Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).toString() + "/"
 //
-//        val fileProvider = FileProvider.getUriForFile(act, act.packageName, filePath)
-//
-//        intent.setDataAndType(fileProvider, "application/vnd.ms-excel")
-//        activity?.startActivity(Intent.createChooser(intent, "Open file"))
-        val path =  "${Environment.getExternalStorageDirectory()}/Download/"
-        val uri = Uri.parse(path)
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.setDataAndType(uri, "*/*")
-        startActivity(intent)
+//        Toast.makeText(context, "Membuka folder $path", Toast.LENGTH_LONG).show()
+//        val uri = Uri.parse(path)
+////        val intent = Intent(Intent.ACTION_PICK)
+//        val intent = Intent(Intent.ACTION_VIEW)
+////        intent.setDataAndType(uri, "text/csv")
+////        intent.setDataAndType(uri, "*/*")
+//        intent.setDataAndType(uri, "application/vnd.ms-excel")
+////        startActivity(intent)
+//        startActivity(intent)
     }
 
     private fun makeCell(index: Int, text: String, row: Row, cellStyle: CellStyle) : Cell {
@@ -747,6 +770,9 @@ class RiwayatFragment : Fragment() {
 
         makeCell(0, "No.", row, cellStyle)
         makeCell(1, "Nama", row, cellStyle)
-        makeCell(2, "Jabatan", row, cellStyle)
+        makeCell(2, "NIP/NIDN/ID", row, cellStyle)
+        makeCell(3, "Pangkat", row, cellStyle)
+        makeCell(4, "Jabatan", row, cellStyle)
+        makeCell(5, "Unit Organisasi", row, cellStyle)
     }
 }

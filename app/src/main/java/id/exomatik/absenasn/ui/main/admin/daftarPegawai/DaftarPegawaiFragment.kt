@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -107,16 +108,17 @@ class DaftarPegawaiFragment : Fragment() {
             alertDelete.setMessage(Constant.yakinDelete)
             alertDelete.setCancelable(true)
             alertDelete.setPositiveButton(
-                Constant.iya
+                "Hapus Data Pegawai"
             ) { dialog, _ ->
                 dialog.dismiss()
                 deleteItem(item, position)
             }
 
             alertDelete.setNegativeButton(
-                Constant.tidak
+                "Hapus IMEI"
             ) { dialog, _ ->
                 dialog.dismiss()
+                deleteIMEI(item)
             }
 
             alertDelete.show()
@@ -134,13 +136,14 @@ class DaftarPegawaiFragment : Fragment() {
             OnCompleteListener<Void> { result ->
                 v.progress.visibility = View.GONE
                 if (result.isSuccessful) {
-                    v.textStatus.text = "Berhasil menghapus user"
+                    Toast.makeText(context, "Berhasil menghapus user", Toast.LENGTH_LONG).show()
+
                     listData.removeAt(position)
                     adapter?.notifyItemRemoved(position)
 
                     cekList()
                 } else {
-                    v.textStatus.text = "Gagal menghapus user"
+                    Toast.makeText(context, "Gagal menghapus user", Toast.LENGTH_LONG).show()
                 }
             }
 
@@ -150,5 +153,51 @@ class DaftarPegawaiFragment : Fragment() {
         }
 
         FirebaseUtils.deleteValueWith1Child(Constant.reffUser, item.username, onCompleteListener, onFailureListener)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun deleteIMEI(item: ModelUser){
+        v.progress.visibility = View.VISIBLE
+
+        val onCompleteListener =
+            OnCompleteListener<Void> { result ->
+                v.progress.visibility = View.GONE
+                if (result.isSuccessful) {
+                    Toast.makeText(context, "Berhasil menghapus IMEI", Toast.LENGTH_LONG).show()
+
+                    showDialogIMEI()
+                } else {
+                    Toast.makeText(context, "Gagal menghapus IMEI", Toast.LENGTH_LONG).show()
+
+                }
+            }
+
+        val onFailureListener = OnFailureListener { result ->
+            v.progress.visibility = View.GONE
+            v.textStatus.text = result.message
+        }
+
+        FirebaseUtils.setValueWith2ChildString(Constant.reffUser, item.username, "imei", "",
+            onCompleteListener, onFailureListener)
+    }
+
+    @SuppressLint("SetTextI18n")
+    private fun showDialogIMEI(){
+        val ctx = context
+
+        if (ctx != null){
+            val alertDelete = AlertDialog.Builder(ctx)
+            alertDelete.setMessage("Silahkan memberi tahu pegawai Anda, untuk melakukan login ulang!")
+            alertDelete.setCancelable(true)
+            alertDelete.setPositiveButton(
+                "Tutup"
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+            alertDelete.show()
+        }
+        else{
+            v.textStatus.text = "Error, terjadi kesalahan yang tidak diketahui"
+        }
     }
 }

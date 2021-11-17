@@ -35,7 +35,7 @@ class AdapterSudahAbsen(
         @SuppressLint("SetTextI18n")
         fun bindAfiliasi(itemData: ModelAbsensi) {
             getDataUser(itemData, itemV.textNama, itemV.textJabatan, itemV.imgFoto, itemV.btnKonfirmasi)
-            itemV.textTanggal.text = "${itemData.jam} / ${itemData.tanggalKerja}"
+            itemV.textTanggal.text = "NIP/NIDN/ID : ${itemData.nip}"
             itemV.textJenis.text = "Absen : ${itemData.jenis}"
 
             when (itemData.status) {
@@ -81,7 +81,7 @@ class AdapterSudahAbsen(
 
                     if (data != null){
                         textNama.text = data.nama
-                        textJabatan.text = "${data.jabatan}/${data.unit_kerja}"
+                        textJabatan.text = "${data.jabatan}/${data.unit_organisasi}"
 
                         imgFoto.load(data.fotoProfil) {
                             crossfade(true)

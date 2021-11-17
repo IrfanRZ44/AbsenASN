@@ -29,7 +29,6 @@ import kotlinx.android.synthetic.main.activity_verify_register.*
 import java.util.concurrent.TimeUnit
 
 class VerifyRegisterActivity : AppCompatActivity(){
-    private lateinit var savedData : DataSave
     var phoneCode = ""
     var unverify = true
     var verifyId = ""
@@ -46,7 +45,6 @@ class VerifyRegisterActivity : AppCompatActivity(){
 
     @SuppressLint("SetTextI18n")
     private fun myCodeHere() {
-        savedData = DataSave(this)
 
         supportActionBar?.hide()
 
@@ -413,7 +411,7 @@ class VerifyRegisterActivity : AppCompatActivity(){
         alert.setCancelable(false)
 
         alert.setPositiveButton(
-            Constant.iya
+            "Tutup"
         ) { dialog, _ ->
             dialog.dismiss()
             val intent = Intent(this, SplashActivity::class.java)

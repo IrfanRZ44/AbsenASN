@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/textHp"
                 android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/btnReject"
+                android:layout_toStartOf="@+id/btnDelete"
                 android:ellipsize="end"
                 android:fontFamily="@font/roboto_regular"
                 android:lines="1"

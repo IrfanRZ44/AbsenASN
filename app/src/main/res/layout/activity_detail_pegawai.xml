@@ -69,7 +69,7 @@
                     app:fontFamily="@font/roboto_regular"
                     android:textSize="@dimen/text_h3"
                     android:textColor="@color/black"
-                    android:id="@+id/textJabatanUnitKerja"
+                    android:id="@+id/textJabatanUnitOrganisasi"
                     />
 
                 <androidx.appcompat.widget.AppCompatTextView

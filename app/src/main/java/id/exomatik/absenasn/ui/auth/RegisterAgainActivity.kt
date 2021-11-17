@@ -8,6 +8,7 @@ import android.app.DatePickerDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.RadioButton
@@ -119,10 +120,14 @@ class RegisterAgainActivity : AppCompatActivity(){
 
     private fun setDataUser(data: ModelUser){
         etUsername.editText?.setText(data.username)
+        etId.editText?.setText(data.nip)
         etUsername.visibility = View.GONE
         viewHaveAccount.visibility = View.GONE
         etUsername.editText?.isFocusable = false
         etNamaLengkap.editText?.setText(data.nama)
+        etJabatan.editText?.setText(data.jabatan)
+        etPangkat.editText?.setText(data.pangkat)
+        etUnitOrganisasi.editText?.setText(data.unit_organisasi)
         etAlamat.editText?.setText(data.alamat)
         etTglLahir.editText?.setText(data.tanggalLahir)
         etTempatLahir.editText?.setText(data.tempatLahir)
@@ -154,6 +159,8 @@ class RegisterAgainActivity : AppCompatActivity(){
         val btn = findViewById<RadioButton?>(radio)
         val jenisKelamin = btn?.text.toString()
         val username = etUsername.editText?.text.toString()
+        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+        val id = etId.editText?.text.toString()
         val password = etPassword.editText?.text.toString()
         val confirmPassword = etConfirmPassword.editText?.text.toString()
         val namaLengkap = etNamaLengkap.editText?.text.toString()
@@ -161,26 +168,27 @@ class RegisterAgainActivity : AppCompatActivity(){
         val tempatLahir = etTempatLahir.editText?.text.toString()
         val alamat = etAlamat.editText?.text.toString()
         val jabatan = etJabatan.editText?.text.toString()
-        val unitKerja = etUnitKerja.editText?.text.toString()
+        val pangkat = etPangkat.editText?.text.toString()
+        val unitOrganisasi = etUnitOrganisasi.editText?.text.toString()
         val noHp = etNoHp.editText?.text.toString()
         val fotoProfil = etFotoProfil
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
 
-        if (username.isNotEmpty() && password.isNotEmpty()
+        if (username.isNotEmpty() && id.isNotEmpty() && password.isNotEmpty()
             && confirmPassword.isNotEmpty() && (password == confirmPassword)
             && password.length >= 6 && isContainNumber(password)
             && (isContainSmallText(password) || isContainBigText(password))
             && namaLengkap.isNotEmpty() && tglLahir.isNotEmpty() && tempatLahir.isNotEmpty()
             && fotoProfil != null && noHp.isNotEmpty() && alamat.isNotEmpty()
-            && jabatan.isNotEmpty() && unitKerja.isNotEmpty()
+            && pangkat.isNotEmpty() && jabatan.isNotEmpty() && unitOrganisasi.isNotEmpty()
             && (noHp.length in 10..13) && radio > 0 && jenisKelamin.isNotEmpty()
         ) {
             val hp = noHp.replaceFirst("0", "+62")
             progress.visibility = View.VISIBLE
 
             val tempData = ModelUser(
-                username, password, hp, "", namaLengkap,
-                jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat, jabatan, unitKerja,
+                username, password, hp, androidId, "", namaLengkap,
+                jenisKelamin, Constant.levelUser, id, tempatLahir, tglLahir, alamat, pangkat, jabatan, unitOrganisasi,
                 Constant.statusRequest, "", dataUser?.fotoProfil?:"", tglSekarang,
                 tglSekarang, tglSekarang
             )
@@ -193,6 +201,9 @@ class RegisterAgainActivity : AppCompatActivity(){
             }
             else if (username.isEmpty()){
                 setTextError("Error, mohon masukkan username", etUsername)
+            }
+            else if (id.isEmpty()){
+                setTextError("Error, mohon masukkan NIP/NIDN/ID", etId)
             }
             else if (password.isEmpty()){
                 setTextError("Error, Mohon masukkan password", etPassword)
@@ -225,8 +236,11 @@ class RegisterAgainActivity : AppCompatActivity(){
             else if (jabatan.isEmpty()){
                 setTextError("Error, mohon masukkan jabatan", etJabatan)
             }
-            else if (unitKerja.isEmpty()){
-                setTextError("Error, mohon masukkan unit kerja", etUnitKerja)
+            else if (pangkat.isEmpty()){
+                setTextError("Error, mohon masukkan pangkat", etPangkat)
+            }
+            else if (unitOrganisasi.isEmpty()){
+                setTextError("Error, mohon masukkan unit kerja", etUnitOrganisasi)
             }
             else if (tempatLahir.isEmpty()){
                 setTextError("Error, Mohon masukkan tempat lahir", etTempatLahir)
@@ -298,7 +312,7 @@ class RegisterAgainActivity : AppCompatActivity(){
     private fun cekHandphone(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                addUserToFirebase(dataUser)
+                cekID(dataUser)
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -312,11 +326,45 @@ class RegisterAgainActivity : AppCompatActivity(){
                     }
 
                     if (tempData.phone == dataUser.phone){
-                        addUserToFirebase(dataUser)
+                        cekID(dataUser)
                     }
                     else{
                         progress.visibility = View.GONE
                         setTextError("Gagal, No Handphone sudah terdaftar", etNoHp)
+                    }
+                } else {
+                    cekID(dataUser)
+                }
+            }
+        }
+
+        FirebaseUtils.searchDataWith1ChildObject(
+            Constant.reffUser, Constant.phone, dataUser.phone, valueEventListener
+        )
+    }
+
+    private fun cekID(dataUser: ModelUser) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(result: DatabaseError) {
+                addUserToFirebase(dataUser)
+            }
+
+            override fun onDataChange(result: DataSnapshot) {
+                if (result.exists()) {
+                    var tempData = ModelUser()
+                    for (snapshot in result.children) {
+                        val data = snapshot.getValue(ModelUser::class.java)
+                        if(data != null){
+                            tempData = data
+                        }
+                    }
+
+                    if (tempData.nip == dataUser.nip){
+                        addUserToFirebase(dataUser)
+                    }
+                    else{
+                        progress.visibility = View.GONE
+                        setTextError("Gagal, NIP/NIDN/ID sudah terdaftar", etId)
                     }
                 } else {
                     addUserToFirebase(dataUser)
@@ -325,7 +373,7 @@ class RegisterAgainActivity : AppCompatActivity(){
         }
 
         FirebaseUtils.searchDataWith1ChildObject(
-            Constant.reffUser, Constant.phone, dataUser.phone, valueEventListener
+            Constant.reffUser, Constant.nip, dataUser.nip, valueEventListener
         )
     }
 
@@ -418,7 +466,7 @@ class RegisterAgainActivity : AppCompatActivity(){
         alert.setCancelable(false)
 
         alert.setPositiveButton(
-            Constant.iya
+            "Tutup"
         ) { dialog, _ ->
             dialog.dismiss()
             val intent = Intent(this, SplashActivity::class.java)

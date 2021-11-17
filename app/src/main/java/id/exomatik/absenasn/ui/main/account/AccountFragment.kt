@@ -1,5 +1,6 @@
 package id.exomatik.absenasn.ui.main.account
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -37,9 +38,10 @@ class AccountFragment : Fragment() {
         return v
     }
 
+    @SuppressLint("SetTextI18n")
     private fun myCodeHere() {
-        v.textPoin.text = savedData.getDataUser()?.username
-        v.textRupiah.text = savedData.getDataUser()?.phone
+        v.textPoin.text = "Username : ${savedData.getDataUser()?.username}\nNIP/NIDN/ID : ${savedData.getDataUser()?.nip}"
+        v.textRupiah.text = "Hp : ${savedData.getDataUser()?.phone}"
         v.imgFoto.load(savedData.getDataUser()?.fotoProfil) {
             crossfade(true)
             transformations(CircleCropTransformation())

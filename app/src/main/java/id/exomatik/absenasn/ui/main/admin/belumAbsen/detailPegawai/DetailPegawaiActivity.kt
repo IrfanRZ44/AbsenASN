@@ -49,7 +49,7 @@ class DetailPegawaiActivity : AppCompatActivity() {
         dataUser = intent.getParcelableExtra(Constant.reffUser)
         dataHariKerja = intent.getParcelableExtra(Constant.reffHariAbsen)
         textUsernameNama.text = "Nama Pegawai ${dataUser?.nama}"
-        textJabatanUnitKerja.text = "Jabatan/Unit Kerja ${dataUser?.jabatan}/${dataUser?.unit_kerja}"
+        textJabatanUnitOrganisasi.text = "Jabatan/Unit Kerja ${dataUser?.jabatan}/${dataUser?.unit_organisasi}"
         textPhone.text = dataUser?.phone
 
         imgFoto.load(dataUser?.fotoProfil) {
@@ -117,9 +117,10 @@ class DetailPegawaiActivity : AppCompatActivity() {
     private fun onClickAlpa(){
         val dataHari = dataHariKerja
         val usernameUser = dataUser?.username
+        val namaUser = dataUser?.nama
 
-        if (dataHari != null && !usernameUser.isNullOrEmpty()){
-            validateData(Constant.absenAlpa, dataHari, usernameUser, Constant.defaultFotoAlpa)
+        if (dataHari != null && !usernameUser.isNullOrEmpty() && !namaUser.isNullOrEmpty()){
+            validateData(Constant.absenAlpa, dataHari, usernameUser, namaUser)
         }
         else{
             textStatus.text = "Error, terjadi kesalahan database"
@@ -130,9 +131,10 @@ class DetailPegawaiActivity : AppCompatActivity() {
     private fun onClickCuti(){
         val dataHari = dataHariKerja
         val usernameUser = dataUser?.username
+        val namaUser = dataUser?.nama
 
-        if (dataHari != null && !usernameUser.isNullOrEmpty()){
-            validateData(Constant.absenCuti, dataHari, usernameUser, Constant.defaultFotoSakit)
+        if (dataHari != null && !usernameUser.isNullOrEmpty() && !namaUser.isNullOrEmpty()){
+            validateData(Constant.absenCuti, dataHari, usernameUser, namaUser)
         }
         else{
             textStatus.text = "Error, terjadi kesalahan database"
@@ -143,9 +145,10 @@ class DetailPegawaiActivity : AppCompatActivity() {
     private fun onClickSakit(){
         val dataHari = dataHariKerja
         val usernameUser = dataUser?.username
+        val namaUser = dataUser?.nama
 
-        if (dataHari != null && !usernameUser.isNullOrEmpty()){
-            validateData(Constant.absenSakit, dataHari, usernameUser, Constant.defaultFotoSakit)
+        if (dataHari != null && !usernameUser.isNullOrEmpty() && !namaUser.isNullOrEmpty()){
+            validateData(Constant.absenSakit, dataHari, usernameUser, namaUser)
         }
         else{
             textStatus.text = "Error, terjadi kesalahan database"
@@ -156,16 +159,17 @@ class DetailPegawaiActivity : AppCompatActivity() {
     private fun onClickIzin(){
         val dataHari = dataHariKerja
         val usernameUser = dataUser?.username
+        val namaUser = dataUser?.nama
 
-        if (dataHari != null && !usernameUser.isNullOrEmpty()){
-            validateData(Constant.absenIzin, dataHari, usernameUser, Constant.defaultFotoSakit)
+        if (dataHari != null && !usernameUser.isNullOrEmpty() && !namaUser.isNullOrEmpty()){
+            validateData(Constant.absenIzin, dataHari, usernameUser, namaUser)
         }
         else{
             textStatus.text = "Error, terjadi kesalahan database"
         }
     }
 
-    private fun validateData(jenis: String, dataHari: ModelHariKerja, usernameUser: String, foto: String){
+    private fun validateData(jenis: String, dataHari: ModelHariKerja, usernameUser: String, namaUser: String){
         val dateCreated = getDateNow(Constant.dateFormat1)
         val dateTimeCreated = getDateNow(Constant.dateTimeFormat1)
         val timeCreated = getDateNow(Constant.timeFormat)
@@ -173,7 +177,8 @@ class DetailPegawaiActivity : AppCompatActivity() {
         val tglSplit = dateCreated.split("-")
 
         val resultAbsen = ModelAbsensi("", usernameUser,
-            dataHari.id, foto, dataUser?.jabatan?:"-", dataUser?.unit_kerja?:"-"
+            dataHari.id, namaUser, dataUser?.nip?:"-", dataUser?.pangkat?:"-",
+            dataUser?.jabatan?:"-", dataUser?.unit_organisasi?:"-"
             , "0", "0", jenis, Constant.statusActive,
             tglSplit[0], tglSplit[1], tglSplit[2], dateCreated, timeCreated,
             "${dataHari.id}__${usernameUser}", dateTimeCreated, dateTimeCreated

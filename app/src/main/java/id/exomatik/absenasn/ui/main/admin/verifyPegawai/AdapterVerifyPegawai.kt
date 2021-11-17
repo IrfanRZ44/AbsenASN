@@ -7,7 +7,7 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageButton
 import androidx.appcompat.widget.AppCompatImageView
 import coil.load
 import coil.transform.CircleCropTransformation
@@ -32,7 +32,7 @@ class AdapterVerifyPegawai(
             v.textNama.text = itemData.nama
             v.textHp.text = "No Hp : ${itemData.phone}"
             v.textAlamat.text = "Alamat : ${itemData.alamat}"
-            v.textJabatan.text = "Jabatan/UnitKerja : ${itemData.jabatan}/${itemData.unit_kerja}"
+            v.textJabatan.text = "NIP/NIDN/ID : ${itemData.nip}"
 
             v.imgFoto.load(itemData.fotoProfil) {
                 crossfade(true)
@@ -68,19 +68,23 @@ class AdapterVerifyPegawai(
 
         val imgFotoProfil = dialogView.findViewById<AppCompatImageView>(R.id.imgFotoProfil)
         val etNama = dialogView.findViewById<TextInputLayout>(R.id.etNama)
+        val etNip = dialogView.findViewById<TextInputLayout>(R.id.etNip)
         val etJenisKelamin = dialogView.findViewById<TextInputLayout>(R.id.etJenisKelamin)
         val etAlamat = dialogView.findViewById<TextInputLayout>(R.id.etAlamat)
+        val etPangkat = dialogView.findViewById<TextInputLayout>(R.id.etPangkat)
         val etJabatan = dialogView.findViewById<TextInputLayout>(R.id.etJabatan)
-        val etUnitKerja = dialogView.findViewById<TextInputLayout>(R.id.etUnitKerja)
+        val etUnitOrganisasi = dialogView.findViewById<TextInputLayout>(R.id.etUnitOrganisasi)
         val etTempatLahir = dialogView.findViewById<TextInputLayout>(R.id.etTempatLahir)
         val etTglLahir = dialogView.findViewById<TextInputLayout>(R.id.etTglLahir)
-        val btnBaik = dialogView.findViewById<AppCompatButton>(R.id.btnBaik)
+        val btnClose = dialogView.findViewById<AppCompatImageButton>(R.id.btnClose)
 
         etNama.editText?.setText(data.nama)
+        etNip.editText?.setText(data.nip)
         etJenisKelamin.editText?.setText(data.jk)
         etAlamat.editText?.setText(data.alamat)
+        etPangkat.editText?.setText(data.pangkat)
         etJabatan.editText?.setText(data.jabatan)
-        etUnitKerja.editText?.setText(data.unit_kerja)
+        etUnitOrganisasi.editText?.setText(data.unit_organisasi)
         etTempatLahir.editText?.setText(data.tempatLahir)
         etTglLahir.editText?.setText(data.tanggalLahir)
 
@@ -98,7 +102,7 @@ class AdapterVerifyPegawai(
             onClickFoto(data.fotoProfil, activity)
         }
 
-        btnBaik.setOnClickListener {
+        btnClose.setOnClickListener {
             alert.dismiss()
         }
 

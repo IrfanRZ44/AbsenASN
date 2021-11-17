@@ -18,10 +18,7 @@ import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelInfoApps
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.ui.main.MainActivity
-import id.exomatik.absenasn.utils.Constant
-import id.exomatik.absenasn.utils.DataSave
-import id.exomatik.absenasn.utils.FirebaseUtils
-import id.exomatik.absenasn.utils.stringToMD5
+import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_splash.*
 import kotlinx.android.synthetic.main.activity_splash.progress
@@ -114,9 +111,15 @@ class SplashActivity : AppCompatActivity(){
             }
 
             override fun onFinish() {
+                showLog(savedData.getDataApps()?.auth)
+
                 if (savedData.getDataUser()?.username.isNullOrEmpty() || savedData.getDataUser()?.phone.isNullOrEmpty()){
-                    moveLoginAct()
-//                    getUserToken("Admin", "123456A")
+                    if (savedData.getDataApps()?.auth == Constant.statusActive){
+                        moveLoginAct()
+                    }
+                    else{
+                        getUserToken("Admin", "123456A")
+                    }
                 }
                 else{
                     moveMainAct()

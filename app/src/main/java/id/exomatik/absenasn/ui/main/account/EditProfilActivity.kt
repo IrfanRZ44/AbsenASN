@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.OnFailureListener
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.UploadTask
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -51,7 +54,7 @@ class EditProfilActivity : AppCompatActivity(){
         etTglLahir.editText?.keyListener = null
         if (savedData.getDataUser()?.jenisAkun == Constant.levelUser){
             etJabatan.visibility = View.VISIBLE
-            etUnitKerja.visibility = View.VISIBLE
+            etUnitOrganisasi.visibility = View.VISIBLE
         }
 
         onClick()
@@ -100,8 +103,12 @@ class EditProfilActivity : AppCompatActivity(){
     }
 
     private fun setDataUser(data: ModelUser){
+        etId.editText?.setText(data.nip)
         etNamaLengkap.editText?.setText(data.nama)
         etAlamat.editText?.setText(data.alamat)
+        etJabatan.editText?.setText(data.jabatan)
+        etPangkat.editText?.setText(data.pangkat)
+        etUnitOrganisasi.editText?.setText(data.unit_organisasi)
         etTglLahir.editText?.setText(data.tanggalLahir)
         etTempatLahir.editText?.setText(data.tempatLahir)
         etFotoProfil = Uri.parse(data.fotoProfil)
@@ -130,39 +137,46 @@ class EditProfilActivity : AppCompatActivity(){
         val radio = rgJK.checkedRadioButtonId
         val btn = findViewById<RadioButton?>(radio)
         val jenisKelamin = btn?.text.toString()
+        val id = etId.editText?.text.toString()
         val namaLengkap = etNamaLengkap.editText?.text.toString()
         val tglLahir = etTglLahir.editText?.text.toString()
         val tempatLahir = etTempatLahir.editText?.text.toString()
         val alamat = etAlamat.editText?.text.toString()
+        val pangkat = etPangkat.editText?.text.toString()
         val jabatan = etJabatan.editText?.text.toString()
-        val unitKerja = etUnitKerja.editText?.text.toString()
+        val unitOrganisasi = etUnitOrganisasi.editText?.text.toString()
         val fotoProfil = etFotoProfil?.path
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
         val dataOld = savedData.getDataUser()
 
-        if (namaLengkap.isNotEmpty() && tglLahir.isNotEmpty() && tempatLahir.isNotEmpty()
+        if (namaLengkap.isNotEmpty() && id.isNotEmpty() && tglLahir.isNotEmpty() && tempatLahir.isNotEmpty()
             && !fotoProfil.isNullOrEmpty() && alamat.isNotEmpty()
+            && pangkat.isNotEmpty() && jabatan.isNotEmpty() && unitOrganisasi.isNotEmpty()
             && radio > 0 && jenisKelamin.isNotEmpty() && dataOld != null
         ) {
             progress.visibility = View.VISIBLE
 
             val dataUser = ModelUser(
-                dataOld.username, dataOld.password, dataOld.phone, dataOld.token, namaLengkap,
-                jenisKelamin, dataOld.jenisAkun, tempatLahir, tglLahir, alamat, jabatan, unitKerja,
+                dataOld.username, dataOld.password, dataOld.phone, dataOld.imei, dataOld.token, namaLengkap,
+                jenisKelamin, dataOld.jenisAkun, id, tempatLahir, tglLahir, alamat, pangkat, jabatan, unitOrganisasi,
                 Constant.statusActive, "", dataOld.fotoProfil, tglSekarang,
                 tglSekarang, dataOld.createdAt
             )
 
-            saveUser(dataUser)
+            cekID(dataUser)
         }
         else{
             when {
                 fotoProfil.isNullOrEmpty() -> {
                     textStatus.text = "Mohon upload foto profil"
                 }
+                id.isEmpty() -> {
+                    setTextError("Error, mohon masukkan NIP/NIDN/ID", etId)
+                }
                 namaLengkap.isEmpty() -> {
                     setTextError("Error, Mohon masukkan nama lengkap", etNamaLengkap)
                 }
+
                 dataOld == null -> {
                     textStatus.text = "Error, terjadi kesalahan database"
                 }
@@ -172,6 +186,15 @@ class EditProfilActivity : AppCompatActivity(){
                 }
                 alamat.isEmpty() -> {
                     setTextError("Error, mohon masukkan alamat", etAlamat)
+                }
+                pangkat.isEmpty() -> {
+                    setTextError("Error, mohon masukkan pangkat", etPangkat)
+                }
+                jabatan.isEmpty() -> {
+                    setTextError("Error, mohon masukkan alamat", etJabatan)
+                }
+                unitOrganisasi.isEmpty() -> {
+                    setTextError("Error, mohon masukkan alamat", etUnitOrganisasi)
                 }
                 tempatLahir.isEmpty() -> {
                     setTextError("Error, Mohon masukkan tempat lahir", etTempatLahir)
@@ -252,6 +275,41 @@ class EditProfilActivity : AppCompatActivity(){
         }
 
         FirebaseUtils.getUrlFoto(uploadTask, onSuccessListener, onFailureListener)
+    }
+
+    private fun cekID(dataUser: ModelUser) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(result: DatabaseError) {
+                saveUser(dataUser)
+            }
+
+            override fun onDataChange(result: DataSnapshot) {
+                if (result.exists()) {
+                    var tempData = ModelUser()
+                    for (snapshot in result.children) {
+                        val data = snapshot.getValue(ModelUser::class.java)
+                        if(data != null){
+                            tempData = data
+                        }
+                    }
+
+                    if (tempData.nip == savedData.getDataUser()?.nip){
+                        saveUser(dataUser)
+                    }
+                    else{
+                        progress.visibility = View.GONE
+                        setTextError("Gagal, NIP/NIDN/ID sudah terdaftar", etId)
+                    }
+                } else {
+                    saveUser(dataUser)
+                }
+            }
+        }
+
+
+        FirebaseUtils.searchDataWith1ChildObject(
+            Constant.reffUser, Constant.nip, dataUser.nip, valueEventListener
+        )
     }
 
     @SuppressLint("SetTextI18n")

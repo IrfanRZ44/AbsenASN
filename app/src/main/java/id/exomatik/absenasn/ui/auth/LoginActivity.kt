@@ -5,6 +5,7 @@ package id.exomatik.absenasn.ui.auth
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
@@ -277,12 +278,17 @@ class LoginActivity : AppCompatActivity(){
         val onCompleteListener =
             OnCompleteListener<Void> { result ->
                 if (result.isSuccessful) {
-                    dataUser.token = token
-                    savedData.setDataObject(dataUser, Constant.reffUser)
-                    textStatus.text = "Berhasil login"
-                    val intent = Intent(this, SplashActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    if (dataUser.imei.isEmpty()){
+                        dataUser.token = token
+                        saveIMEI(dataUser)
+                    }
+                    else{
+                        dataUser.token = token
+                        savedData.setDataObject(dataUser, Constant.reffUser)
+                        textStatus.text = "Berhasil login"
+                        moveSplashAct()
+                    }
+
                 } else {
                     progress.visibility = View.GONE
                     textStatus.text = "Gagal menyimpan data user"
@@ -302,6 +308,45 @@ class LoginActivity : AppCompatActivity(){
             , onCompleteListener
             , onFailureListener
         )
+    }
+
+    @SuppressLint("SetTextI18n", "HardwareIds")
+    private fun saveIMEI(dataUser: ModelUser) {
+        val androidId = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
+        val onCompleteListener =
+            OnCompleteListener<Void> { result ->
+                if (result.isSuccessful) {
+                    dataUser.imei = androidId
+                    savedData.setDataObject(dataUser, Constant.reffUser)
+                    textStatus.text = "Berhasil login"
+                    moveSplashAct()
+                } else {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Gagal menyimpan IMEI terbaru"
+                }
+            }
+
+        val onFailureListener = OnFailureListener { result ->
+            progress.visibility = View.GONE
+            textStatus.text = result.message
+        }
+
+        FirebaseUtils.setValueWith2ChildString(
+            Constant.reffUser
+            , dataUser.username
+            , "imei"
+            , androidId
+            , onCompleteListener
+            , onFailureListener
+        )
+    }
+
+    private fun moveSplashAct(){
+
+        val intent = Intent(this, SplashActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun dialogRejected(dataUser: ModelUser) {
@@ -329,7 +374,7 @@ class LoginActivity : AppCompatActivity(){
         alert.setTitle("Pendaftaran Anda Sedang Di Proses")
         alert.setMessage("Mohon tunggu proses verifikasi dalam waktu 1x24 jam")
         alert.setPositiveButton(
-            Constant.iya
+            "Tutup"
         ) { dialog, _ ->
             dialog.dismiss()
         }

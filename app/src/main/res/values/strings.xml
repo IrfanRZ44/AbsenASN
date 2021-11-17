@@ -172,5 +172,7 @@
     <string name="sakit">Sakit</string>
     <string name="izin">Izin</string>
     <string name="jabatan">Jabatan</string>
-    <string name="unit_kerja">Unit Kerja</string>
+    <string name="nip_nidn_id">NIP/NIDN/ID</string>
+    <string name="pangkat">Pangkat</string>
+    <string name="unit_organisasi">Unit Organisasi</string>
 </resources>

@@ -95,7 +95,20 @@ class AbsensiFragment : Fragment() {
         }
 
         v.btnAbsen.setOnClickListener {
+            checkIMEI()
+        }
+    }
+
+    @SuppressLint("HardwareIds", "SetTextI18n")
+    private fun checkIMEI(){
+        val androidId = Settings.Secure.getString(context?.contentResolver, Settings.Secure.ANDROID_ID)
+
+        if (androidId == savedData.getDataUser()?.imei){
             onClickDatang()
+        }
+        else{
+            v.textStatus.text = "Maaf, mohon menggunakan HP Anda sendiri untuk melakukan Absensi"
+            Toast.makeText(context, "Maaf, mohon menggunakan HP Anda sendiri untuk melakukan Absensi", Toast.LENGTH_LONG).show()
         }
     }
 
@@ -124,7 +137,7 @@ class AbsensiFragment : Fragment() {
             )
             != PackageManager.PERMISSION_GRANTED
         ) {
-            textStatus.text = "Anda belum mengizinkan akses lokasi aplikasi ini"
+            v.textStatus.text = "Anda belum mengizinkan akses lokasi aplikasi ini"
 
             ActivityCompat.requestPermissions(
                 act,
@@ -455,16 +468,19 @@ class AbsensiFragment : Fragment() {
         val timeCreated = getDateNow(Constant.timeFormat)
         val usernameUser = savedData.getDataUser()?.username
         val namaUser = savedData.getDataUser()?.nama
+        val nip = savedData.getDataUser()?.nip
+        val pangkatUser = savedData.getDataUser()?.pangkat
         val jabatanUser = savedData.getDataUser()?.jabatan
-        val unitKerjaUser = savedData.getDataUser()?.unit_kerja
+        val unitOrganisasiUser = savedData.getDataUser()?.unit_organisasi
         val hariId = dataHariAbsen?.id
         val jenis = dataHariAbsen?.jenisAbsen
 
         if (!usernameUser.isNullOrEmpty() && !hariId.isNullOrEmpty() && !jenis.isNullOrEmpty()
-            && !namaUser.isNullOrEmpty() && !jabatanUser.isNullOrEmpty() && !unitKerjaUser.isNullOrEmpty()
+            && !namaUser.isNullOrEmpty() && !nip.isNullOrEmpty()
+            && !pangkatUser.isNullOrEmpty() && !jabatanUser.isNullOrEmpty() && !unitOrganisasiUser.isNullOrEmpty()
         ){
             val tglSplit = dateCreated.split("-")
-            val resultAbsen = ModelAbsensi("", usernameUser, hariId, namaUser, jabatanUser, unitKerjaUser,
+            val resultAbsen = ModelAbsensi("", usernameUser, hariId, namaUser, nip, pangkatUser, jabatanUser, unitOrganisasiUser,
                 latitude, longitude, Constant.absenHadir, Constant.statusRequest,
                 tglSplit[0], tglSplit[1], tglSplit[2], dateCreated, timeCreated,
                 "${hariId}__${usernameUser}", dateTimeCreated, dateTimeCreated
@@ -489,11 +505,19 @@ class AbsensiFragment : Fragment() {
                     progress.visibility = View.GONE
                     textStatus.text = "Error, nama user tidak ditemukan, silahkan login ulang"
                 }
+                nip.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, NIP/NIDN/ID tidak ditemukan, silahkan login ulang"
+                }
+                pangkatUser.isNullOrEmpty() -> {
+                    progress.visibility = View.GONE
+                    textStatus.text = "Error, pangkat user tidak ditemukan, silahkan login ulang"
+                }
                 jabatanUser.isNullOrEmpty() -> {
                     progress.visibility = View.GONE
                     textStatus.text = "Error, jabatan user tidak ditemukan, silahkan login ulang"
                 }
-                unitKerjaUser.isNullOrEmpty() -> {
+                unitOrganisasiUser.isNullOrEmpty() -> {
                     progress.visibility = View.GONE
                     textStatus.text = "Error, unit kerja user tidak ditemukan, silahkan login ulang"
                 }

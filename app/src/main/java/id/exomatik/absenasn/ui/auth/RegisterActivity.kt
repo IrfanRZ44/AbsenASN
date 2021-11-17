@@ -5,16 +5,24 @@ package id.exomatik.absenasn.ui.auth
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.provider.Settings.Secure
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.RadioButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import coil.load
 import coil.request.CachePolicy
 import com.google.android.gms.tasks.OnCompleteListener
@@ -37,8 +45,8 @@ import kotlinx.android.synthetic.main.activity_register.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class RegisterActivity : AppCompatActivity(){
-    private lateinit var savedData : DataSave
     private var etFotoProfil : Uri? = null
     private var unverify = true
 
@@ -50,8 +58,6 @@ class RegisterActivity : AppCompatActivity(){
     }
 
     private fun myCodeHere() {
-        savedData = DataSave(this)
-
         supportActionBar?.hide()
         val dataUser = intent.getParcelableExtra<ModelUser>(Constant.reffUser)
         if (dataUser != null){
@@ -121,10 +127,14 @@ class RegisterActivity : AppCompatActivity(){
 
     private fun setDataUser(fotoProfil: Uri?, data: ModelUser){
         etUsername.editText?.setText(data.username)
+        etId.editText?.setText(data.nip)
         etPassword.editText?.setText(data.password)
         etConfirmPassword.editText?.setText(data.password)
         etNamaLengkap.editText?.setText(data.nama)
         etAlamat.editText?.setText(data.alamat)
+        etJabatan.editText?.setText(data.jabatan)
+        etPangkat.editText?.setText(data.pangkat)
+        etUnitOrganisasi.editText?.setText(data.unit_organisasi)
         etTglLahir.editText?.setText(data.tanggalLahir)
         etTempatLahir.editText?.setText(data.tempatLahir)
         etNoHp.editText?.setText(data.phone.replaceFirst("+62", "0"))
@@ -146,7 +156,7 @@ class RegisterActivity : AppCompatActivity(){
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "HardwareIds")
     fun onClickRegister(){
         dismissKeyboard(this)
         setNullError()
@@ -155,35 +165,55 @@ class RegisterActivity : AppCompatActivity(){
         val btn = findViewById<RadioButton?>(radio)
         val jenisKelamin = btn?.text.toString()
         val username = etUsername.editText?.text.toString()
+        val androidId = Secure.getString(contentResolver, Secure.ANDROID_ID)
+        val id = etId.editText?.text.toString()
         val password = etPassword.editText?.text.toString()
         val confirmPassword = etConfirmPassword.editText?.text.toString()
         val namaLengkap = etNamaLengkap.editText?.text.toString()
         val tglLahir = etTglLahir.editText?.text.toString()
         val tempatLahir = etTempatLahir.editText?.text.toString()
         val alamat = etAlamat.editText?.text.toString()
+        val pangkat = etPangkat.editText?.text.toString()
         val jabatan = etJabatan.editText?.text.toString()
-        val unitKerja = etUnitKerja.editText?.text.toString()
+        val unitOrganisasi = etUnitOrganisasi.editText?.text.toString()
         val noHp = etNoHp.editText?.text.toString()
         val fotoProfil = etFotoProfil
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
 
-        if (username.isNotEmpty() && password.isNotEmpty()
+        if (username.isNotEmpty() && id.isNotEmpty() && password.isNotEmpty()
             && confirmPassword.isNotEmpty() && (password == confirmPassword)
             && password.length >= 6 && isContainNumber(password)
             && (isContainSmallText(password) || isContainBigText(password))
             && namaLengkap.isNotEmpty() && tglLahir.isNotEmpty() && tempatLahir.isNotEmpty()
             && fotoProfil != null && noHp.isNotEmpty() && alamat.isNotEmpty()
-            && jabatan.isNotEmpty() && unitKerja.isNotEmpty()
+            && pangkat.isNotEmpty() && jabatan.isNotEmpty() && unitOrganisasi.isNotEmpty()
             && (noHp.length in 10..13) && radio > 0 && jenisKelamin.isNotEmpty()
         ) {
             val hp = noHp.replaceFirst("0", "+62")
             progress.visibility = View.VISIBLE
 
             val dataUser = ModelUser(
-                username, password, hp, "", namaLengkap,
-                jenisKelamin, Constant.levelUser, tempatLahir, tglLahir, alamat, jabatan, unitKerja,
-                Constant.statusRequest, "", "", tglSekarang,
-                tglSekarang, tglSekarang
+                username,
+                password,
+                hp,
+                androidId,
+                "",
+                namaLengkap,
+                jenisKelamin,
+                Constant.levelUser,
+                id,
+                tempatLahir,
+                tglLahir,
+                alamat,
+                pangkat,
+                jabatan,
+                unitOrganisasi,
+                Constant.statusRequest,
+                "",
+                "",
+                tglSekarang,
+                tglSekarang,
+                tglSekarang
             )
 
             cekUserName(dataUser)
@@ -194,6 +224,9 @@ class RegisterActivity : AppCompatActivity(){
             }
             else if (username.isEmpty()){
                 setTextError("Error, mohon masukkan username", etUsername)
+            }
+            else if (id.isEmpty()){
+                setTextError("Error, mohon masukkan NIP/NIDN/ID", etId)
             }
             else if (password.isEmpty()){
                 setTextError("Error, Mohon masukkan password", etPassword)
@@ -223,11 +256,14 @@ class RegisterActivity : AppCompatActivity(){
             else if (alamat.isEmpty()){
                 setTextError("Error, mohon masukkan alamat", etAlamat)
             }
+            else if (pangkat.isEmpty()){
+                setTextError("Error, mohon masukkan pangkat", etPangkat)
+            }
             else if (jabatan.isEmpty()){
                 setTextError("Error, mohon masukkan jabatan", etJabatan)
             }
-            else if (unitKerja.isEmpty()){
-                setTextError("Error, mohon masukkan unit kerja", etUnitKerja)
+            else if (unitOrganisasi.isEmpty()){
+                setTextError("Error, mohon masukkan unit kerja", etUnitOrganisasi)
             }
             else if (tempatLahir.isEmpty()){
                 setTextError("Error, Mohon masukkan tempat lahir", etTempatLahir)
@@ -260,7 +296,8 @@ class RegisterActivity : AppCompatActivity(){
         val localCalendar = Calendar.getInstance()
 
         try {
-            datePickerDialog = DatePickerDialog(this,
+            datePickerDialog = DatePickerDialog(
+                this,
                 { _, paramAnonymousInt1, paramAnonymousInt2, paramAnonymousInt3 ->
                     val dateSelected = Calendar.getInstance()
                     dateSelected[paramAnonymousInt1, paramAnonymousInt2] = paramAnonymousInt3
@@ -319,7 +356,7 @@ class RegisterActivity : AppCompatActivity(){
     private fun cekHandphone(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                signUp(dataUser)
+                cekID(dataUser)
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -327,13 +364,34 @@ class RegisterActivity : AppCompatActivity(){
                     progress.visibility = View.GONE
                     setTextError("Gagal, No Handphone sudah terdaftar", etNoHp)
                 } else {
-                    signUp(dataUser)
+                    cekID(dataUser)
                 }
             }
         }
 
         FirebaseUtils.searchDataWith1ChildObject(
             Constant.reffUser, Constant.phone, dataUser.phone, valueEventListener
+        )
+    }
+
+    private fun cekID(dataUser: ModelUser) {
+        val valueEventListener = object : ValueEventListener {
+            override fun onCancelled(result: DatabaseError) {
+                signUp(dataUser)
+            }
+
+            override fun onDataChange(result: DataSnapshot) {
+                if (result.exists()) {
+                    progress.visibility = View.GONE
+                    setTextError("Gagal, NIP/NIDN/ID sudah terdaftar", etId)
+                } else {
+                    signUp(dataUser)
+                }
+            }
+        }
+
+        FirebaseUtils.searchDataWith1ChildObject(
+            Constant.reffUser, Constant.nip, dataUser.nip, valueEventListener
         )
     }
 
@@ -353,7 +411,8 @@ class RegisterActivity : AppCompatActivity(){
                         textStatus.text = "Error, Nomor Handphone tidak Valid"
                     }
                     is FirebaseTooManyRequestsException -> {
-                        textStatus.text = "Error, Anda sudah terlalu banyak mengirimkan permintaan coba lagi nanti"
+                        textStatus.text =
+                            "Error, Anda sudah terlalu banyak mengirimkan permintaan coba lagi nanti"
                     }
                     else -> {
                         textStatus.text = e.message
@@ -430,8 +489,9 @@ class RegisterActivity : AppCompatActivity(){
             progress.visibility = View.GONE
         }
 
-        FirebaseUtils.simpanFoto(Constant.reffFotoUser, dataUser.username
-            , image, onSuccessListener, onFailureListener)
+        FirebaseUtils.simpanFoto(
+            Constant.reffFotoUser, dataUser.username, image, onSuccessListener, onFailureListener
+        )
     }
 
     private fun getUrlFoto(uploadTask: UploadTask.TaskSnapshot, dataUser: ModelUser) {

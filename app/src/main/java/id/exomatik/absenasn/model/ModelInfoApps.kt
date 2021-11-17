@@ -10,4 +10,5 @@ data class ModelInfoApps(
     var statusApps: String? = "",
     var versionApps: String? = "",
     var messageWhatsapp: String? = "",
+    var auth: String? = "",
     ) : Parcelable
