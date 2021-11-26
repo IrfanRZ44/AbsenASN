@@ -34,10 +34,7 @@ import id.exomatik.absenasn.model.ModelHariKerja
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.services.notification.model.Notification
 import id.exomatik.absenasn.services.notification.model.Sender
-import id.exomatik.absenasn.utils.Constant
-import id.exomatik.absenasn.utils.DataSave
-import id.exomatik.absenasn.utils.FirebaseUtils
-import id.exomatik.absenasn.utils.getDateNow
+import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.activity_kirim_absen.*
 import kotlinx.android.synthetic.main.fragment_absensi.view.*
 import java.lang.Math.*
@@ -153,7 +150,9 @@ class AbsensiFragment : Fragment() {
             fusedLocationClient?.lastLocation?.addOnSuccessListener { location: Location? ->
                 if (location?.latitude != null){
 
-                    if (comparingLocation(location.latitude, location.longitude) < Constant.defaultRadiusJarak) {
+                    showLog(comparingLocation(location.latitude, location.longitude).toString() + " tess")
+                    if (comparingLocation(location.latitude, location.longitude)
+                        < savedData.getDataApps()?.batasJarak?.toDouble()?:Constant.defaultRadiusJarak) {
                         latit = location.latitude.toString()
                         longit = location.longitude.toString()
                         showFingerPrint(act)
@@ -188,8 +187,10 @@ class AbsensiFragment : Fragment() {
     }
 
     private fun comparingLocation(lat2: Double, lng2: Double): Double {
-        val lat1 = Constant.defaultLatitudeUIN
-        val lng1 = Constant.defaultLongitudeUIN
+//        val lat1 = Constant.defaultLatitudeUIN
+//        val lng1 = Constant.defaultLongitudeUIN
+        val lat1 = savedData.getDataApps()?.latitude?.toDouble()?:Constant.defaultLatitudeUIN
+        val lng1 = savedData.getDataApps()?.longitude?.toDouble()?:Constant.defaultLongitudeUIN
         val earthRadius = 6371.0
         val dLat = toRadians(lat2 - lat1)
         val dLng = toRadians(lng2 - lng1)

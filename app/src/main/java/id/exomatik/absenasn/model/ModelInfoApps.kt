@@ -11,4 +11,7 @@ data class ModelInfoApps(
     var versionApps: String? = "",
     var messageWhatsapp: String? = "",
     var auth: String? = "",
+    var latitude: String? = "",
+    var longitude: String? = "",
+    var batasJarak: String? = "",
     ) : Parcelable

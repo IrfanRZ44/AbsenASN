@@ -55,8 +55,8 @@ object Constant {
     const val codeRequestCamera = 100
 
     const val defaultTempFoto = "https://www.google.co.id/images/branding/googlelogo/2x/googlelogo_color_160x56dp.png"
-    const val defaultLatitudeUIN = -5.205353860844862
-    const val defaultLongitudeUIN = 119.49674215712335
+    const val defaultLatitudeUIN = -5.204007
+    const val defaultLongitudeUIN = 119.495778
     const val defaultRadiusJarak = 0.05
 
     const val timeFormat = "HH:mm"

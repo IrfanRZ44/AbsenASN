@@ -22,6 +22,11 @@ import id.exomatik.absenasn.R
 import id.exomatik.absenasn.model.ModelUser
 import id.exomatik.absenasn.utils.*
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_login.etPassword
+import kotlinx.android.synthetic.main.activity_login.etUsername
+import kotlinx.android.synthetic.main.activity_login.progress
+import kotlinx.android.synthetic.main.activity_login.textStatus
+import kotlinx.android.synthetic.main.activity_register.*
 
 class LoginActivity : AppCompatActivity(){
     private lateinit var savedData : DataSave
@@ -43,14 +48,18 @@ class LoginActivity : AppCompatActivity(){
     private fun onClick() {
         etPassword.editText?.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onClickLogin()
+                if (progress.visibility == View.GONE){
+                    onClickLogin()
+                }
                 return@OnEditorActionListener false
             }
             false
         })
 
         btnLogin.setOnClickListener {
-            onClickLogin()
+            if (progress.visibility == View.GONE){
+                onClickLogin()
+            }
         }
 
         textSignUp.setOnClickListener {

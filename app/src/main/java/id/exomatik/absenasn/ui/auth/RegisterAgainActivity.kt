@@ -64,14 +64,18 @@ class RegisterAgainActivity : AppCompatActivity(){
     private fun onClick() {
         etNoHp.editText?.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onClickRegister()
+                if (progress.visibility == View.GONE){
+                    onClickRegister()
+                }
                 return@OnEditorActionListener false
             }
             false
         })
 
         btnSignUp.setOnClickListener {
-            onClickRegister()
+            if (progress.visibility == View.GONE){
+                onClickRegister()
+            }
         }
 
         textLogin.setOnClickListener {
@@ -150,7 +154,7 @@ class RegisterAgainActivity : AppCompatActivity(){
         }
     }
 
-    @SuppressLint("SetTextI18n")
+    @SuppressLint("SetTextI18n", "HardwareIds")
     fun onClickRegister(){
         dismissKeyboard(this)
         setNullError()
@@ -201,9 +205,6 @@ class RegisterAgainActivity : AppCompatActivity(){
             }
             else if (username.isEmpty()){
                 setTextError("Error, mohon masukkan username", etUsername)
-            }
-            else if (id.isEmpty()){
-                setTextError("Error, mohon masukkan NIP/NIDN/ID", etId)
             }
             else if (password.isEmpty()){
                 setTextError("Error, Mohon masukkan password", etPassword)
@@ -312,7 +313,12 @@ class RegisterAgainActivity : AppCompatActivity(){
     private fun cekHandphone(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                cekID(dataUser)
+                if (dataUser.nip.isEmpty()){
+                    addUserToFirebase(dataUser)
+                }
+                else{
+                    cekID(dataUser)
+                }
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -326,14 +332,24 @@ class RegisterAgainActivity : AppCompatActivity(){
                     }
 
                     if (tempData.phone == dataUser.phone){
-                        cekID(dataUser)
+                        if (dataUser.nip.isEmpty()){
+                            addUserToFirebase(dataUser)
+                        }
+                        else{
+                            cekID(dataUser)
+                        }
                     }
                     else{
                         progress.visibility = View.GONE
                         setTextError("Gagal, No Handphone sudah terdaftar", etNoHp)
                     }
                 } else {
-                    cekID(dataUser)
+                    if (dataUser.nip.isEmpty()){
+                        addUserToFirebase(dataUser)
+                    }
+                    else{
+                        cekID(dataUser)
+                    }
                 }
             }
         }

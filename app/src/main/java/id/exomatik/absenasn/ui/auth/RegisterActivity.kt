@@ -5,24 +5,17 @@ package id.exomatik.absenasn.ui.auth
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.DatePickerDialog
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.provider.Settings.Secure
-import android.telephony.TelephonyManager
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.RadioButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import coil.load
 import coil.request.CachePolicy
 import com.google.android.gms.tasks.OnCompleteListener
@@ -73,14 +66,18 @@ class RegisterActivity : AppCompatActivity(){
     private fun onClick() {
         etNoHp.editText?.setOnEditorActionListener(TextView.OnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
-                onClickRegister()
+                if (progress.visibility == View.GONE){
+                    onClickRegister()
+                }
                 return@OnEditorActionListener false
             }
             false
         })
 
         btnSignUp.setOnClickListener {
-            onClickRegister()
+            if (progress.visibility == View.GONE){
+                onClickRegister()
+            }
         }
 
         textLogin.setOnClickListener {
@@ -180,7 +177,7 @@ class RegisterActivity : AppCompatActivity(){
         val fotoProfil = etFotoProfil
         val tglSekarang = getDateNow(Constant.dateTimeFormat1)
 
-        if (username.isNotEmpty() && id.isNotEmpty() && password.isNotEmpty()
+        if (username.isNotEmpty() && password.isNotEmpty()
             && confirmPassword.isNotEmpty() && (password == confirmPassword)
             && password.length >= 6 && isContainNumber(password)
             && (isContainSmallText(password) || isContainBigText(password))
@@ -224,9 +221,6 @@ class RegisterActivity : AppCompatActivity(){
             }
             else if (username.isEmpty()){
                 setTextError("Error, mohon masukkan username", etUsername)
-            }
-            else if (id.isEmpty()){
-                setTextError("Error, mohon masukkan NIP/NIDN/ID", etId)
             }
             else if (password.isEmpty()){
                 setTextError("Error, Mohon masukkan password", etPassword)
@@ -356,7 +350,12 @@ class RegisterActivity : AppCompatActivity(){
     private fun cekHandphone(dataUser: ModelUser) {
         val valueEventListener = object : ValueEventListener {
             override fun onCancelled(result: DatabaseError) {
-                cekID(dataUser)
+                if (dataUser.nip.isEmpty()){
+                    signUp(dataUser)
+                }
+                else{
+                    cekID(dataUser)
+                }
             }
 
             override fun onDataChange(result: DataSnapshot) {
@@ -364,7 +363,12 @@ class RegisterActivity : AppCompatActivity(){
                     progress.visibility = View.GONE
                     setTextError("Gagal, No Handphone sudah terdaftar", etNoHp)
                 } else {
-                    cekID(dataUser)
+                    if (dataUser.nip.isEmpty()){
+                        signUp(dataUser)
+                    }
+                    else{
+                        cekID(dataUser)
+                    }
                 }
             }
         }
